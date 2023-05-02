@@ -1,8 +1,5 @@
 <template>
-  <AppHeader />
-  <!-- you can remove the class below, it's just for the demo purpose here-->
-  <div class="h-[calc(100vh-80px)]">
+  <div class="bg-black min-h-[100dvh] overflow-x-auto">
     <NuxtPage />
   </div>
-  <AppFooter />
 </template>

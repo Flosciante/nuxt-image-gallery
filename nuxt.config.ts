@@ -1,5 +1,21 @@
+const imageApi = 'https://movies-proxy.vercel.app';
+
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  experimental: {
+    viewTransition: true,
+  },
+  image: {
+    provider: 'proxy',
+    providers: {
+      proxy: {
+        provider: 'ipx',
+        options: {
+          baseURL: `${imageApi}/ipx`,
+        },
+      },
+    },
+  },
   modules: [
     // https://content.nuxtjs.org
     '@nuxt/content',
@@ -17,10 +33,12 @@ export default defineNuxtConfig({
   devtools: {
     enabled: true
   },
-  content: {
-    documentDriven: true
-  },
   colorMode: {
     classSuffix: ''
-  }
+  },
+  runtimeConfig: {
+    public: {
+      imageApi,
+    },
+  },
 })

@@ -24,6 +24,7 @@
     "@nuxt/eslint-config": "^0.1.1",
     "eslint": "^8.38.0",
     "nuxt": "^3.4.2",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "@vueuse/nuxt": "^9.13.0"
   }
 }
