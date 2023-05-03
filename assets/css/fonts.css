@@ -1,0 +1,42 @@
+/* `font-normal` */
+@font-face {
+  font-family: 'RoobertPRO';
+  font-display: swap;
+  src: url('/fonts/RoobertPRO-Regular.woff2') format('woff2'),
+    url('/fonts/RoobertPRO-Regular.woff') format('woff');
+  font-weight: 400;
+}
+/* `font-medium */
+@font-face {
+  font-family: 'RoobertPRO';
+  font-display: swap;
+  src: url('/fonts/RoobertPRO-Medium.woff2') format('woff2'),
+    url('/fonts/RoobertPRO-Medium.woff') format('woff');
+  font-weight: 500;
+}
+/* `font-semibold` */
+@font-face {
+  font-family: 'RoobertPRO';
+  font-display: swap;
+  src: url('/fonts/RoobertPRO-SemiBold.woff2') format('woff2'),
+    url('/fonts/RoobertPRO-SemiBold.woff') format('woff');
+  font-weight: 600;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+button,
+span,
+div,
+textarea,
+input,
+ul,
+li,
+a {
+  font-family: 'RoobertPRO', sans-serif;
+}

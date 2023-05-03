@@ -12,7 +12,28 @@ const { data: movies } = await useFetch('/tmdb/tv/popular', {
 </script>
 
 <template>
-  <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[22px]">
+  <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[22px] relative">
+    <BottomMenu class="bottom-menu">
+      <template #logo>
+        <svg width="29" height="20" viewBox="0 0 29 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15.7783 19.28H26.1805C26.5109 19.28 26.8355 19.1943 27.1216 19.0314C27.4077 18.8684 27.6453 18.6341 27.8104 18.3519C27.9755 18.0697 28.0624 17.7497 28.0623 17.4239C28.0621 17.0981 27.975 16.7781 27.8096 16.496L20.8238 4.56463C20.6587 4.28252 20.4211 4.04824 20.1351 3.88535C19.849 3.72247 19.5245 3.63671 19.1942 3.63671C18.8638 3.63671 18.5393 3.72247 18.2532 3.88535C17.9672 4.04824 17.7296 4.28252 17.5645 4.56463L15.7783 7.61746L12.2859 1.64775C12.1206 1.36566 11.883 1.13142 11.5968 0.968561C11.3107 0.805705 10.9861 0.719971 10.6557 0.719971C10.3254 0.719971 10.0008 0.805705 9.71465 0.968561C9.42851 1.13142 9.19088 1.36566 9.02562 1.64775L0.33262 16.496C0.167243 16.7781 0.0801 17.0981 0.0799562 17.4239C0.0798125 17.7497 0.166673 18.0697 0.331802 18.3519C0.49693 18.6341 0.734504 18.8684 1.02063 19.0314C1.30675 19.1943 1.63134 19.28 1.96173 19.28H8.49137C11.0785 19.28 12.9864 18.1594 14.2992 15.9732L17.4865 10.5303L19.1936 7.61746L24.3172 16.3671H17.4865L15.7783 19.28ZM8.38492 16.3641L3.82807 16.3631L10.6588 4.69758L14.0671 10.5303L11.7851 14.4288C10.9132 15.8473 9.9228 16.3641 8.38492 16.3641Z" fill="#00DC82"/>
+        </svg>
+      </template>
+      <template #description>
+        <p class="bottom-menu-description">
+          Media Gallery template
+        </p>
+      </template>
+      <template #buttons>
+        <div class="bottom-menu-button">
+        <button class="bg-transparent border border-1 border-white/30 px-4 py-1.5 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm">
+          <a href="https://github.com/nuxtlabs/image-gallery/generate" target="_blank">
+            Clone
+          </a>
+        </button>
+      </div>
+      </template>
+    </BottomMenu>
     <article v-for="movie in movies.results" class="relative">
       <NuxtLink :to="`/detail/${movie.id}`" @click.native="active = movie.id">
         <NuxtImg
@@ -32,9 +53,20 @@ const { data: movies } = await useFetch('/tmdb/tv/popular', {
 </template>
 
 <style scoped lang="postcss">
-
 img.active {
   view-transition-name: vtn-image;
+}
+
+.bottom-menu {
+  view-transition-name: vtn-bottom-menu
+}
+
+.bottom-menu-description {
+  view-transition-name: vtn-bottom-menu-description
+}
+
+.bottom-menu-button {
+  view-transition-name: vtn-bottom-menu-button
 }
 
 .container-image {
