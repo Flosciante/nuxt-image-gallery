@@ -6,6 +6,7 @@ const { data: movie } = await useFetch(`/tmdb/tv/${route.params.slug}`, {
   baseURL: config.public.imageApi,
 });
 
+
 const downloadImage = async (movieUrl: string, filename: string) => {
   await useFetch(movieUrl, {
     baseURL: `${config.public.imageApi}/_/tmdb/`,
@@ -13,11 +14,17 @@ const downloadImage = async (movieUrl: string, filename: string) => {
     const blob = response.data.value
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
+
     link.setAttribute('href', url);
     link.setAttribute('download', filename);
     link.click();
   })
 }
+
+const { width } = useWindowSize()
+
+const windowW = computed(() => ((width.value / 2) - (74)))
+
 </script>
 
 <template>
@@ -42,17 +49,17 @@ const downloadImage = async (movieUrl: string, filename: string) => {
       </template>
     </BottomMenu>
     <div v-if="movie" class="p-16 flex items-center justify-center w-full max-h-[100dvh] aspect-[0.1] relative ">
-      <button class="absolute top-4 right-4 bg-transparent border border-1 border-white/30 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm" @click="downloadImage(movie.poster_path, movie.name)">
+      <button class="absolute top-4 right-4 bg-transparent border border-1 border-white/30 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm">
         <NuxtLink to="/" class="flex jusitfy-center items-center p-2">
           <Icon name="heroicons-outline:x" size="16px" />
         </NuxtLink>
       </button>
-      <button class="absolute my-auto right-4 bg-transparent border border-1 border-white/30 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm" @click="downloadImage(movie.poster_path, movie.name)">
+      <button class="absolute my-auto right-4 bg-transparent border border-1 border-white/30 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm">
         <NuxtLink to="/" class="flex jusitfy-center items-center p-2">
           <Icon name="heroicons-outline:chevron-right" size="20px" />
         </NuxtLink>
       </button>
-      <button class="absolute my-auto left-4 bg-transparent border border-1 border-white/30 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm" @click="downloadImage(movie.poster_path, movie.name)">
+      <button class="absolute my-auto left-4 bg-transparent border border-1 border-white/30 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm">
         <NuxtLink to="/" class="flex jusitfy-center items-center p-2">
           <Icon name="heroicons-outline:chevron-left" size="20px" />
         </NuxtLink>
@@ -126,4 +133,5 @@ img {
   animation: none;
   transform: scale(1);
 }
+
 </style>

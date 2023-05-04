@@ -1,14 +1,12 @@
 <script setup lang="ts">
-const config = useRuntimeConfig()
-const active = useState()
+defineProps({
+  images: {
+    type: Object as PropType<any>,
+    required: true
+  }
+})
 
-const { data: movies } = await useFetch('/tmdb/tv/popular', {
-  baseURL: config.public.imageApi,
-  query: {
-    page: 1,
-    language: 'en',
-  },
-});
+const active = useState()
 </script>
 
 <template>
@@ -34,20 +32,19 @@ const { data: movies } = await useFetch('/tmdb/tv/popular', {
       </div>
       </template>
     </BottomMenu>
-    <article v-for="movie in movies.results" class="relative">
-      <NuxtLink :to="`/detail/${movie.id}`" @click.native="active = movie.id">
+    <article v-for="image in images.results" class="relative">
+      <NuxtLink :to="`/detail/${image.id}`" @click.native="active = image.id">
         <NuxtImg
-          v-if="movie.poster_path"
+          v-if="image.poster_path"
           width="527"
           height="430"
           format="webp"
-          :src="`/tmdb${movie.poster_path}`"
-          :alt="movie.title || movie.name"
+          :src="`/tmdb${image.poster_path}`"
+          :alt="image.title || image.name"
           class="w-full h-full bg-black/20 hover:bg-black/0 rounded-md transition-colors duration-200 border-image"
-          :class="{ active: active === movie.id }"
+          :class="{ active: active === image.id }"
         />
       </NuxtLink>
-
     </article>
   </section>
 </template>
