@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const config = useRuntimeConfig()
-const route = useRoute()
 
 const { data: movies } = await useFetch<any>('/tmdb/tv/popular', {
   baseURL: config.public.imageApi,

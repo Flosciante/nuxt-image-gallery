@@ -6,6 +6,8 @@ defineProps({
   }
 })
 
+const route = useRoute()
+
 const active = useState()
 </script>
 
@@ -34,6 +36,7 @@ const active = useState()
     </BottomMenu>
     <article v-for="image in images.results" class="relative">
       <NuxtLink :to="`/detail/${image.id}`" @click.native="active = image.id">
+        {{ route.path.split('/')}}
         <NuxtImg
           v-if="image.poster_path"
           width="527"

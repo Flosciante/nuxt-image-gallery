@@ -1,6 +1,15 @@
 <script setup lang="ts">
 const config = useRuntimeConfig();
 const route = useRoute();
+const active = useState()
+
+const { data: movies } = await useFetch<any>('/tmdb/tv/popular', {
+  baseURL: config.public.imageApi,
+  query: {
+    page: 1,
+    language: 'en',
+  },
+});
 
 const { data: movie } = await useFetch(`/tmdb/tv/${route.params.slug}`, {
   baseURL: config.public.imageApi,
@@ -21,9 +30,11 @@ const downloadImage = async (movieUrl: string, filename: string) => {
   })
 }
 
-const { width } = useWindowSize()
+const isFirstMovie = computed(() => movies.value.results[0].id == route.params.slug)
+const isLastMovie = computed(() => movies.value.results[movies.value.results.length - 1].id == route.params.slug)
+const currentIndex = computed(() => movies.value.results.indexOf(movies.value.results.filter((movie: any) => movie.id == route.params.slug)[0]))
 
-const windowW = computed(() => ((width.value / 2) - (74)))
+console.log('currentIndex', currentIndex.value)
 
 </script>
 
@@ -54,13 +65,13 @@ const windowW = computed(() => ((width.value / 2) - (74)))
           <Icon name="heroicons-outline:x" size="16px" />
         </NuxtLink>
       </button>
-      <button class="absolute my-auto right-4 bg-transparent border border-1 border-white/30 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm">
-        <NuxtLink to="/" class="flex jusitfy-center items-center p-2">
+      <button v-if="!isLastMovie" class="absolute my-auto right-4 bg-transparent border border-1 border-white/30 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm">
+        <NuxtLink :to="`/detail/${movies.results[currentIndex + 1].id}`" class="flex jusitfy-center items-center p-2">
           <Icon name="heroicons-outline:chevron-right" size="20px" />
         </NuxtLink>
       </button>
-      <button class="absolute my-auto left-4 bg-transparent border border-1 border-white/30 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm">
-        <NuxtLink to="/" class="flex jusitfy-center items-center p-2">
+      <button v-if="!isFirstMovie" class="absolute my-auto left-4 bg-transparent border border-1 border-white/30 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm">
+        <NuxtLink :to="`/detail/${movies.results[currentIndex - 1].id}`" class="flex jusitfy-center items-center p-2">
           <Icon name="heroicons-outline:chevron-left" size="20px" />
         </NuxtLink>
       </button>
@@ -69,7 +80,7 @@ const windowW = computed(() => ((width.value / 2) - (74)))
         format="webp"
         :src="`/tmdb${movie.poster_path}`"
         :alt="movie.title || movie.name"
-        class="object-contain rounded image w-full h-full"
+        class="object-contain rounded image w-full h-full pb-16"
         :class="{ active: active === movie.id }"
       />
     </div>
@@ -79,7 +90,7 @@ const windowW = computed(() => ((width.value / 2) - (74)))
 </template>
 
 <style scoped lang="postcss">
-img {
+img.active {
   view-transition-name: vtn-image;
 }
 
