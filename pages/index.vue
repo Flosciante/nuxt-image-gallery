@@ -1,17 +1,13 @@
-<script setup lang="ts">
-const config = useRuntimeConfig()
-
-const { data: movies } = await useFetch<any>('/tmdb/tv/popular', {
-  baseURL: config.public.imageApi,
-  query: {
-    page: 1,
-    language: 'en',
-  },
-});
-</script>
-
 <template>
-  <div class="flex p-8 relative">
-    <ImageGallery :images="movies" />
-  </div>
+  <NuxtLayout>
+    <ContentRenderer :value="page" class="overflow-hidden" />
+  </NuxtLayout>
 </template>
+
+<script setup lang="ts">
+const { page } = useContent()
+
+const { fetchList: fetchMovies } = useImageGallery()
+
+await fetchMovies()
+</script>

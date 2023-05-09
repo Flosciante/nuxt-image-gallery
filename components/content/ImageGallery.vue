@@ -1,14 +1,20 @@
 <script setup lang="ts">
+
 defineProps({
-  images: {
-    type: Object as PropType<any>,
-    required: true
+  bottomMenuDescription: {
+    type: String,
+    default: 'Media Gallery template'
+  },
+  bottomMenuButtonText: {
+    type: String,
+    default: 'Clone'
   }
 })
 
-const route = useRoute()
-
 const active = useState()
+
+const { movies } = useImageGallery()
+
 </script>
 
 <template>
@@ -21,22 +27,21 @@ const active = useState()
       </template>
       <template #description>
         <p class="bottom-menu-description">
-          Media Gallery template
+          {{ bottomMenuDescription }}
         </p>
       </template>
       <template #buttons>
         <div class="bottom-menu-button">
-        <button class="bg-transparent border border-1 border-white/30 px-4 py-1.5 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm">
-          <a href="https://github.com/nuxtlabs/image-gallery/generate" target="_blank">
-            Clone
-          </a>
-        </button>
-      </div>
+          <button class="bg-transparent border border-1 border-white/30 px-4 py-1.5 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm">
+            <a href="https://github.com/nuxtlabs/image-gallery/generate" target="_blank">
+              {{ bottomMenuButtonText }}
+            </a>
+          </button>
+        </div>
       </template>
     </BottomMenu>
-    <article v-for="image in images.results" class="relative">
+    <article v-for="image in movies.results" class="relative w-full ">
       <NuxtLink :to="`/detail/${image.id}`" @click.native="active = image.id">
-        {{ route.path.split('/')}}
         <NuxtImg
           v-if="image.poster_path"
           width="527"

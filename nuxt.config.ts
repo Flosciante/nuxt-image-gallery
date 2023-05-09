@@ -33,6 +33,9 @@ export default defineNuxtConfig({
     // https://github.com/nuxt-modules/icon
     'nuxt-icon'
   ],
+  content: {
+    documentDriven: true
+  },
   devtools: {
     enabled: true
   },

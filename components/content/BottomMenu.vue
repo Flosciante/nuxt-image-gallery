@@ -21,10 +21,10 @@ onMounted(() => { 
 })
 
 const onMouseDown = (event: any) => {
-  console.log({ event })
   state.isDragging = true;
   state.startX = event.clientX - left.value;
   state.startY = event.clientY - top.value;
+
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
 }
@@ -38,6 +38,7 @@ const onMouseMove = (event: any) => {
 
 const onMouseUp = () => {
   state.isDragging = false;
+
   document.removeEventListener('mousemove', onMouseMove);
   document.removeEventListener('mouseup', onMouseUp);
 }

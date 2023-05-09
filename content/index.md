@@ -1,3 +1,7 @@
-# Hello
+---
+title: Nuxt Image Galery
+description: This is a template which allows you to display your pictures within a gallery
+---
 
-This is the home page.
+::image-gallery
+::
