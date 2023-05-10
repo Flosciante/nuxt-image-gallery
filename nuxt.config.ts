@@ -31,7 +31,11 @@ export default defineNuxtConfig({
     // https://nuxt.studio
     '@nuxthq/studio',
     // https://github.com/nuxt-modules/icon
-    'nuxt-icon'
+    'nuxt-icon',
+    // https://pinia.vuejs.org/ssr/nuxt.html
+    '@pinia/nuxt',
+    //https://prazdevs.github.io/pinia-plugin-persistedstate/frameworks/nuxt-3.html
+    '@pinia-plugin-persistedstate/nuxt',
   ],
   content: {
     documentDriven: true

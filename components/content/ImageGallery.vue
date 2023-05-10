@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import { useMoviesStore } from '../../stores/movies'
+
+const moviesStore = useMoviesStore()
+const movies = ref<any>(moviesStore.movies)
 
 defineProps({
   bottomMenuDescription: {
@@ -12,8 +16,6 @@ defineProps({
 })
 
 const active = useState()
-
-const { movies } = useImageGallery()
 
 </script>
 
@@ -40,7 +42,7 @@ const { movies } = useImageGallery()
         </div>
       </template>
     </BottomMenu>
-    <article v-for="image in movies.results" class="relative w-full ">
+    <article v-for="image in movies" class="relative w-full ">
       <NuxtLink :to="`/detail/${image.id}`" @click.native="active = image.id">
         <NuxtImg
           v-if="image.poster_path"
@@ -62,7 +64,7 @@ img.active {
   view-transition-name: vtn-image;
 }
 
-.bottom-menu {
+.bottom-menu.active {
   view-transition-name: vtn-bottom-menu
 }
 
@@ -85,4 +87,5 @@ img.active {
   border-width: 1.15px;
   border-color: rgba(255, 255, 255, 0.1)
 }
+
 </style>

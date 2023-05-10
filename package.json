@@ -16,16 +16,22 @@
     "@nuxtjs/color-mode": "^3.2.0",
     "@nuxtjs/html-validator": "^1.2.5",
     "@nuxtjs/tailwindcss": "^6.6.6",
+    "@pinia/nuxt": "^0.4.10",
     "@vueuse/core": "^10.0.2",
     "@vueuse/nuxt": "^10.0.2",
-    "nuxt-icon": "^0.3.2"
+    "nuxt-icon": "^0.3.2",
+    "pinia": "^2.0.36"
   },
   "devDependencies": {
     "@nuxt/devtools": "^0.4.1",
     "@nuxt/eslint-config": "^0.1.1",
+    "@pinia-plugin-persistedstate/nuxt": "^1.1.1",
+    "@vueuse/nuxt": "^9.13.0",
     "eslint": "^8.38.0",
     "nuxt": "^3.4.2",
-    "typescript": "^5.0.4",
-    "@vueuse/nuxt": "^9.13.0"
+    "typescript": "^5.0.4"
+  },
+  "overrides": {
+    "vue": "latest"
   }
 }
