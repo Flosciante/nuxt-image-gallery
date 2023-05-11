@@ -16,7 +16,6 @@ definePageMeta({
 
 <template>
   <div>
-    <ThumbnailList />
     <ImageDetail />
   </div>
 </template>

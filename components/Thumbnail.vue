@@ -6,7 +6,6 @@ defineProps({
   },
 })
 
-const route = useRoute()
 </script>
 
 <template>
@@ -19,8 +18,8 @@ const route = useRoute()
           format="webp"
           :src="`/tmdb${thumbnail.poster_path}`"
           :alt="thumbnail.title || thumbnail.name"
-          class="object-cover bg-black/20 hover:bg-black/0 rounded-xs rounded-sm"
-          :class="thumbnail.id == route.params.slug ? 'active scale-100 mx-4' : 'scale-75 opacity-75 mx-2'"
+          class="object-cover bg-black/20 hover:bg-black/0 rounded-xs rounded-sm transition-all duration-500"
+          :class="thumbnail.id == $router.currentRoute.value.params.slug ? 'active scale-100 mx-4' : 'scale-75 opacity-75 mx-2'"
         />
       </NuxtLink>
   </li>

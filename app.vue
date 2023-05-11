@@ -7,6 +7,7 @@ await fetchMovies()
 
 <template>
   <div class="bg-black min-h-[100dvh] overflow-x-auto relative">
+    <LazyThumbnailList />
     <NuxtPage />
   </div>
 </template>

@@ -51,7 +51,7 @@ const active = useState()
           format="webp"
           :src="`/tmdb${image.poster_path}`"
           :alt="image.title || image.name"
-          class="w-full h-full bg-black/20 hover:bg-black/0 rounded-md transition-colors duration-200 border-image"
+          class="w-full h-full rounded-md transition-all duration-200 border-image grayscale-[30%] hover:grayscale-0"
           :class="{ active: active === image.id }"
         />
       </NuxtLink>

@@ -6,12 +6,33 @@ const movies = ref<any>(moviesStore.movies)
 const config = useRuntimeConfig();
 const active = useState()
 const route = useRoute()
+const router = useRouter()
 const bottomMenu = ref()
 const movieEl = ref<HTMLElement>()
 const baseUrl = ref(config.public.imageApi)
-const imageLeft = ref()
+const poster = ref()
+const { width } = useWindowSize()
 
 const { currentIndex } = useImageGallery()
+const { isSwiping, direction, lengthX } = useSwipe(poster, {
+    passive: false,
+    onSwipeEnd(e: TouchEvent, direction: any) {
+
+      if (direction === 'left') {
+        if (isLastMovie.value) {
+          router.push('/')
+        } else {
+          router.push(`/detail/${movies.value[currentIndex() + 1].id}`)
+        }
+      } else {
+        if (isFirstMovie.value) {
+          router.push('/')
+        } else {
+          router.push(`/detail/${movies.value[currentIndex() - 1].id}`)
+        }
+      }
+    },
+  })
 
 const { data: movie } = await useFetch(`/tmdb/tv/${route.params.slug}`, {
   baseURL: baseUrl,
@@ -31,25 +52,12 @@ const downloadImage = async (movieUrl: string, filename: string) => {
   })
 }
 
-const isFirstMovie = () => {
-  return movies.value[0].id == route.params.slug
-}
-
-const isLastMovie = () => { 
-  return movies.value[movies.value.length - 1].id == route.params.slug
-}
-
-const buttonsPos = computed(() => {
-  return  {
-    left: (movieEl.value?.getBoundingClientRect().left - 64),
-    right: (movieEl.value?.getBoundingClientRect().right + 24)
-  }
-})
-
+const isFirstMovie = computed(() => movies.value[0].id == route.params.slug)
+const isLastMovie = computed(()=> movies.value[movies.value.length - 1].id == route.params.slug)
 </script>
 
 <template>
-  <NuxtLayout v-if="movie" class="h-full w-full flex items-center justify-center relative">
+  <div v-if="movie" class="h-full w-full max-w-7xl flex items-center justify-center relative mx-auto overflow-x-hidden">
     <BottomMenu class="bottom-menu" ref="bottomMenu">
       <template #description>
         <p class="bottom-menu-description">
@@ -69,34 +77,54 @@ const buttonsPos = computed(() => {
         </div>
       </template>
     </BottomMenu>
-    <div v-if="movie" class="px-16 pt-16 pb-32 flex items-center justify-center w-full h-full max-h-[100dvh] relative ">
-      <button class="absolute top-4 right-4 bg-transparent border border-1 border-white/30 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm">
-        <NuxtLink to="/" class="flex jusitfy-center items-center p-2">
-          <Icon name="heroicons-outline:x" size="16px" />
+    <div v-if="movie" class="md:pt-16 md:pb-32 flex items-center justify-center w-full h-full max-h-[100dvh] relative ">
+      <button class="absolute top-4 right-4 md:hidden w-min bg-transparent border border-1 border-white/30 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm">
+          <NuxtLink to="/" class="flex justify-center items-center p-2">
+            <Icon name="heroicons-outline:x" size="20px" />
         </NuxtLink>
       </button>
-      <button v-if="!isLastMovie()" class="w-min absolute my-auto right-4 bg-transparent border border-1 border-white/30 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm" :style="`left: ${buttonsPos.right}px`">
-        <NuxtLink @click.native="active == movie.id" :to="`/detail/${movies[currentIndex() + 1].id}`" class="flex jusitfy-center items-center p-2">
-          <Icon name="heroicons-outline:chevron-right" size="20px" />
+      <button v-if="!(isFirstMovie || isLastMovie)" class="absolute top-4 left-4 text-white hover:text-zinc-200 transition-colors duration-200 text-sm back">
+        <NuxtLink to="/" class="flex jusitfy-center items-center font-medium gap-x-2">
+          <Icon name="heroicons-outline:arrow-left" size="18px" />
+          <span class="text-md">
+            Back to gallery
+          </span>
         </NuxtLink>
       </button>
-      <button v-if="!isFirstMovie()" class="absolute my-auto bg-transparent border border-1 border-white/30 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm" :style="`left: ${buttonsPos.left}px`">
-        <NuxtLink @click.native="active == movie.id" :to="`/detail/${movies[currentIndex() - 1].id}`" class="flex jusitfy-center items-center p-2">
-          <Icon name="heroicons-outline:chevron-left" size="20px" />
-        </NuxtLink>
-      </button>
-      <div ref="movieEl">
+      <div ref="movieEl" class="flex items-center justify-between gap-x-4 w-full">
+        <button v-if="!isFirstMovie" class="hidden md:block bg-transparent border border-1 border-white/30 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm">
+          <NuxtLink @click.native="active == movie.id" :to="`/detail/${movies[currentIndex() - 1].id}`" class="flex jusitfy-center items-center p-2">
+            <Icon name="heroicons-outline:chevron-left" size="20px" />
+          </NuxtLink>
+        </button>
+        <button v-else class="back hidden md:block">
+          <NuxtLink to="/" class="flex jusitfy-center items-center p-2 text-white gap-x-2">
+            <Icon name="material-symbols:grid-on" size="20px" />
+            <Icon name="heroicons-outline:arrow-left" size="20px" />
+          </NuxtLink>
+        </button>
         <NuxtImg
-        v-if="movie.poster_path"
-        format="webp"
-        :src="`/tmdb${movie.poster_path}`"
-        :alt="movie.title || movie.name"
-        class="object-contain rounded image h-[88dvh]"
-      />
+          v-if="movie.poster_path"
+          format="webp"
+          :src="`/tmdb${movie.poster_path}`"
+          :alt="movie.title || movie.name"
+          class="object-contain rounded image md:h-[88dvh] w-full h-full"
+          ref="poster"
+        />
+        <button v-if="!isLastMovie" class="hidden md:block w-min bg-transparent border border-1 border-white/30 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm">
+          <NuxtLink @click.native="active == movie.id" :to="`/detail/${movies[currentIndex() + 1].id}`" class="flex jusitfy-center items-center p-2">
+            <Icon name="heroicons-outline:chevron-right" size="20px" />
+          </NuxtLink>
+        </button>
+        <button v-else class="back hidden md:block">
+          <NuxtLink to="/" class="flex jusitfy-center items-center p-2 text-white gap-x-2">
+            <Icon name="heroicons-outline:arrow-right" size="20px" />
+            <Icon name="material-symbols:grid-on" size="20px" />
+          </NuxtLink>
+        </button>
       </div>
     </div>
-    <Icon v-else name="svg-spinners:blocks-wave" size="32px" />
-  </NuxtLayout>
+  </div>
 </template>
 
 <style scoped lang="postcss">
@@ -114,6 +142,10 @@ img {
 
 .bottom-menu-button {
   view-transition-name: vtn-bottom-menu-button
+}
+
+.back {
+  view-transition-name: vtn-back-button
 }
 </style>
 
