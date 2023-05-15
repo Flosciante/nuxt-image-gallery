@@ -9,7 +9,6 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@egoist/tailwindcss-icons": "^1.0.7",
     "@nuxt/content": "^2.6.0",
     "@nuxt/image-edge": "1.0.0-28020728.5df24eb",
     "@nuxthq/studio": "^0.10.1",
@@ -25,7 +24,7 @@
   "devDependencies": {
     "@nuxt/devtools": "^0.4.1",
     "@nuxt/eslint-config": "^0.1.1",
-    "@pinia-plugin-persistedstate/nuxt": "^1.1.1",
+    "@nuxthq/ui": "^2.0.4",
     "@vueuse/nuxt": "^9.13.0",
     "eslint": "^8.38.0",
     "nuxt": "^3.4.2",

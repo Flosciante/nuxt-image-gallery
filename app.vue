@@ -1,7 +1,34 @@
 <script setup lang="ts">
+const { page } = useContent()
 const { fetchList: fetchMovies } = useImageGallery()
 
+const description = computed(() => page.value?.head?.description || page.value?.description || 'Page not found')
+
 await fetchMovies()
+
+useHead({
+  titleTemplate: chunk => chunk ? `${chunk} - Image-Gallery` : 'Image Gallery template',
+  link: [
+    { rel: 'icon', href: '/icon.png' }
+  ],
+  meta: [
+    { property: 'og:site_name', content: 'NuxtLabs' },
+    { property: 'og:type', content: 'website' },
+    { property: 'og:image', content: 'https://nuxtlabs.com/social.png' },
+    { property: 'og:image:alt', content: 'NuxtLabs' },
+    { property: 'description', content: 'description' },
+    { property: 'twitter:card', content: 'summary_large_image' },
+    { property: 'twitter:site', content: '@nuxtlabs' },
+  ],
+  htmlAttrs: {
+    lang: 'en'
+  }
+})
+
+useSeoMeta({
+  title: () => page.title,
+  description,
+})
 </script>
 
 

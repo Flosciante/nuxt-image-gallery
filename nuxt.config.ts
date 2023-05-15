@@ -34,8 +34,8 @@ export default defineNuxtConfig({
     'nuxt-icon',
     // https://pinia.vuejs.org/ssr/nuxt.html
     '@pinia/nuxt',
-    //https://prazdevs.github.io/pinia-plugin-persistedstate/frameworks/nuxt-3.html
-    '@pinia-plugin-persistedstate/nuxt',
+    //https://ui.nuxtlabs.com/
+    '@nuxthq/ui'
   ],
   content: {
     documentDriven: true
@@ -51,4 +51,15 @@ export default defineNuxtConfig({
       imageApi,
     },
   },
+  ui: {
+    primary: 'zinc',
+
+    button: {
+      default: {
+        size: 'md',
+        color: 'primary',
+        variant: 'outline'
+      }
+    }
+  }
 })

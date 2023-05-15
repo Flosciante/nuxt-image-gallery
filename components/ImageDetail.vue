@@ -4,14 +4,14 @@ import { useMoviesStore } from '../stores/movies'
 const moviesStore = useMoviesStore()
 const config = useRuntimeConfig()
 const isSmallScreen = useMediaQuery('(max-width: 1024px)')
-const { currentIndex, isFirstMovie, isLastMovie, initSwipe } = useImageGallery()
+const { currentIndex, isFirstMovie, isLastMovie, initSwipe, downloadImage } = useImageGallery()
 
 const active = useState()
 const route = useRoute()
 const bottomMenu = ref()
 const movieEl = ref<HTMLElement>()
 const baseUrl = ref(config.public.imageApi)
-const poster: Ref<HTMLElement | null> = ref(null)
+const poster: Ref<any> = ref(null)
 const filter = ref(false)
 const contrast = ref(100)
 const blur = ref(0)
@@ -19,48 +19,11 @@ const hueRotate = ref(0)
 const invert = ref(0)
 const saturate = ref(100)
 const sepia = ref(0)
-const imageToDownload = ref()
 const imageContainer = ref<HTMLElement>()
 
 const { data: movie } = await useFetch(`/tmdb/tv/${route.params.slug}`, {
   baseURL: baseUrl,
 })
-
-const applyFilters = async () => {
-  const canvas = document.createElement('canvas')
-  const context = canvas.getContext('2d')
-
-  canvas.width = imageContainer.value?.getBoundingClientRect().width
-  canvas.height = imageContainer.value?.getBoundingClientRect().height
-
-  context!.filter = `contrast(${contrast.value}%) blur(${blur.value}px) invert(${invert.value}%)
-    saturate(${saturate.value}%) hue-rotate(${hueRotate.value}deg) sepia(${sepia.value}%)`
-
-  console.log("filter", context!.filter)
-
-  context!.drawImage(poster.value, 0, 0, canvas.width, canvas.height)
-
-  const modifiedImage = new Image()
-  modifiedImage.src = canvas.toDataURL('image/png')
-
-  imageToDownload.value = modifiedImage
-}
-
-const downloadImage = async (filename: string) => {
-  await applyFilters()
-
-  await useFetch(imageToDownload.value.src, {
-    baseURL: `${baseUrl.value}/ipx/_/tmdb/`,
-  }).then((response: any) => {
-    const blob = response.data.value
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
-
-    link.setAttribute('href', url)
-    link.setAttribute('download', filename)
-    link.click()
-  })
-}
 
 const reinitFilter = () => {
   contrast.value = 100
@@ -102,7 +65,7 @@ onMounted(() => {
                   class="z-10 w-min bg-black border border-1 border-white/30 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm">
                   <Icon name="heroicons-outline:refresh" class="m-2" size="16px" />
                 </button>
-                <span class="text-white">Filter</span>
+                <span class="text-white">Filters</span>
                 <button @click="filter = false"
                   class="z-10 w-min bg-black border border-1 border-white/30 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm">
                   <Icon name="heroicons-outline:x" class="m-2" size="16px" />
@@ -130,11 +93,13 @@ onMounted(() => {
                 <Icon name="heroicons-outline:external-link" size="16px" />
               </a>
             </button>
-            <button
+            <UButton icon="i-heroicons-outline-download" size="md" color="primary" variant="outline"
+              @click="downloadImage(movie.name, imageContainer, poster, contrast, blur, invert, saturate, hueRotate, sepia)" />
+            <!-- <button
               class="flex jusitfy-center items-center bg-transparent border border-1 border-white/30 p-2 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm"
-              @click="downloadImage(movie.name)">
+              @click="downloadImage(movie.name, imageContainer, poster, contrast, blur, invert, saturate, hueRotate, sepia)">
               <Icon name="heroicons-outline:download" size="16px" />
-            </button>
+            </button> -->
           </div>
         </template>
       </BottomMenu>
