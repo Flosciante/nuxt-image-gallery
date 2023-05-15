@@ -22,10 +22,6 @@ export default defineNuxtConfig({
     '@nuxt/content',
     // https://v1.image.nuxtjs.org
     '@nuxt/image-edge',
-    // https://color-mode.nuxtjs.org
-    '@nuxtjs/color-mode',
-    // https://tailwindcss.nuxtjs.org
-    '@nuxtjs/tailwindcss',
     // https://vueuse.org/
     '@vueuse/nuxt',
     // https://nuxt.studio
@@ -43,23 +39,12 @@ export default defineNuxtConfig({
   devtools: {
     enabled: true
   },
-  colorMode: {
-    classSuffix: ''
-  },
   runtimeConfig: {
     public: {
       imageApi,
     },
   },
   ui: {
-    primary: 'zinc',
-
-    button: {
-      default: {
-        size: 'md',
-        color: 'primary',
-        variant: 'outline'
-      }
-    }
+    icons: ['heroicons', 'fxemoji']
   }
 })
