@@ -51,7 +51,7 @@ const active = useState()
           format="webp"
           :src="`/tmdb${image.poster_path}`"
           :alt="image.title || image.name"
-          class="w-full h-full rounded-md transition-all duration-200 border-image grayscale-[30%] hover:grayscale-0"
+          class="w-full h-full rounded-md transition-all duration-200 border-image brightness-[.8] hover:brightness-100"
           :class="{ active: active === image.id }"
         />
       </NuxtLink>
@@ -60,20 +60,22 @@ const active = useState()
 </template>
 
 <style scoped lang="postcss">
-img.active {
-  view-transition-name: vtn-image;
-}
+@media (min-width: 768px) {
+  img.active {
+    view-transition-name: vtn-image;
+  }
 
-.bottom-menu.active {
-  view-transition-name: vtn-bottom-menu
-}
+  .bottom-menu.active {
+    view-transition-name: vtn-bottom-menu
+  }
 
-.bottom-menu-description {
-  view-transition-name: vtn-bottom-menu-description
-}
+  .bottom-menu-description {
+    view-transition-name: vtn-bottom-menu-description
+  }
 
-.bottom-menu-button {
-  view-transition-name: vtn-bottom-menu-button
+  .bottom-menu-button {
+    view-transition-name: vtn-bottom-menu-button
+  }
 }
 
 .container-image {
@@ -87,5 +89,4 @@ img.active {
   border-width: 1.15px;
   border-color: rgba(255, 255, 255, 0.1)
 }
-
 </style>
