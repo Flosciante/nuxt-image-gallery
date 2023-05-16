@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { useMoviesStore } from '../../stores/movies'
 
+const { loggedIn, user, clear } = useUserSession()
 const moviesStore = useMoviesStore()
+
 const movies = ref<any>(moviesStore.movies)
+const isOpen = ref(false)
+const isOpenUpload = ref(false)
 
 defineProps({
   bottomMenuDescription: {
@@ -21,6 +25,12 @@ const active = useState()
 
 <template>
   <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[22px] relative">
+    <UModal v-model="isOpen">
+      <Login />
+    </UModal>
+    <UModal v-model="isOpenUpload">
+      <Upload />
+    </UModal>
     <BottomMenu class="bottom-menu">
       <template #logo>
         <svg width="29" height="20" viewBox="0 0 29 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -33,8 +43,11 @@ const active = useState()
         </p>
       </template>
       <template #buttons>
-        <div class="bottom-menu-button">
-          <UButton aria-label="Clone template" to="#" target="_blank" :label="bottomMenuButtonText" />
+        <div class="flex gap-x-2">
+          <div v-if="loggedIn" class="bottom-menu-button">
+            <UButton @click="isOpenUpload = true" icon="i-heroicons-cloud-arrow-down" />
+          </div>
+          <UButton @click="isOpen = true" :label="!loggedIn ? 'Sign in' : ''" :icon="loggedIn ? 'i-heroicons-power-20-solid' : ''" :color="!loggedIn ? 'green' : 'red'" variant="outline" :aria-label="!loggedIn ? 'Sign in' : ''" />
         </div>
       </template>
     </BottomMenu>

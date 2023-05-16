@@ -27,6 +27,7 @@
     "@vueuse/nuxt": "^9.13.0",
     "eslint": "^8.38.0",
     "nuxt": "^3.4.2",
+    "nuxt-space-layer": "^0.2.2",
     "typescript": "^5.0.4"
   },
   "overrides": {

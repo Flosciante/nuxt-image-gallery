@@ -5,6 +5,7 @@ export default defineNuxtConfig({
   experimental: {
     viewTransition: true,
   },
+  extends: 'nuxt-space-layer',
   image: {
     provider: 'proxy',
     providers: {
