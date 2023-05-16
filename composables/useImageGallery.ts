@@ -20,9 +20,9 @@ export const useImageGallery = () => {
     moviesStore.movies = data.value.results
   }
 
-  const currentIndex = computed(() => moviesStore.movies.indexOf(moviesStore.movies.filter((movie: any) => movie.id == route.params.slug)[0]))
-  const isFirstMovie = computed(() => moviesStore.movies[0].id == route.params.slug[0])
-  const isLastMovie = computed(() => moviesStore.movies[moviesStore.movies.length - 1].id == route.params.slug[0])
+  const currentIndex: ComputedRef<number> = computed(() => moviesStore.movies.indexOf(moviesStore.movies.filter((movie: any) => movie.id == route.params.slug)[0]))
+  const isFirstMovie: ComputedRef<boolean> = computed(() => moviesStore.movies[0].id == route.params.slug[0])
+  const isLastMovie: ComputedRef<boolean> = computed(() => moviesStore.movies[moviesStore.movies.length - 1].id == route.params.slug[0])
 
   const initSwipe = (el: Ref<HTMLElement | null>) => {
     useSwipe(el, {
@@ -48,8 +48,8 @@ export const useImageGallery = () => {
 
 
 const applyFilters = async (imageContainer: HTMLElement | undefined, poster: CanvasImageSource | null, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number) => {
-  const canvas = document.createElement('canvas')
-  const context = canvas.getContext('2d')
+  const canvas: HTMLCanvasElement = document.createElement('canvas')
+  const context: CanvasRenderingContext2D | null = canvas.getContext('2d')
 
   canvas.width = imageContainer!.getBoundingClientRect().width
   canvas.height = imageContainer!.getBoundingClientRect().height
@@ -60,8 +60,8 @@ const applyFilters = async (imageContainer: HTMLElement | undefined, poster: Can
   context!.drawImage(poster!, 0, 0, canvas.width, canvas.height)
 
   const modifiedImage = new Image()
-  modifiedImage.src = canvas.toDataURL('image/png')
 
+  modifiedImage.src = canvas.toDataURL('image/png')
   imageToDownload.value = modifiedImage
 }
 
@@ -72,9 +72,9 @@ const downloadImage = async (filename: string, imageContainer: HTMLElement | und
   await useFetch(imageToDownload.value.src, {
     baseURL: `${config.public.imageApi}/ipx/_/tmdb/`,
   }).then((response: any) => {
-    const blob = response.data.value
-    const url = URL.createObjectURL(blob)
-    const link = document.createElement('a')
+    const blob: any = response.data.value
+    const url: string = URL.createObjectURL(blob)
+    const link: HTMLAnchorElement = document.createElement('a')
 
     link.setAttribute('href', url)
     link.setAttribute('download', filename)
