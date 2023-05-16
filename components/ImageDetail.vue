@@ -7,12 +7,17 @@ const isSmallScreen = useMediaQuery('(max-width: 1024px)')
 const { currentIndex, isFirstMovie, isLastMovie, initSwipe, downloadImage } = useImageGallery()
 
 const active = useState()
+
 const route = useRoute()
 const router = useRouter()
+
 const bottomMenu = ref()
 const movieEl = ref<HTMLElement>()
 const baseUrl = ref(config.public.imageApi)
-const poster: Ref<any> = ref(null)
+const poster: Ref<any> = ref()
+const imageContainer = ref<HTMLElement>()
+
+//filter
 const filter = ref(false)
 const contrast = ref(100)
 const blur = ref(0)
@@ -20,10 +25,9 @@ const hueRotate = ref(0)
 const invert = ref(0)
 const saturate = ref(100)
 const sepia = ref(0)
-const imageContainer = ref<HTMLElement>()
 
-const { data: movie } = await useFetch(`/tmdb/tv/${route.params.slug}`, {
-  baseURL: baseUrl,
+const { data: movie } = await useFetch<any>(`/tmdb/tv/${route.params.slug}`, {
+  baseURL: baseUrl
 })
 
 onKeyStroke('Escape', (e) => {
@@ -60,32 +64,40 @@ onMounted(() => {
     initSwipe(poster)
   }
 })
-
 </script>
 
 <template>
-  <div>
+  <UContainer>
+    <!-- background -->
     <div class="absolute inset-0 w-full h-full">
-      <NuxtImg v-if="movie.poster_path" format="webp"
+      <NuxtImg v-if="movie.poster_path"
+      format="webp"
       :src="`https://movies-proxy.vercel.app/ipx/f_webp/tmdb${movie.poster_path}`"
-      class="object-cover w-full h-full blur-[70px] brightness-[.2]"
+      class="object-cover w-full h-full blur-[70px] brightness-[.2] will-change-[filter]"
       alt="" />
     </div>
+
     <div v-if="movie" class="h-full w-full max-w-7xl flex items-center justify-center relative mx-auto">
+      <!-- Bottom menu -->
       <BottomMenu class="bottom-menu" ref="bottomMenu" :filter="filter">
         <template #description>
           <p class="bottom-menu-description">
             {{ movie.name }}
           </p>
         </template>
+        <!-- Filters -->
         <template #filter>
-          <div class="flex flex-col gap-y-12 border-b border-1 border-zinc-700 pb-6" :class="filter ? 'block opacity-100' : 'hidden opacity-0'">
+          <div class="flex flex-col gap-y-12 border-b border-1 border-gray-700 pb-6"
+            :class="filter ? 'block opacity-100' : 'hidden opacity-0'">
             <div class="flex flex-col gap-y-4">
               <div class="flex justify-between items-center pb-4">
-                <UButton @click="reinitFilter" color="white" icon="i-heroicons-arrow-path" :ui="{ rounded: 'rounded-full' }" class="transition-colors duration-200 hover:bg-zinc-700" />
+                <!-- reset filters -->
+                <UButton @click="reinitFilter" icon="i-heroicons-arrow-path" aria-label="Reset filters" />
                 <span class="text-white">Filters</span>
-                <UButton @click="filter = false" color="white" icon="i-heroicons-x-mark" :ui="{ rounded: 'rounded-full' }" class="transition-colors duration-200 hover:bg-zinc-700" />
+                <!-- close filters -->
+                <UButton @click="filter = false" icon="i-heroicons-x-mark" aria-label="Close filters" />
               </div>
+              <!-- filters list -->
               <Gauge v-model="sepia" :max="100" title="Sepia" />
               <Gauge v-model="hueRotate" :max="180" title="Hue-rotate" />
               <Gauge v-model="saturate" :max="100" title="Saturate" />
@@ -97,59 +109,66 @@ onMounted(() => {
         </template>
         <template #buttons>
           <div class="flex gap-x-2 items-center jusitfy-center bottom-menu-button">
-            <UButton color="white" @click="filter = true" icon="i-fxemoji-artistpalette" :ui="{ rounded: 'rounded-full' }" class="transition-colors duration-200 hover:bg-zinc-700" />
-            <UButton color="white" icon="i-heroicons-arrow-top-right-on-square-20-solid" :ui="{ rounded: 'rounded-full' }" class="transition-colors duration-200 hover:bg-zinc-700"
-              :to="`${baseUrl}/ipx/_/tmdb/${movie.poster_path}`" target="_blank" />
-            <UButton color="white" icon="i-heroicons-arrow-down-tray-20-solid" :ui="{ rounded: 'rounded-full' }" class="transition-colors duration-200 hover:bg-zinc-700"
-              @click="downloadImage(movie.name, imageContainer, poster, contrast, blur, invert, saturate, hueRotate, sepia)" />
+            <!-- open filters-->
+            <UButton @click="filter = true" icon="i-fxemoji-artistpalette" aria-label="Add filters on image" class="hidden md:flex" />
+            <!-- open original-->
+            <UButton icon="i-heroicons-arrow-top-right-on-square-20-solid" :to="`${baseUrl}/ipx/_/tmdb/${movie.poster_path}`" target="_blank" aria-label="Open original image" />
+            <!-- download original or modified image -->
+            <UButton icon="i-heroicons-arrow-down-tray-20-solid" @click="downloadImage(movie.name, imageContainer, poster, contrast, blur, invert, saturate, hueRotate, sepia)"
+              class="hidden md:flex" aria-label="Download original or modified image" />
           </div>
         </template>
       </BottomMenu>
-      <div v-if="movie"
-        class="md:pt-16 md:pb-32 overflow-hidden flex items-center justify-center w-full h-full max-h-[100dvh] relative ">
-        <button
-          class="z-10 absolute top-4 right-4 lg:hidden w-min bg-black border border-1 border-white/30 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm">
-          <NuxtLink to="/" class="flex justify-center items-center p-2">
-            <Icon name="heroicons-outline:x" size="20px" />
-          </NuxtLink>
-        </button>
-        <UButton v-if="!(isFirstMovie || isLastMovie) && !isSmallScreen" to="/" variant="ghost" label="Back to gallery" color="white" icon="i-heroicons-arrow-left"
-          :ui="{ rounded: 'rounded-full' }" class="absolute top-4 left-4  back transition-colors duration-200 hover:bg-zinc-700" />
-        <div ref="movieEl" class="flex items-center justify-center md:justify-between gap-x-4 w-full">
 
-          <UButton v-if="!isFirstMovie" @click.native="active == movie.id" :to="`/detail/${moviesStore.movies[currentIndex - 1].id}`"
-          size="lg" color="white" icon="i-heroicons-chevron-left" :ui="{ rounded: 'rounded-full' }" class="hidden md:flex ml-4 transition-colors duration-200 hover:bg-zinc-700" />
+      <div v-if="movie"
+        class="md:pt-16 md:pb-32 overflow-hidden flex items-center justify-center w-full h-full max-h-[100dvh] relative">
+        <!-- back to gallery (mobile/tablet) -->
+        <UButton class="z-10 absolute top-4 right-4 lg:hidden" to="/" icon="i-heroicons-x-mark" variant="solid" color="gray" aria-label="Back to gallery" />
+        <!-- back to gallery (desktop & not the first or last image) -->
+        <UButton v-if="!(isFirstMovie || isLastMovie) && !isSmallScreen" to="/" color="gray" variant="ghost"
+          label="Back to gallery" icon="i-heroicons-arrow-left" class="absolute top-4 left-4 back transition-colors duration-200" aria-label="Back to gallery" />
+
+        <div ref="movieEl" class="flex items-center justify-center md:justify-between gap-x-4 w-full">
+          <!-- previous image if not the first image -->
+          <UButton v-if="!isFirstMovie" @click.native="active == movie.id"
+            :to="`/detail/${moviesStore.movies[currentIndex - 1].id}`" size="lg" icon="i-heroicons-chevron-left"
+            class="hidden md:flex ml-4" aria-label="Go to previous image" />
 
           <div class="flex group" v-else>
-            <UButton @click.native="active == movie.id" to="/" icon="i-heroicons-rectangle-group-20-solid"
-              size="xl" color="white" variant="link" class="transition-colors duration-200 back hidden md:flex ml-4 group-hover:text-zinc-300" />
-            <UButton @click.native="active == movie.id" to="/" icon="i-heroicons-arrow-left"
-              size="xl" color="white" variant="link" class="transition-colors duration-200 back hidden md:flex group-hover:text-zinc-300 -ml-2" />
+            <!-- back to gallery if first movie -->
+            <UButton @click.native="active == movie.id" to="/" size="xl" color="gray" variant="ghost"
+              class="back hidden md:flex ml-4 transition-colors duration-200" aria-label="Back to gallery">
+              <UIcon name="i-heroicons-rectangle-group-20-solid" class="w-6 h-6" />
+              <UIcon name="i-heroicons-arrow-left" class="w-6 h-6" />
+            </UButton>
           </div>
 
+          <!-- image -->
           <div ref="imageContainer">
-            <img v-if="movie.poster_path"
-              :src="`https://movies-proxy.vercel.app/ipx/f_webp/tmdb${movie.poster_path}`"
+            <img v-if="movie.poster_path" :src="`https://movies-proxy.vercel.app/ipx/f_webp/tmdb${movie.poster_path}`"
               :alt="movie.title || movie.name" class="object-scale-down rounded image h-[88dvh] w-full"
-              :class="{ active: route.params.slug == movie.id }"
-              ref="poster"
+              :class="{ active: route.params.slug == movie.id }" ref="poster"
               :style="`filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%);`"
               crossorigin="anonymous" />
           </div>
 
-          <UButton v-if="!isLastMovie" @click.native="active == movie.id" :to="`/detail/${moviesStore.movies[currentIndex + 1].id}`"
-          size="lg" color="white" icon="i-heroicons-chevron-right" :ui="{ rounded: 'rounded-full' }" class="hidden md:flex mr-4 transition-colors duration-200 hover:bg-zinc-700" />
+          <!-- next image (if not the last image) -->
+          <UButton v-if="!isLastMovie" @click.native="active == movie.id"
+            :to="`/detail/${moviesStore.movies[currentIndex + 1].id}`" size="lg" icon="i-heroicons-chevron-right"
+            :ui="{ rounded: 'rounded-full' }" class="hidden md:flex mr-4" aria-label="Go to next image" />
 
-          <div class="flex group" v-else>
-            <UButton @click.native="active == movie.id" to="/" icon="i-heroicons-arrow-right"
-              size="xl" color="white" variant="link" class="transition-colors duration-200 back hidden md:flex group-hover:text-zinc-300 -mr-2" />
-            <UButton @click.native="active == movie.id" to="/" icon="i-heroicons-rectangle-group-20-solid"
-              size="xl" color="white" variant="link" class="transition-colors duration-200 back hidden md:flex mr-4 group-hover:text-zinc-300" />
+          <!-- back to gallery if last image -->
+          <div class="flex" v-else>
+            <UButton @click.native="active == movie.id" to="/" size="xl" color="gray" variant="ghost"
+              class="back hidden md:flex mr-4 transition-colors duration-200" aria-label="Back to gallery">
+              <UIcon name="i-heroicons-arrow-right" class="w-6 h-6" />
+              <UIcon name="i-heroicons-rectangle-group-20-solid" class="w-6 h-6" />
+            </UButton>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </UContainer>
 </template>
 
 <style scoped lang="postcss">
@@ -168,11 +187,11 @@ onMounted(() => {
   }
 
   .bottom-menu-button {
-    view-transition-name: vtn-bottom-menu-button
+    view-transition-name: vtn-bottom-menu-button;
   }
 
   .back {
-    view-transition-name: vtn-back-button
+    view-transition-name: vtn-back-button;
   }
 }
 </style>

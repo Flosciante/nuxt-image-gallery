@@ -34,11 +34,7 @@ const active = useState()
       </template>
       <template #buttons>
         <div class="bottom-menu-button">
-          <button class="bg-transparent border border-1 border-white/30 px-4 py-1.5 rounded-full hover:bg-zinc-700 transition-colors duration-200 text-white text-sm">
-            <a href="https://github.com/nuxtlabs/image-gallery/generate" target="_blank">
-              {{ bottomMenuButtonText }}
-            </a>
-          </button>
+          <UButton aria-label="Clone template" to="#" target="_blank" :label="bottomMenuButtonText" />
         </div>
       </template>
     </BottomMenu>
@@ -51,7 +47,7 @@ const active = useState()
           format="webp"
           :src="`/tmdb${image.poster_path}`"
           :alt="image.title || image.name"
-          class="w-full h-full rounded-md transition-all duration-200 border-image brightness-[.8] hover:brightness-100"
+          class="w-full h-full rounded-md transition-all duration-200 border-image brightness-[.8] hover:brightness-100 will-change-[filter]"
           :class="{ active: active === image.id }"
         />
       </NuxtLink>

@@ -7,21 +7,26 @@ const { width } = useWindowSize()
 const x = ref(0)
 const router = useRouter()
 
-const moveThumbnail = (slug) => {
+const moveThumbnail = (slug: any) => {
+  // get width of current image
   const currentMovie = moviesStore.movies.filter((movie: any) => movie.id == slug)
-  const index = moviesStore.movies.indexOf(currentMovie[0])
-  const imageWidth = thumbnails.value?.children[index].offsetWidth;
+  const index: number = moviesStore.movies.indexOf(currentMovie[0])
+  const thumbnailToMove = ref<HTMLElement | undefined>(thumbnails.value?.children[index] as HTMLElement | undefined)
+  const imageWidth: number = thumbnailToMove.value!.offsetWidth;
 
-  x.value = (x.value + ((width.value / 2 ) - (thumbnails.value?.children[index].getBoundingClientRect().left + ((imageWidth / 2)))))
+  // calculate translate to do. (current translate + middle screen pos x - middle thumbnail to move pos x)
+  x.value = (x.value + ((width.value / 2 ) - (thumbnailToMove.value!.getBoundingClientRect().left + ((imageWidth / 2)))))
 }
 
+//move thumbnail on mounted (if not gallery page)
 onMounted(() => {
   if (router.currentRoute.value.fullPath !== '/') {
     moveThumbnail(router.currentRoute.value.params.slug)
   }
 })
 
-router.afterEach((to, from) => {
+//move thumbnail after route changes
+router.afterEach((to, _) => {
   moveThumbnail(to.params.slug)
 })
 
