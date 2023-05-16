@@ -26,8 +26,6 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     // https://nuxt.studio
     '@nuxthq/studio',
-    // https://github.com/nuxt-modules/icon
-    'nuxt-icon',
     // https://pinia.vuejs.org/ssr/nuxt.html
     '@pinia/nuxt',
     //https://ui.nuxtlabs.com/
