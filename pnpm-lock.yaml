@@ -13,7 +13,7 @@ specifiers:
   '@vueuse/core': ^10.0.2
   '@vueuse/nuxt': ^10.0.2
   eslint: ^8.38.0
-  nuxt: ^3.4.2
+  nuxt: ^3.4.3
   nuxt-icon: ^0.3.2
   nuxt-space-layer: ^0.2.2
   pinia: ^2.0.36

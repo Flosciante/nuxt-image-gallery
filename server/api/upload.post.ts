@@ -1,7 +1,9 @@
 export default defineEventHandler(async (event) => {
   const session = await requireUserSession(event)
   const body = await readBody(event)
-  const { image } = body || {}
+  const { name, base64 } = body || {}
+
+  console.log('session', session)
 
   // if (!['coffee', 'tea'].includes(choice)) {
   //   return createError({
@@ -10,19 +12,18 @@ export default defineEventHandler(async (event) => {
   //   })
   // }
 
-  // const vote = await useDb()
-  //   .insert(tables.votes)
-  //   .values({
-  //     userId: session.user.id,
-  //     username: session.user.login,
-  //     choice
-  //   })
-  //   .onConflictDoUpdate({
-  //     target: tables.votes.userId,
-  //     set: { choice }
-  //   })
-  //   .returning()
-  //   .get()
+  const image = await useDb()
+    .insert(tables.images)
+    .values({
+      name: name,
+      base64: base64
+    })
+    .onConflictDoUpdate({
+      target: tables.images.id,
+      set: { name, base64 }
+    })
+    .returning()
+    .get()
 
-  return vote
+  return image
 })

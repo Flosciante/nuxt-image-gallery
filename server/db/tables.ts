@@ -1,12 +1,11 @@
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core'
+import { sqliteTable, text, integer, uniqueIndex } from 'drizzle-orm/sqlite-core'
 
 export const images = sqliteTable('images', {
   id: integer('id').primaryKey(),
-  userId: integer('user_id').notNull(),
-  name: text('username').notNull(),
-  base64: text('image').notNull()
+  name: text('name').notNull(),
+  base64: text('base64').notNull()
 }, (images) => {
   return {
-    userIdIndex: uniqueIndex('user_id_index').on(images.userId)
+    userIdIndex: uniqueIndex('images_id_index').on(images.id)
   }
 })

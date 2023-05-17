@@ -1,23 +1,15 @@
-import { useMoviesStore } from '../stores/movies'
 import type { UseSwipeDirection } from '@vueuse/core'
 
 export const useImageGallery = () => {
   const config = useRuntimeConfig()
-  const moviesStore = useMoviesStore()
   const route = useRoute()
   const router = useRouter()
   const imageToDownload = ref()
 
-  const fetchList = async () => {
-    const { data } = await useFetch<any>('/tmdb/tv/popular', {
-      baseURL: config.public.imageApi,
-      query: {
-        page: 1,
-        language: 'en',
-      },
-    })
+  const fetchImages = async () => {
+    const { data: images } = await useFetch<any>('/api/images')
 
-    moviesStore.movies = data.value.results
+    console.log('images', images.value)
   }
 
   const currentIndex: ComputedRef<number> = computed(() => moviesStore.movies.indexOf(moviesStore.movies.filter((movie: any) => movie.id == route.params.slug)[0]))
@@ -83,7 +75,7 @@ const downloadImage = async (filename: string, imageContainer: HTMLElement | und
 }
 
   return {
-    fetchList,
+    fetchImages,
     currentIndex,
     isFirstMovie,
     isLastMovie,

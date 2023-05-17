@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import { useMoviesStore } from '../../stores/movies'
 
 const { loggedIn, user, clear } = useUserSession()
-const moviesStore = useMoviesStore()
 
-const movies = ref<any>(moviesStore.movies)
 const isOpen = ref(false)
 const isOpenUpload = ref(false)
 

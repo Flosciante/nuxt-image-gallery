@@ -26,7 +26,7 @@
     "@nuxthq/ui": "^2.0.4",
     "@vueuse/nuxt": "^9.13.0",
     "eslint": "^8.38.0",
-    "nuxt": "^3.4.2",
+    "nuxt": "^3.4.3",
     "nuxt-space-layer": "^0.2.2",
     "typescript": "^5.0.4"
   },
