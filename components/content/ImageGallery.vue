@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { useImagesStore } from '../../stores/images'
 
-const { loggedIn, user, clear } = useUserSession()
+const { loggedIn } = useUserSession()
+const imagesStore = useImagesStore()
+const { fetchImages } = useImageGallery()
 
 const isOpen = ref(false)
 const isOpenUpload = ref(false)
@@ -18,16 +21,25 @@ defineProps({
 
 const active = useState()
 
+const deleteImage = async (idImage: any) => {
+  $fetch('/api/image', {
+    method: 'DELETE',
+    params: { idImage: parseInt(idImage) }})
+    .then(async () => await fetchImages())
+}
+
 </script>
 
 <template>
-  <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[22px] relative">
+  <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[22px] relative p-4">
     <UModal v-model="isOpen">
       <Login />
     </UModal>
+
     <UModal v-model="isOpenUpload">
-      <Upload />
+      <Upload @close-modal="isOpenUpload = false" />
     </UModal>
+
     <BottomMenu class="bottom-menu">
       <template #logo>
         <svg width="29" height="20" viewBox="0 0 29 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -41,27 +53,32 @@ const active = useState()
       </template>
       <template #buttons>
         <div class="flex gap-x-2">
-          <div v-if="loggedIn" class="bottom-menu-button">
-            <UButton @click="isOpenUpload = true" icon="i-heroicons-cloud-arrow-down" />
-          </div>
           <UButton @click="isOpen = true" :label="!loggedIn ? 'Sign in' : ''" :icon="loggedIn ? 'i-heroicons-power-20-solid' : ''" :color="!loggedIn ? 'green' : 'red'" variant="outline" :aria-label="!loggedIn ? 'Sign in' : ''" />
         </div>
       </template>
     </BottomMenu>
-    <article v-for="image in movies" class="relative w-full ">
+    <article v-for="image in imagesStore.images" class="relative w-full group">
+
+      <UButton variant="outline" color="red" icon="i-heroicons-x-mark" @click.native="deleteImage(image.id)" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" />
+
       <NuxtLink :to="`/detail/${image.id}`" @click.native="active = image.id">
         <NuxtImg
-          v-if="image.poster_path"
+          v-if="image.base64"
           width="527"
           height="430"
           format="webp"
-          :src="`/tmdb${image.poster_path}`"
-          :alt="image.title || image.name"
-          class="w-full h-full rounded-md transition-all duration-200 border-image brightness-[.8] hover:brightness-100 will-change-[filter]"
+          :src="image.base64"
+          :alt="image.name"
+          class="w-full h-[430px] rounded-md transition-all duration-200 border-image brightness-[.8] hover:brightness-100 will-change-[filter] object-cover"
           :class="{ active: active === image.id }"
         />
       </NuxtLink>
     </article>
+    <UButton v-if="loggedIn" @click="isOpenUpload = true" variant="solid" color="gray" class="transition-colors duration-200 rounded-md" :rounded="false">
+      <div class="h-[430px] w-full rounded-md flex items-center justify-center">
+        <UIcon name="i-heroicons-cloud-arrow-down" class="w-[70%] h-full"/>
+      </div>
+    </UButton>
   </section>
 </template>
 

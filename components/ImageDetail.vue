@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { useMoviesStore } from '../stores/movies'
+import { useImagesStore } from '../stores/images'
 
-const moviesStore = useMoviesStore()
 const config = useRuntimeConfig()
 const isSmallScreen = useMediaQuery('(max-width: 1024px)')
 const { currentIndex, isFirstMovie, isLastMovie, initSwipe, downloadImage } = useImageGallery()
+
+const imagesStore = useImagesStore()
 
 const active = useState()
 
@@ -26,9 +27,10 @@ const invert = ref(0)
 const saturate = ref(100)
 const sepia = ref(0)
 
-const { data: movie } = await useFetch<any>(`/tmdb/tv/${route.params.slug}`, {
-  baseURL: baseUrl
-})
+const { data: movie } = await useFetch<any>('/api/image', { params: { idImage: parseInt(route.params.slug[0]) } })
+
+console.log('movie', movie)
+
 
 onKeyStroke('Escape', (e) => {
   router.push('/')
@@ -38,7 +40,7 @@ onKeyStroke('ArrowLeft', (e) => {
   if (isFirstMovie.value) {
     router.push('/')
   } else {
-    router.push(`/detail/${moviesStore.movies[currentIndex.value - 1].id}`)
+    router.push(`/detail/${imagesStore.images[currentIndex.value - 1].id}`)
   }
 })
 
@@ -46,7 +48,7 @@ onKeyStroke('ArrowRight', (e) => {
   if (isLastMovie.value) {
     router.push('/')
   } else {
-    router.push(`/detail/${moviesStore.movies[currentIndex.value + 1].id}`)
+    router.push(`/detail/${imagesStore.images[currentIndex.value + 1].id}`)
   }
 })
 
@@ -70,9 +72,9 @@ onMounted(() => {
   <UContainer>
     <!-- background -->
     <div class="absolute inset-0 w-full h-full">
-      <NuxtImg v-if="movie.poster_path"
+      <NuxtImg v-if="movie"
       format="webp"
-      :src="`https://movies-proxy.vercel.app/ipx/f_webp/tmdb${movie.poster_path}`"
+      :src="movie.base64"
       class="object-cover w-full h-full blur-[70px] brightness-[.2] will-change-[filter]"
       alt="" />
     </div>
@@ -131,7 +133,7 @@ onMounted(() => {
         <div ref="movieEl" class="flex items-center justify-center md:justify-between gap-x-4 w-full">
           <!-- previous image if not the first image -->
           <UButton v-if="!isFirstMovie" @click.native="active == movie.id"
-            :to="`/detail/${moviesStore.movies[currentIndex - 1].id}`" size="lg" icon="i-heroicons-chevron-left"
+            :to="`/detail/${imagesStore.images[currentIndex - 1].id}`" size="lg" icon="i-heroicons-chevron-left"
             class="hidden md:flex ml-4" aria-label="Go to previous image" />
 
           <div class="flex group" v-else>
@@ -145,8 +147,8 @@ onMounted(() => {
 
           <!-- image -->
           <div ref="imageContainer">
-            <img v-if="movie.poster_path" :src="`https://movies-proxy.vercel.app/ipx/f_webp/tmdb${movie.poster_path}`"
-              :alt="movie.title || movie.name" class="object-scale-down rounded image h-[88dvh] w-full"
+            <img v-if="movie" :src="movie.base64"
+              :alt="movie.name" class="object-scale-down rounded image h-[84dvh] w-full"
               :class="{ active: route.params.slug == movie.id }" ref="poster"
               :style="`filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%);`"
               crossorigin="anonymous" />
@@ -154,7 +156,7 @@ onMounted(() => {
 
           <!-- next image (if not the last image) -->
           <UButton v-if="!isLastMovie" @click.native="active == movie.id"
-            :to="`/detail/${moviesStore.movies[currentIndex + 1].id}`" size="lg" icon="i-heroicons-chevron-right"
+            :to="`/detail/${imagesStore.images[currentIndex + 1].id}`" size="lg" icon="i-heroicons-chevron-right"
             :ui="{ rounded: 'rounded-full' }" class="hidden md:flex mr-4" aria-label="Go to next image" />
 
           <!-- back to gallery if last image -->

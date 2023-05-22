@@ -1,20 +1,24 @@
 import type { UseSwipeDirection } from '@vueuse/core'
+import { useImagesStore } from '../stores/images'
 
 export const useImageGallery = () => {
   const config = useRuntimeConfig()
   const route = useRoute()
   const router = useRouter()
   const imageToDownload = ref()
+  const imagesStore = useImagesStore()
+  const refreshImages = ref()
 
   const fetchImages = async () => {
-    const { data: images } = await useFetch<any>('/api/images')
+    const { data: images, refresh } = await useFetch<any>('/api/upload')
 
-    console.log('images', images.value)
+    refreshImages.value = refresh
+    imagesStore.images = images.value
   }
 
-  const currentIndex: ComputedRef<number> = computed(() => moviesStore.movies.indexOf(moviesStore.movies.filter((movie: any) => movie.id == route.params.slug)[0]))
-  const isFirstMovie: ComputedRef<boolean> = computed(() => moviesStore.movies[0].id == route.params.slug[0])
-  const isLastMovie: ComputedRef<boolean> = computed(() => moviesStore.movies[moviesStore.movies.length - 1].id == route.params.slug[0])
+  const currentIndex: ComputedRef<number> = computed(() => imagesStore.images.indexOf(imagesStore.images.filter((movie: any) => movie.id == route.params.slug)[0]))
+  const isFirstMovie: ComputedRef<boolean> = computed(() => imagesStore.images[0].id === parseInt(route.params.slug[0]))
+  const isLastMovie: ComputedRef<boolean> = computed(() => imagesStore.images[imagesStore.images.length - 1].id === parseInt(route.params.slug[0]))
 
   const initSwipe = (el: Ref<HTMLElement | null>) => {
     useSwipe(el, {
@@ -25,13 +29,13 @@ export const useImageGallery = () => {
           if (isLastMovie.value) {
             router.push('/')
           } else {
-            router.push(`/detail/${moviesStore.movies[currentIndex.value + 1].id}`)
+            router.push(`/detail/${imagesStore.images[currentIndex.value + 1].id}`)
           }
         } else {
           if (isFirstMovie.value) {
             router.push('/')
           } else {
-            router.push(`/detail/${moviesStore.movies[currentIndex.value - 1].id}`)
+            router.push(`/detail/${imagesStore.images[currentIndex.value - 1].id}`)
           }
         }
       },
@@ -80,6 +84,7 @@ const downloadImage = async (filename: string, imageContainer: HTMLElement | und
     isFirstMovie,
     isLastMovie,
     initSwipe,
-    downloadImage
+    downloadImage,
+    refreshImages
   }
 }
