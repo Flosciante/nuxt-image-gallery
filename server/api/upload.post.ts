@@ -1,12 +1,10 @@
-import { useImagesStore } from '../../stores/images'
+import { eq } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {
-  const imagesStore = useImagesStore()
-  const session = await requireUserSession(event)
   const body = await readBody(event)
-  const { name, base64 } = body || {}
+  const { name, base64, imageId } = body || {}
 
-  const image = await useDb()
+  const image = imageId === undefined ? await useDb()
     .insert(tables.images)
     .values({
       name: name,
@@ -17,7 +15,17 @@ export default defineEventHandler(async (event) => {
       set: { name, base64 }
     })
     .returning()
-    .get()
+    .get() : await useDb()
+      .update(tables.images)
+      .set({
+        name: name,
+        base64: base64
+      })
+      .where(eq(tables.images.id, imageId))
+      .returning()
+      .get()
+
+
 
   return image
 })

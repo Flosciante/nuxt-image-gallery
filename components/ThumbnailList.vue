@@ -28,7 +28,9 @@ onMounted(() => {
 
 //move thumbnail after route changes
 router.afterEach((to, _) => {
-  moveThumbnail(to.params.slug)
+  if (router.currentRoute.value.fullPath !== '/') {
+    moveThumbnail(to.params.slug)
+  }
 })
 
 </script>

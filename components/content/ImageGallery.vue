@@ -2,11 +2,19 @@
 import { useImagesStore } from '../../stores/images'
 
 const { loggedIn } = useUserSession()
-const imagesStore = useImagesStore()
 const { fetchImages } = useImageGallery()
+const { width } = useWindowSize()
+
+const imagesStore = useImagesStore()
 
 const isOpen = ref(false)
 const isOpenUpload = ref(false)
+const mansoryItem = ref<Array<HTMLElement>>([])
+
+watch(() => width.value, () => {
+  resizeMasonryItem()
+})
+
 
 defineProps({
   bottomMenuDescription: {
@@ -21,23 +29,43 @@ defineProps({
 
 const active = useState()
 
+const resizeMasonryItem = () => {
+  mansoryItem.value.map((item: HTMLElement) => {
+    const img = item.querySelector('img') as HTMLElement
+
+    item.style.gridRowEnd = `span ${Math.ceil(img?.offsetHeight / 10)}`
+  })
+}
+
 const deleteImage = async (idImage: any) => {
   $fetch('/api/image', {
     method: 'DELETE',
     params: { idImage: parseInt(idImage) }})
-    .then(async () => await fetchImages())
+    .then(async () => {
+      await fetchImages()
+
+      //resizeMasonryItem()
+    })
 }
+
+const onUploadDone = () => {
+  //resizeMasonryItem()
+
+  isOpenUpload.value = false
+}
+
+//onMounted(() => resizeMasonryItem())
 
 </script>
 
 <template>
-  <section class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-[22px] relative p-4">
+  <section class="gap-[22px] relative p-4">
     <UModal v-model="isOpen">
       <Login />
     </UModal>
 
     <UModal v-model="isOpenUpload">
-      <Upload @close-modal="isOpenUpload = false" />
+      <Upload @close-modal="onUploadDone" />
     </UModal>
 
     <BottomMenu class="bottom-menu">
@@ -57,28 +85,32 @@ const deleteImage = async (idImage: any) => {
         </div>
       </template>
     </BottomMenu>
-    <article v-for="image in imagesStore.images" class="relative w-full group">
 
-      <UButton variant="outline" color="red" icon="i-heroicons-x-mark" @click.native="deleteImage(image.id)" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" />
+    <div class="masonry-container">
+      <article v-for="image in imagesStore.images" class="relative w-full group masonry-item" ref="mansoryItem">
+        <UButton color="white" icon="i-heroicons-trash-20-solid" @click.native="deleteImage(image.id)" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" />
 
-      <NuxtLink :to="`/detail/${image.id}`" @click.native="active = image.id">
-        <NuxtImg
-          v-if="image.base64"
-          width="527"
-          height="430"
-          format="webp"
-          :src="image.base64"
-          :alt="image.name"
-          class="w-full h-[430px] rounded-md transition-all duration-200 border-image brightness-[.8] hover:brightness-100 will-change-[filter] object-cover"
-          :class="{ active: active === image.id }"
-        />
-      </NuxtLink>
-    </article>
-    <UButton v-if="loggedIn" @click="isOpenUpload = true" variant="solid" color="gray" class="transition-colors duration-200 rounded-md" :rounded="false">
-      <div class="h-[430px] w-full rounded-md flex items-center justify-center">
-        <UIcon name="i-heroicons-cloud-arrow-down" class="w-[70%] h-full"/>
-      </div>
-    </UButton>
+        <NuxtLink :to="`/detail/${image.id}`" @click.native="active = image.id">
+          <NuxtImg
+            v-if="image.base64"
+            width="527"
+            height="430"
+            format="webp"
+            :src="image.base64"
+            :alt="image.name"
+            class="h-auto w-full max-h-[430px] rounded-md transition-all duration-200 border-image brightness-[.8] hover:brightness-100 will-change-[filter] object-cover"
+            :class="{ active: active === image.id }"
+          />
+        </NuxtLink>
+      </article>
+
+      <UButton v-if="loggedIn" @click="isOpenUpload = true" variant="solid" color="gray" class="h-[430px] transition-colors duration-200 rounded-md upload" :rounded="false">
+        <div class="w-full rounded-md flex items-center justify-center h-[430px]">
+          <UIcon name="i-heroicons-cloud-arrow-down" class="w-[70%] h-full"/>
+        </div>
+      </UButton>
+
+    </div>
   </section>
 </template>
 
@@ -111,5 +143,22 @@ const deleteImage = async (idImage: any) => {
 .border-image {
   border-width: 1.15px;
   border-color: rgba(255, 255, 255, 0.1)
+}
+
+.masonry-container {
+  column-count: 3;
+  column-gap: 20px;
+  column-fill: balance;
+  margin: 20px auto 0;
+  padding: 2rem;
+}
+
+.masonry-item, .upload {
+  display: inline-block;
+  margin: 0 0 20px;
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  break-inside: avoid;
+  width: 100%;
 }
 </style>

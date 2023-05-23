@@ -8,7 +8,8 @@ defineProps({
 </script>
 
 <template>
-  <div ref="menu" :class="[$route.path === '/' ? 'bottom-8' : 'bottom-32', filter ? 'h-auto rounded-md p-8' : 'h-[60px]']" class="justify-center flex flex-col inset-x-0 mx-auto fixed w-[80%] sm:w-[60%] md:w-[50%] lg:w-[40%] 2xl:w-[30%] z-[9999] bg-gray-900/95 rounded-full after:rounded-full border border-1 border-white/30">
+  <div ref="menu" :class="[$route.path === '/' ? 'bottom-8' : 'bottom-32', filter ? 'h-auto rounded-md p-8' : 'h-[60px]']" class="backdrop-blur-md justify-center flex flex-col inset-x-0 mx-auto fixed w-[80%] sm:w-[60%] md:w-[50%] lg:w-[40%] 2xl:w-[30%] z-[9999] bg-gray-900/95 rounded-full after:rounded-full border border-1 border-white/30">
+
     <slot name="filter" />
     <div class="flex justify-between items-center h-full z-50" :class="filter ? 'pt-6' : 'pl-6 pr-3'">
       <slot name="logo" />

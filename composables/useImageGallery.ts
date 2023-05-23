@@ -59,6 +59,8 @@ const applyFilters = async (imageContainer: HTMLElement | undefined, poster: Can
 
   modifiedImage.src = canvas.toDataURL('image/png')
   imageToDownload.value = modifiedImage
+
+  return imageToDownload
 }
 
 const downloadImage = async (filename: string, imageContainer: HTMLElement | undefined, poster: CanvasImageSource, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number) => {
@@ -85,6 +87,7 @@ const downloadImage = async (filename: string, imageContainer: HTMLElement | und
     isLastMovie,
     initSwipe,
     downloadImage,
-    refreshImages
+    refreshImages,
+    applyFilters
   }
 }
