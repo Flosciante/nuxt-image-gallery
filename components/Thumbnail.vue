@@ -13,13 +13,13 @@ defineProps({
     <NuxtLink :to="`/detail/${thumbnail.id}`">
         <NuxtImg
           v-if="thumbnail.base64"
-          width="100"
-          height="60"
+          width="83"
+          height="51"
           format="webp"
           :src="thumbnail.base64"
           :alt="thumbnail.name"
-          class="object-cover rounded-xs rounded-sm transition-all duration-500 hover:brightness-100 w-[100px] h-[60px]"
-          :class="thumbnail.id == $router.currentRoute.value.params.slug ? 'active scale-100 mx-4 brightness-100' : 'scale-75 opacity-75 mx-2 brightness-50'"
+          class="object-cover rounded-md transition-all duration-500 hover:brightness-100 w-[83px] h-[51px]"
+          :class="thumbnail.id == $router.currentRoute.value.params.slug ? 'active brightness-100' : 'opacity-75 brightness-50'"
         />
       </NuxtLink>
   </li>

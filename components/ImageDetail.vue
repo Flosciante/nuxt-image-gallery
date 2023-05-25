@@ -53,7 +53,7 @@ onKeyStroke('ArrowRight', (e) => {
   }
 })
 
-const reinitFilter = () => {
+const resetFilter = () => {
   contrast.value = 100
   blur.value = 0
   invert.value = 0
@@ -93,38 +93,13 @@ onMounted(() => {
 
     <div v-if="image" class="h-full w-full max-w-7xl flex items-center justify-center relative mx-auto">
       <!-- Bottom menu -->
-      <BottomMenu class="bottom-menu" ref="bottomMenu" :filter="filter">
+      <BottomMenu class="bottom-menu" :class="{ 'right-[350px]': filter }" ref="bottomMenu">
         <template #description>
           <p class="bottom-menu-description">
             {{ image.name }}
           </p>
         </template>
         <!-- Filters -->
-        <template #filter>
-          <div class="flex flex-col gap-y-12 border-b border-1 border-gray-700 pb-6"
-            :class="filter ? 'block opacity-100' : 'hidden opacity-0'">
-            <div class="flex flex-col gap-y-4">
-              <div class="flex justify-between items-center pb-4">
-                <!-- reset filters -->
-                <UButton @click="reinitFilter" icon="i-heroicons-arrow-path" aria-label="Reset filters" />
-                <span class="text-white">Filters</span>
-                <!-- close filters -->
-                <UButton @click="filter = false" icon="i-heroicons-x-mark" aria-label="Close filters" />
-              </div>
-              <!-- filters list -->
-              <div class="flex gap-x-4 justify-between items-center">
-                <span class="text-white w-40">Fit</span>
-                <USelectMenu v-model="objectFitSelected" :options="objectsFit" class="w-full mr-12" />
-              </div>
-              <Gauge v-model="sepia" :max="100" title="Sepia" />
-              <Gauge v-model="hueRotate" :max="180" title="Hue-rotate" />
-              <Gauge v-model="saturate" :max="100" title="Saturate" />
-              <Gauge v-model="invert" :max="100" title="Invert" />
-              <Gauge v-model="contrast" :max="200" title="Contrast" />
-              <Gauge v-model="blur" :max="5" title="Blur" />
-            </div>
-          </div>
-        </template>
         <template #buttons>
           <div class="flex gap-x-2 items-center jusitfy-center bottom-menu-button">
             <!-- open filters-->
@@ -142,12 +117,13 @@ onMounted(() => {
       </BottomMenu>
 
       <div v-if="image"
-        class="md:pt-16 md:pb-32 overflow-hidden flex items-center justify-center w-full h-full max-h-[100dvh] relative">
+        class="md:pt-36 overflow-hidden flex items-center justify-center w-full h-full max-h-[100dvh] relative"
+        :class="{ 'mr-[10px]': filter }">
         <!-- back to gallery (mobile/tablet) -->
         <UButton class="z-10 absolute top-4 right-4 lg:hidden" to="/" icon="i-heroicons-x-mark" variant="solid" color="gray" aria-label="Back to gallery" />
         <!-- back to gallery (desktop & not the first or last image) -->
-        <UButton v-if="!(isFirstMovie || isLastMovie) && !isSmallScreen" to="/" color="gray" variant="ghost"
-          label="Back to gallery" icon="i-heroicons-arrow-left" class="absolute top-4 left-4 back transition-colors duration-200" aria-label="Back to gallery" />
+        <UButton v-if="!(isFirstMovie || isLastMovie) && !isSmallScreen" to="/" color="gray" variant="solid"
+          label="Back to gallery" icon="i-heroicons-arrow-left" class="absolute top-4 left-4 back transition-colors duration-200 z-[9999]" aria-label="Back to gallery" />
 
         <div ref="movieEl" class="flex items-center justify-center md:justify-between gap-x-4 w-full">
           <!-- previous image if not the first image -->
@@ -190,6 +166,24 @@ onMounted(() => {
           </div>
         </div>
       </div>
+      <Filter v-if="filter" class="md:mt-36" @reset-filter="resetFilter" @close-filter="filter = false">
+        <div class="flex flex-col gap-y-12 pb-6 h-[72dvh]"
+          :class="filter ? 'block opacity-100' : 'hidden opacity-0'">
+          <div class="flex flex-col gap-y-4">
+            <!-- filters list -->
+            <div class="flex gap-x-4 justify-between items-center pb-4">
+              <span class="text-white w-40">Fit</span>
+              <USelectMenu v-model="objectFitSelected" :options="objectsFit" class="w-full mr-12" />
+            </div>
+            <Gauge v-model="sepia" :max="100" title="Sepia" />
+            <Gauge v-model="hueRotate" :max="180" title="Hue-rotate" />
+            <Gauge v-model="saturate" :max="100" title="Saturate" />
+            <Gauge v-model="invert" :max="100" title="Invert" />
+            <Gauge v-model="contrast" :max="200" title="Contrast" />
+            <Gauge v-model="blur" :max="5" title="Blur" />
+          </div>
+        </div>
+    </Filter>
     </div>
   </UContainer>
 </template>

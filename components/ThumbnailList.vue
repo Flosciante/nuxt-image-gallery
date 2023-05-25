@@ -36,7 +36,7 @@ router.afterEach((to, _) => {
 </script>
 
 <template>
-  <ul class="fixed bottom-0 left-0 right-0 z-[9990] whitespace-nowrap" ref="thumbnails">
-    <Thumbnail class="transform-gpu transition-all duration-500 -mx-[21px]" v-for="(thumbnail, index) in imagesStore.images" :key="index" :thumbnail="thumbnail" :style="`transform: translateX(${x}px) translateZ(0)`" />
+  <ul class="fixed top-4 left-48 right-0 whitespace-nowrap" ref="thumbnails">
+    <Thumbnail class="transform-gpu transition-all duration-500 mx-4" v-for="(thumbnail, index) in imagesStore.images" :key="index" :thumbnail="thumbnail" :style="`transform: translateX(${x}px) translateZ(0)`" />
   </ul>
 </template>
