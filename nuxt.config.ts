@@ -43,7 +43,4 @@ export default defineNuxtConfig({
       imageApi,
     },
   },
-  ui: {
-    icons: ['heroicons', 'fxemoji']
-  }
 })

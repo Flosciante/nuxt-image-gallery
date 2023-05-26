@@ -1,6 +1,18 @@
 <script setup lang="ts">
 
 const { loggedIn, user, session, clear } = useUserSession()
+const password = ref()
+
+const emit = defineEmits(['closeModal'])
+
+const login = () => {
+  $fetch('/api/auth', {
+    method: 'POST',
+    body: { password: password.value }})
+    .then(() => {
+      emit('closeModal')
+    })
+}
 
 </script>
 
@@ -10,8 +22,9 @@ const { loggedIn, user, session, clear } = useUserSession()
     <p>Logged in since {{ session.loggedInAt }}</p>
     <button @click="clear">Logout</button>
   </div>
-  <div v-else>
+  <div v-else class="flex flex-col gap-y-4">
     <h1>Not logged in</h1>
-    <a href="/api/auth/">Login</a>
+    <UInput v-model="password" placeholder="Enter password"/>
+    <UButton label="Login" @click="login" />
   </div>
 </template>

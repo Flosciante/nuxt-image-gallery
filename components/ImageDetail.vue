@@ -78,97 +78,21 @@ onMounted(() => {
 </script>
 
 <template>
-  <UContainer>
-    <UModal v-if="imageToUpload" v-model="isOpenUpload">
-      <Upload @close-modal="isOpenUpload = false" :image="imageToUpload" />
-    </UModal>
+  <div>
     <!-- background -->
     <div class="absolute inset-0 w-full h-full">
-      <NuxtImg v-if="image"
-      format="webp"
-      :src="image.base64"
-      class="object-cover w-full h-full blur-[70px] brightness-[.2] will-change-[filter]"
-      alt="" />
+      <NuxtImg v-if="image" format="webp" :src="image.base64"
+        class="object-cover w-full h-full blur-[70px] brightness-[.2] will-change-[filter]" alt="" />
     </div>
 
-    <div v-if="image" class="h-full w-full max-w-7xl flex items-center justify-center relative mx-auto">
-      <!-- Bottom menu -->
-      <BottomMenu class="bottom-menu" :class="{ 'right-[350px]': filter }" ref="bottomMenu">
-        <template #description>
-          <p class="bottom-menu-description">
-            {{ image.name }}
-          </p>
-        </template>
-        <!-- Filters -->
-        <template #buttons>
-          <div class="flex gap-x-2 items-center jusitfy-center bottom-menu-button">
-            <!-- open filters-->
-            <UButton @click="filter = true" icon="i-fxemoji-artistpalette" aria-label="Add filters on image" class="hidden md:flex" />
-            <!-- open original-->
-            <UButton icon="i-heroicons-arrow-top-right-on-square-20-solid" :to="`${baseUrl}/ipx/_/tmdb/${image.poster_path}`" target="_blank" aria-label="Open original image" />
-            <!-- download original or modified image -->
-            <UButton icon="i-heroicons-arrow-down-tray-20-solid" @click="downloadImage(image.name, imageContainer, poster, contrast, blur, invert, saturate, hueRotate, sepia)"
-              class="hidden md:flex" aria-label="Download original or modified image" />
+    <UContainer class="overflow-hidden relative">
+      <UModal v-if="imageToUpload" v-model="isOpenUpload">
+        <Upload @close-modal="isOpenUpload = false" :image="imageToUpload" />
+      </UModal>
 
-              <UButton icon="i-heroicons-cloud-arrow-down" @click="saveImage()"
-              class="hidden md:flex" aria-label="Upload original or modified image to gallery" />
-          </div>
-        </template>
-      </BottomMenu>
-
-      <div v-if="image"
-        class="md:pt-36 overflow-hidden flex items-center justify-center w-full h-full max-h-[100dvh] relative"
-        :class="{ 'mr-[10px]': filter }">
-        <!-- back to gallery (mobile/tablet) -->
-        <UButton class="z-10 absolute top-4 right-4 lg:hidden" to="/" icon="i-heroicons-x-mark" variant="solid" color="gray" aria-label="Back to gallery" />
-        <!-- back to gallery (desktop & not the first or last image) -->
-        <UButton v-if="!(isFirstMovie || isLastMovie) && !isSmallScreen" to="/" color="gray" variant="solid"
-          label="Back to gallery" icon="i-heroicons-arrow-left" class="absolute top-4 left-4 back transition-colors duration-200 z-[9999]" aria-label="Back to gallery" />
-
-        <div ref="movieEl" class="flex items-center justify-center md:justify-between gap-x-4 w-full">
-          <!-- previous image if not the first image -->
-          <UButton v-if="!isFirstMovie" @click.native="active == image.id"
-            :to="`/detail/${imagesStore.images[currentIndex - 1].id}`" size="lg" icon="i-heroicons-chevron-left"
-            class="hidden md:flex ml-4" aria-label="Go to previous image" />
-
-          <div class="flex group" v-else>
-            <!-- back to gallery if first movie -->
-            <UButton @click.native="active == image.id" to="/" size="xl" color="gray" variant="ghost"
-              class="back hidden md:flex ml-4 transition-colors duration-200" aria-label="Back to gallery">
-              <UIcon name="i-heroicons-rectangle-group-20-solid" class="w-6 h-6" />
-              <UIcon name="i-heroicons-arrow-left" class="w-6 h-6" />
-            </UButton>
-          </div>
-
-          <!-- image -->
-          <div class="relative flex items-center justify-center h-[84dvh]">
-            <div ref="imageContainer">
-              <img v-if="image" :src="image.base64"
-                :alt="image.name" class="rounded image w-full object-contain"
-                :class="{ active: route.params.slug == image.id }" ref="poster"
-                :style="`filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%); object-fit:${objectFitSelected.toLowerCase()};`"
-                crossorigin="anonymous" />
-            </div>
-          </div>
-
-          <!-- next image (if not the last image) -->
-          <UButton v-if="!isLastMovie" @click.native="active == image.id"
-            :to="`/detail/${imagesStore.images[currentIndex + 1].id}`" size="lg" icon="i-heroicons-chevron-right"
-            :ui="{ rounded: 'rounded-full' }" class="hidden md:flex mr-4" aria-label="Go to next image" />
-
-          <!-- back to gallery if last image -->
-          <div class="flex" v-else>
-            <UButton @click.native="active == image.id" to="/" size="xl" color="gray" variant="ghost"
-              class="back hidden md:flex mr-4 transition-colors duration-200" aria-label="Back to gallery">
-              <UIcon name="i-heroicons-arrow-right" class="w-6 h-6" />
-              <UIcon name="i-heroicons-rectangle-group-20-solid" class="w-6 h-6" />
-            </UButton>
-          </div>
-        </div>
-      </div>
-      <Filter v-if="filter" class="md:mt-36" @reset-filter="resetFilter" @close-filter="filter = false">
-        <div class="flex flex-col gap-y-12 pb-6 h-[72dvh]"
-          :class="filter ? 'block opacity-100' : 'hidden opacity-0'">
+      <Filter class="absolute md:mt-36 transition-transform duration-200" :class="filter ? 'translate-x-0 right-8 ' : 'translate-x-full right-0'"
+        @reset-filter="resetFilter" @close-filter="filter = false">
+        <div class="flex flex-col gap-y-12 pb-6 h-[72dvh]" :class="filter ? 'block opacity-100' : 'hidden opacity-0'">
           <div class="flex flex-col gap-y-4">
             <!-- filters list -->
             <div class="flex gap-x-4 justify-between items-center pb-4">
@@ -183,9 +107,96 @@ onMounted(() => {
             <Gauge v-model="blur" :max="5" title="Blur" />
           </div>
         </div>
-    </Filter>
-    </div>
-  </UContainer>
+      </Filter>
+
+      <div v-if="image" class="h-full w-full max-w-7xl flex items-center justify-center relative mx-auto">
+        <!-- Bottom menu -->
+        <BottomMenu class="bottom-menu" :class="{ 'right-[350px]': filter }" ref="bottomMenu">
+          <template #description>
+            <p class="bottom-menu-description">
+              {{ image.name }}
+            </p>
+          </template>
+          <!-- Filters -->
+          <template #buttons>
+            <div class="bottom-menu-button">
+              <div v-if="!filter" class="flex gap-x-2 items-center">
+                <!-- open filters-->
+                <UButton @click="filter = true" icon="i-heroicons-paint-brush-20-solid" aria-label="Add filters on image"
+                  class="hidden md:flex" />
+                <!-- open original-->
+                <UButton icon="i-heroicons-arrow-up-right-20-solid"
+                  :to="`${baseUrl}/ipx/_/tmdb/${image.poster_path}`" target="_blank" aria-label="Open original image" />
+                <!-- download original or modified image -->
+                <UButton icon="i-heroicons-arrow-down-tray-20-solid"
+                  @click="downloadImage(image.name, imageContainer, poster, contrast, blur, invert, saturate, hueRotate, sepia)"
+                  class="hidden md:flex" aria-label="Download original or modified image" />
+              </div>
+
+              <div v-else class="flex gap-x-2 items-center">
+                <UButton icon="i-heroicons-check-20-solid" @click="saveImage()" class="hidden md:flex"
+                aria-label="Upload original or modified image to gallery" />
+                <UButton icon="i-heroicons-x-mark" @click="filter = false" class="hidden md:flex"
+                aria-label="Upload original or modified image to gallery" />
+              </div>
+            </div>
+          </template>
+        </BottomMenu>
+
+        <div v-if="image"
+          :class="{ '-translate-x-[100px]': filter }"
+          class="transition-all duration-200 md:pt-36 overflow-hidden flex items-center justify-center w-full h-full max-h-[100dvh] relative">
+          <!-- back to gallery (mobile/tablet) -->
+          <UButton class="z-10 absolute top-4 right-4 lg:hidden" to="/" icon="i-heroicons-x-mark" variant="solid"
+            color="gray" aria-label="Back to gallery" />
+          <!-- back to gallery (desktop & not the first or last image) -->
+          <UButton v-if="!(isFirstMovie || isLastMovie) && !isSmallScreen" to="/" color="gray" variant="solid"
+            label="Back to gallery" icon="i-heroicons-arrow-left"
+            class="absolute top-4 left-4 back transition-colors duration-200 z-[9999]" aria-label="Back to gallery" />
+
+          <div ref="movieEl" class="flex items-center justify-center md:justify-between gap-x-4 w-full">
+            <!-- previous image if not the first image -->
+            <UButton v-if="!isFirstMovie" @click.native="active == image.id"
+              :to="`/detail/${imagesStore.images[currentIndex - 1].id}`" size="lg" icon="i-heroicons-chevron-left"
+              class="hidden md:flex ml-4" aria-label="Go to previous image" />
+
+            <div class="flex group" v-else>
+              <!-- back to gallery if first movie -->
+              <UButton @click.native="active == image.id" to="/" size="xl" color="gray" variant="ghost"
+                class="back hidden md:flex ml-4 transition-colors duration-200" aria-label="Back to gallery">
+                <UIcon name="i-heroicons-rectangle-group-20-solid" class="w-6 h-6" />
+                <UIcon name="i-heroicons-arrow-left" class="w-6 h-6" />
+              </UButton>
+            </div>
+
+            <!-- image -->
+            <div class="relative flex items-center justify-center h-[84dvh]">
+              <div ref="imageContainer">
+                <img v-if="image" :src="image.base64" :alt="image.name" class="rounded object-contain transition-all duration-200"
+                  :class="{ active: route.params.slug == image.id }" ref="poster"
+                  :style="`filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%); object-fit:${objectFitSelected.toLowerCase()};`"
+                  crossorigin="anonymous" />
+              </div>
+            </div>
+
+            <!-- next image (if not the last image) -->
+            <UButton v-if="!isLastMovie" @click.native="active == image.id"
+              :to="`/detail/${imagesStore.images[currentIndex + 1].id}`" size="lg" icon="i-heroicons-chevron-right"
+              :ui="{ rounded: 'rounded-full' }" class="hidden md:flex mr-4" aria-label="Go to next image" />
+
+            <!-- back to gallery if last image -->
+            <div class="flex" v-else>
+              <UButton @click.native="active == image.id" to="/" size="xl" color="gray" variant="ghost"
+                class="back hidden md:flex mr-4 transition-colors duration-200" aria-label="Back to gallery">
+                <UIcon name="i-heroicons-arrow-right" class="w-6 h-6" />
+                <UIcon name="i-heroicons-rectangle-group-20-solid" class="w-6 h-6" />
+              </UButton>
+            </div>
+          </div>
+        </div>
+      </div>
+    </UContainer>
+  </div>
 </template>
 
 <style scoped lang="postcss">

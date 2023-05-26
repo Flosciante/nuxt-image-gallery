@@ -108,6 +108,7 @@ onMounted(async () => {
 
 <template>
   <div class="p-8 bg-gray-900/70 backdrop-blur flex flex-col gap-y-5">
+    <UCheckbox v-if="props.image" label="Keep original" v-model="keepOriginal" />
     <div ref="dropZoneRef" @click="upload()" class="border border-1 border-gray-500 border-dashed h-[197px] w-[447px] flex items-center justify-center rounded-sm !ring-transparent" color="white">
       <div v-if="!selectedFile" class="flex gap-y-2 w-full h-full justify-center items-center flex-col">
         <img v-if="!isOverDropZone" src="/icons/upload-solid.svg" class="text-gray-700 h-12 w-12" />
@@ -126,7 +127,6 @@ onMounted(async () => {
       <UButton @click="saveImage()" label="Add to gallery" :disabled="!base64Img" size="lg" class="transition-colors duration-200" />
       <UButton @click="cancel()" label="Cancel" size="lg" class="transition-colors duration-200" />
     </div>
-    <!-- <UCheckbox v-if="props.image" label="Keep original" v-model="keepOriginal" /> -->
 
     <!-- <UInputGroup label="Upload an image" hint="Required" required>
       <UButton @click="upload()" label="Upload" icon="i-heroicons-cloud-arrow-down" size="xl" />

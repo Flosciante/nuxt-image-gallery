@@ -57,6 +57,6 @@ watch([scrubbing, elementX], () => {
         <slot :pending-value="pendingValue" :position="`${Math.max(0, Math.min(elementX, elementWidth - 100))}px`" />
       </div>
     </div>
-    <span class="border border-1 border-gray-700 text-medium text-white w-16 px-2 rounded-r-md"> {{ Math.round(modelValue) }} </span>
+    <span class="text-center border border-1 border-gray-700 text-medium text-white w-16 px-2 rounded-r-md"> {{ Math.round(modelValue) }} </span>
   </div>
 </template>

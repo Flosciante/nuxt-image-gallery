@@ -49,19 +49,15 @@ const deleteImage = async (idImage: any) => {
 }
 
 const onUploadDone = () => {
-  //resizeMasonryItem()
-
   isOpenUpload.value = false
 }
-
-//onMounted(() => resizeMasonryItem())
 
 </script>
 
 <template>
   <section class="gap-[22px] relative p-4">
     <UModal v-model="isOpen">
-      <Login />
+      <Login @close-modal="isOpen = false" />
     </UModal>
 
     <UModal v-model="isOpenUpload">
