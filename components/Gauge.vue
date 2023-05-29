@@ -49,14 +49,14 @@ watch([scrubbing, elementX], () => {
     </span>
 
     <div ref="scrubber" class="w-full relative z-9990 h-[27px] rounded-l-md cursor-pointer select-none bg-transparent border-l border-t border-b border-1 border-gray-700" @mousedown="scrubbing = true">
-      <div class="relative w-full overflow-hidden flex">
-        <div class="absolute w-full opacity-30 left-0 top-0 rounded-sm bg-gray-900" :style="{ transform: `translateX(${(secondary / max) * 100 - 100}%)` }" />
-        <div class="relative w-full rounded-sm bg-gray-300 h-[23px] mt-[1px]" :style="{ transform: `translateX(${(value / max) * 100 - 100}%)` }" />
+      <div class="relative w-full overflow-hidden flex h-[25px] rounded-l-md">
+        <div class="absolute w-full opacity-30 left-0 top-0 rounded-l-md bg-gray-900 h-[25px]" :style="{ transform: `translateX(${(secondary / max) * 100 - 100}%)` }" />
+        <div class="relative w-full rounded-l-md bg-gray-300 h-[25px]" :style="{ transform: `translateX(${(value / max) * 100 - 100}%)` }" />
       </div>
       <div class="absolute opacity-0 inset-0 hover:opacity-100">
         <slot :pending-value="pendingValue" :position="`${Math.max(0, Math.min(elementX, elementWidth - 100))}px`" />
       </div>
     </div>
-    <span class="text-center border border-1 border-gray-700 text-medium text-white w-16 px-2 rounded-r-md"> {{ Math.round(modelValue) }} </span>
+    <span class="text-center border border-1 border-gray-700 text-medium text-white w-16 px-2 rounded-r-md h-[27px]"> {{ Math.round(modelValue) }} </span>
   </div>
 </template>

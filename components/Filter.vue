@@ -3,7 +3,7 @@ defineEmits(['resetFilter, closeFilter'])
 </script>
 
 <template>
-  <div class="p-5 flex flex-col justify-between w-[350px] bg-gray-900 z-50">
+  <div class="p-5 flex flex-col justify-between w-[350px] bg-gray-900 z-50 rounded-lg border border-zinc-700">
     <div>
       <span class="text-white">Filters</span>
       <div class="mt-[28px] ">

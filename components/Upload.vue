@@ -127,15 +127,5 @@ onMounted(async () => {
       <UButton @click="saveImage()" label="Add to gallery" :disabled="!base64Img" size="lg" class="transition-colors duration-200" />
       <UButton @click="cancel()" label="Cancel" size="lg" class="transition-colors duration-200" />
     </div>
-
-    <!-- <UInputGroup label="Upload an image" hint="Required" required>
-      <UButton @click="upload()" label="Upload" icon="i-heroicons-cloud-arrow-down" size="xl" />
-      <input type="file" ref="fileInputEl" class="hidden" @change="handleFileUpload" />
-    </UInputGroup>
-
-    <div v-if="selectedFile" class="flex items-center justify-center flex-col gap-y-4">
-      <NuxtImg v-if="base64Img" width="240px" height="240px" class="object-contain w-full h-60" :src="base64Img" :format="selectedFile.type.split('/')[1]" />
-      <UButton @click="saveImage()" color="green" variant="outline" label="Add to gallery" icon="i-heroicons-plus-20-solid" size="lg" class="transition-colors duration-200" />
-    </div> -->
   </div>
 </template>

@@ -63,7 +63,7 @@ const resetFilter = () => {
 }
 
 const saveImage = async () => {
-  const modifiedImage = await applyFilters(imageContainer.value, poster.value, contrast.value, blur.value, invert.value, saturate.value, hueRotate.value, sepia.value)
+  const modifiedImage = await applyFilters(imageContainer.value, poster.value, contrast.value, blur.value, invert.value, saturate.value, hueRotate.value, sepia.value, true)
 
   imageToUpload.value = { newImage: modifiedImage, id: image.value.id }
 
@@ -85,14 +85,14 @@ onMounted(() => {
         class="object-cover w-full h-full blur-[70px] brightness-[.2] will-change-[filter]" alt="" />
     </div>
 
-    <UContainer class="overflow-hidden relative">
+    <UContainer class="overflow-x-hidden relative flex items-center justify-center">
       <UModal v-if="imageToUpload" v-model="isOpenUpload">
         <Upload @close-modal="isOpenUpload = false" :image="imageToUpload" />
       </UModal>
 
       <Filter class="absolute md:mt-36 transition-transform duration-200" :class="filter ? 'translate-x-0 right-8 ' : 'translate-x-full right-0'"
         @reset-filter="resetFilter" @close-filter="filter = false">
-        <div class="flex flex-col gap-y-12 pb-6 h-[72dvh]" :class="filter ? 'block opacity-100' : 'hidden opacity-0'">
+        <div class="flex flex-col gap-y-12 pb-6 h-[60dvh]" :class="filter ? 'block opacity-100' : 'hidden opacity-0'">
           <div class="flex flex-col gap-y-4">
             <!-- filters list -->
             <div class="flex gap-x-4 justify-between items-center pb-4">
@@ -123,7 +123,7 @@ onMounted(() => {
               <div v-if="!filter" class="flex gap-x-2 items-center">
                 <!-- open filters-->
                 <UButton @click="filter = true" icon="i-heroicons-paint-brush-20-solid" aria-label="Add filters on image"
-                  class="hidden md:flex" />
+                  class="hidden lg:flex" />
                 <!-- open original-->
                 <UButton icon="i-heroicons-arrow-up-right-20-solid"
                   :to="`${baseUrl}/ipx/_/tmdb/${image.poster_path}`" target="_blank" aria-label="Open original image" />
@@ -173,7 +173,7 @@ onMounted(() => {
             <div class="relative flex items-center justify-center h-[84dvh]">
               <div ref="imageContainer">
                 <img v-if="image" :src="image.base64" :alt="image.name" class="rounded object-contain transition-all duration-200"
-                  :class="{ active: route.params.slug == image.id }" ref="poster"
+                  :class="[{ active: route.params.slug == image.id }, filter ? 'w-[80%] ml-[12px]' : 'w-full']" ref="poster"
                   :style="`filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%); object-fit:${objectFitSelected.toLowerCase()};`"
                   crossorigin="anonymous" />
               </div>

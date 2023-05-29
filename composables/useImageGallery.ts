@@ -43,12 +43,13 @@ export const useImageGallery = () => {
   }
 
 
-const applyFilters = async (imageContainer: HTMLElement | undefined, poster: CanvasImageSource | null, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number) => {
+const applyFilters = async (imageContainer: HTMLElement | undefined, poster: CanvasImageSource | null, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number, filter: boolean) => {
   const canvas: HTMLCanvasElement = document.createElement('canvas')
   const context: CanvasRenderingContext2D | null = canvas.getContext('2d')
 
   canvas.width = imageContainer!.getBoundingClientRect().width
-  canvas.height = imageContainer!.getBoundingClientRect().height
+    // if filter panel we must restore orignal height
+  canvas.height = filter ? (imageContainer!.getBoundingClientRect().height * 100) / 80 : imageContainer!.getBoundingClientRect().height
 
   context!.filter = `contrast(${contrast}%) blur(${blur}px) invert(${invert}%)
     saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%)`
