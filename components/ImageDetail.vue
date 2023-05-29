@@ -121,6 +121,8 @@ onMounted(() => {
           <template #buttons>
             <div class="bottom-menu-button">
               <div v-if="!filter" class="flex gap-x-2 items-center">
+                 <!-- back to gallery (desktop & not the first or last image) -->
+                 <UButton v-if="!(isFirstMovie || isLastMovie) && !isSmallScreen" to="/" icon="i-heroicons-rectangle-group-20-solid" aria-label="Back to gallery" class="back hidden md:flex transition-colors duration-200" />
                 <!-- open filters-->
                 <UButton @click="filter = true" icon="i-heroicons-paint-brush-20-solid" aria-label="Add filters on image"
                   class="hidden lg:flex" />
@@ -149,11 +151,6 @@ onMounted(() => {
           <!-- back to gallery (mobile/tablet) -->
           <UButton class="z-10 absolute top-4 right-4 lg:hidden" to="/" icon="i-heroicons-x-mark" variant="solid"
             color="gray" aria-label="Back to gallery" />
-          <!-- back to gallery (desktop & not the first or last image) -->
-          <UButton v-if="!(isFirstMovie || isLastMovie) && !isSmallScreen" to="/" color="gray" variant="solid"
-            label="Back to gallery" icon="i-heroicons-arrow-left"
-            class="absolute top-4 left-4 back transition-colors duration-200 z-[9999]" aria-label="Back to gallery" />
-
           <div ref="movieEl" class="flex items-center justify-center md:justify-between gap-x-4 w-full">
             <!-- previous image if not the first image -->
             <UButton v-if="!isFirstMovie" @click.native="active == image.id"
@@ -165,7 +162,6 @@ onMounted(() => {
               <UButton @click.native="active == image.id" to="/" size="xl" color="gray" variant="ghost"
                 class="back hidden md:flex ml-4 transition-colors duration-200" aria-label="Back to gallery">
                 <UIcon name="i-heroicons-rectangle-group-20-solid" class="w-6 h-6" />
-                <UIcon name="i-heroicons-arrow-left" class="w-6 h-6" />
               </UButton>
             </div>
 
@@ -188,7 +184,6 @@ onMounted(() => {
             <div class="flex" v-else>
               <UButton @click.native="active == image.id" to="/" size="xl" color="gray" variant="ghost"
                 class="back hidden md:flex mr-4 transition-colors duration-200" aria-label="Back to gallery">
-                <UIcon name="i-heroicons-arrow-right" class="w-6 h-6" />
                 <UIcon name="i-heroicons-rectangle-group-20-solid" class="w-6 h-6" />
               </UButton>
             </div>

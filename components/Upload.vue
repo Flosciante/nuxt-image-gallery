@@ -7,7 +7,6 @@ const props = defineProps({
   }
 })
 
-
 const fileInputEl: Ref<HTMLElement | undefined> = ref()
 const dropZoneRef = ref<HTMLDivElement>()
 
@@ -15,11 +14,10 @@ const { loggedIn } = useUserSession()
 const { fetchImages } = useImageGallery()
 const { isOverDropZone } = useDropZone(dropZoneRef, onDrop)
 
-const selectedFile = ref(null)
+const selectedFile = ref<File>()
 const name = ref('Nuxt Gallery Image')
-const base64Img = ref(null)
+const base64Img = ref<string | ArrayBuffer | null>(null)
 const keepOriginal = ref(false)
-const filesData = ref([])
 const scrollHeight = document.documentElement.scrollHeight;
 
 const emit = defineEmits(['closeModal', 'success'])
@@ -33,7 +31,7 @@ const upload = () => {
 
 async function onDrop(files: File[] | null) {
   if (files) {
-    selectedFile.value = files[0];
+    selectedFile.value = files[0] as File;
 
     await convertToBase64(selectedFile.value)
   }
@@ -61,7 +59,7 @@ const convertBase64ToFile = async (image: any) => {
   await fetch(url)
     .then(res => res.blob())
     .then(async blob => {
-      selectedFile.value = blob
+      selectedFile.value = blob as File
 
       await convertToBase64(new File([blob], "File name", { type: "image/png" }))
     })
