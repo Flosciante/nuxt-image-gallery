@@ -15,7 +15,7 @@ specifiers:
   eslint: ^8.38.0
   nuxt: ^3.4.3
   nuxt-icon: ^0.3.2
-  nuxt-space-layer: ^0.2.2
+  nuxt-space-layer: ^0.4.1
   pinia: ^2.0.36
   typescript: ^5.0.4
 
@@ -37,7 +37,7 @@ devDependencies:
   '@nuxthq/ui': 2.0.4
   eslint: 8.40.0
   nuxt: 3.4.3_3qfatcekpgbllh6uk5ivyhkbxq
-  nuxt-space-layer: 0.2.2
+  nuxt-space-layer: 0.4.2
   typescript: 5.0.4
 
 packages:
@@ -6487,8 +6487,8 @@ packages:
       - vue
     dev: false
 
-  /nuxt-space-layer/0.2.2:
-    resolution: {integrity: sha512-Nu2+yrlCk2BFq9Uq6yQYqCo8hAN2GgbKae41/T6jb8RzEPfOB+ORNLfVlevEIX6lmCEejAq+bZFsnWI8+UTTLg==}
+  /nuxt-space-layer/0.4.2:
+    resolution: {integrity: sha512-l4cL906kjouZ5VZO2/tJD6bq21yLz6HgVyU5tBgX/5R76pazvxfK5mWzYwcrFjwgfwQdsVN0ffjJT6exwYq7Ow==}
     dependencies:
       '@libsql/client': 0.1.6_2adebc2xdjqbcvbjxkodkhadp4
       better-sqlite3: 8.3.0

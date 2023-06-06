@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const { name, base64, imageId } = body || {}
 
-  const image = imageId === undefined ? await useDb()
+  const image = imageId === undefined ? await useDB()
     .insert(tables.images)
     .values({
       name: name,
@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
       set: { name, base64 }
     })
     .returning()
-    .get() : await useDb()
+    .get() : await useDB()
       .update(tables.images)
       .set({
         name: name,

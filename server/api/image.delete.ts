@@ -4,7 +4,7 @@ export default defineEventHandler((event) => {
   const query = getQuery(event)
   const { idImage } = query || {}
 
-  return useDb()
+  return useDB()
     .delete(tables.images)
     .where(eq(tables.images.id, idImage))
     .run()

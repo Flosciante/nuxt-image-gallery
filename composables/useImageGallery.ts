@@ -43,7 +43,7 @@ export const useImageGallery = () => {
   }
 
 
-const applyFilters = async (imageContainer: HTMLElement | undefined, poster: CanvasImageSource | null, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number, filter: boolean) => {
+const applyFilters = async (imageContainer: HTMLElement | undefined, poster: CanvasImageSource | null, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number, filter: boolean = false) => {
   const canvas: HTMLCanvasElement = document.createElement('canvas')
   const context: CanvasRenderingContext2D | null = canvas.getContext('2d')
 

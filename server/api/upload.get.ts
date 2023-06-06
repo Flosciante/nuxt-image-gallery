@@ -1,6 +1,6 @@
 export default defineEventHandler((event) => {
 
-  return useDb()
+  return useDB()
     .select()
     .from(tables.images)
     .all()
