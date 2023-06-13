@@ -6,7 +6,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "deploy": "NITRO_PRESET=cloudflare_pages npx nuxi build && wrangler pages publish dist/"
   },
   "dependencies": {
     "@iconify-json/fxemoji": "^1.1.4",

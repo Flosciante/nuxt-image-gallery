@@ -2,7 +2,6 @@
 const { fetchImages } = useImageGallery()
 
 useHead({
-  titleTemplate: chunk => chunk ? `${chunk} - Image-Gallery` : 'Image Gallery template',
   link: [
     { rel: 'icon', href: '/icon.png' }
   ],

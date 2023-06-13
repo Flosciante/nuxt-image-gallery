@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useImagesStore } from '~/stores/images'
 
-const { loggedIn } = useUserSession()
+const { loggedIn, clear } = useUserSession()
 const { fetchImages } = useImageGallery()
 const { width } = useWindowSize()
 
@@ -76,7 +76,8 @@ const onUploadDone = async () => {
       </template>
       <template #buttons>
         <div class="flex gap-x-2">
-          <UButton @click="isOpen = true" :label="!loggedIn ? 'Sign in' : ''" :icon="loggedIn ? 'i-heroicons-power-20-solid' : ''" :color="!loggedIn ? 'green' : 'red'" variant="outline" :aria-label="!loggedIn ? 'Sign in' : ''" />
+          <UButton v-if="loggedIn" @click="clear" icon="i-heroicons-power-20-solid" color="red" variant="outline" />
+          <UButton v-else @click="isOpen = true" label="Sign in" color="green" variant="outline" aria-label="Sign in" />
         </div>
       </template>
     </BottomMenu>
