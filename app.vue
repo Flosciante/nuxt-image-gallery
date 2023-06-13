@@ -1,10 +1,7 @@
 <script setup lang="ts">
 const { page } = useContent()
-const { fetchList: fetchMovies } = useImageGallery()
-
+const { fetchImages } = useImageGallery()
 const description = computed(() => page.value?.head?.description || page.value?.description || 'Page not found')
-
-await fetchMovies()
 
 useHead({
   titleTemplate: chunk => chunk ? `${chunk} - Image-Gallery` : 'Image Gallery template',
@@ -29,12 +26,14 @@ useSeoMeta({
   title: () => page.title,
   description,
 })
+
+await fetchImages()
 </script>
 
 
 <template>
   <div class="bg-black min-h-[100dvh] overflow-x-auto relative" :class="{ 'flex flex-col md:block': $router.currentRoute.value.fullPath !== '/' }">
     <NuxtPage />
-    <ThumbnailList :class="$router.currentRoute.value.fullPath !== '/' ? 'opacity-100' : 'opacity-0'" />
+    <ThumbnailList :class="$router.currentRoute.value.fullPath !== '/' ? 'opacity-100 z-[9999]' : 'opacity-0 z-[-1]'" />
   </div>
 </template>

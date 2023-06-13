@@ -1,9 +1,17 @@
 <script setup lang="ts">
-const { page } = useContent()
+
+import type { Image } from 'types'
+
+defineProps({
+  images: {
+    type: Array as PropType<Array<Image>>,
+    default: () => []
+  }
+})
 </script>
 
 <template>
   <div>
-    <ContentRenderer :value="page" class="overflow-hidden p-8" />
+    <ImageGallery :images="images" />
   </div>
 </template>

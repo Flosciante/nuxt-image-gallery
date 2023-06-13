@@ -43,20 +43,20 @@ watch([scrubbing, elementX], () => {
 </script>
 
 <template>
-  <div class="flex gap-x-4 justify-between items-center relative">
-    <span class="text-white w-40">
+  <div class="flex justify-between items-center relative">
+    <span class="text-gray-400 w-40">
       {{ title }}
     </span>
 
-    <div ref="scrubber" class="w-full relative z-9990 h-4 rounded-sm cursor-pointer select-none bg-gray-600" @mousedown="scrubbing = true">
-      <div class="relative w-full h-4 overflow-hidden">
-        <div class="absolute w-full h-4 opacity-30 left-0 top-0 rounded-sm bg-gray-900" :style="{ transform: `translateX(${(secondary / max) * 100 - 100}%)` }" />
-        <div class="relative w-full h-4 rounded-sm bg-gray-300" :style="{ transform: `translateX(${(value / max) * 100 - 100}%)` }" />
+    <div ref="scrubber" class="w-full relative z-9990 h-[27px] rounded-l-md cursor-pointer select-none bg-transparent border-l border-t border-b border-1 border-gray-700" @mousedown="scrubbing = true">
+      <div class="relative w-full overflow-hidden flex h-[25px] rounded-l-md">
+        <div class="absolute w-full opacity-30 left-0 top-0 rounded-l-md bg-gray-900 h-[25px]" :style="{ transform: `translateX(${(secondary / max) * 100 - 100}%)` }" />
+        <div class="relative w-full rounded-l-md bg-gray-300 h-[25px]" :style="{ transform: `translateX(${(value / max) * 100 - 100}%)` }" />
       </div>
-      <div class="absolute opacity-0 inset-0 hover:opacity-100 h-4">
+      <div class="absolute opacity-0 inset-0 hover:opacity-100">
         <slot :pending-value="pendingValue" :position="`${Math.max(0, Math.min(elementX, elementWidth - 100))}px`" />
       </div>
     </div>
-    <span class="text-medium text-white w-12"> {{ Math.round(modelValue) }} </span>
+    <span class="text-center border border-1 border-gray-700 text-medium text-white w-16 px-2 rounded-r-md h-[27px]"> {{ Math.round(modelValue) }} </span>
   </div>
 </template>

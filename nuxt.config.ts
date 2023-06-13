@@ -5,6 +5,7 @@ export default defineNuxtConfig({
   experimental: {
     viewTransition: true,
   },
+  extends: '@nuxthq/neo',
   image: {
     provider: 'proxy',
     providers: {
@@ -42,7 +43,4 @@ export default defineNuxtConfig({
       imageApi,
     },
   },
-  ui: {
-    icons: ['heroicons', 'fxemoji']
-  }
 })

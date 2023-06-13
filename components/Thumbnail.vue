@@ -9,18 +9,17 @@ defineProps({
 </script>
 
 <template>
-  <li class="text-black inline-block relative" :class="{ 'z-50': thumbnail.id == $router.currentRoute.value.params.slug }">
-    <NuxtLink :to="`/detail/${thumbnail.id}`">
-        <NuxtImg
-          v-if="thumbnail.poster_path"
-          width="100"
-          height="60"
-          format="webp"
-          :src="`/tmdb${thumbnail.poster_path}`"
-          :alt="thumbnail.title || thumbnail.name"
-          class="object-cover rounded-xs rounded-sm transition-all duration-500 hover:brightness-100"
-          :class="thumbnail.id == $router.currentRoute.value.params.slug ? 'active scale-100 mx-4 brightness-100' : 'scale-75 opacity-75 mx-2 brightness-50'"
-        />
-      </NuxtLink>
+  <li v-if="$router.currentRoute.value.params.slug" class="text-black inline-block relative" :class="{ 'z-50': thumbnail.key.split('.')[0] === $router.currentRoute.value.params.slug[0] }">
+    <NuxtLink :to="`/detail/${thumbnail.key.split('.')[0]}`">
+      <img
+        v-if="thumbnail"
+        width="83"
+        height="51"
+        :src="thumbnail.url"
+        :alt="thumbnail.key"
+        class="object-cover rounded-md transition-all duration-500 hover:brightness-100 w-[83px] h-[51px]"
+        :class="thumbnail.key.split('.')[0] === $router.currentRoute.value.params.slug[0] ? 'active brightness-100' : 'opacity-75 brightness-50'"
+      />
+    </NuxtLink>
   </li>
 </template>

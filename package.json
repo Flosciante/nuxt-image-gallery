@@ -23,10 +23,11 @@
   "devDependencies": {
     "@nuxt/devtools": "^0.4.1",
     "@nuxt/eslint-config": "^0.1.1",
+    "@nuxthq/neo": "^0.1.1",
     "@nuxthq/ui": "^2.0.4",
     "@vueuse/nuxt": "^9.13.0",
     "eslint": "^8.38.0",
-    "nuxt": "^3.4.2",
+    "nuxt": "^3.4.3",
     "typescript": "^5.0.4"
   },
   "overrides": {
