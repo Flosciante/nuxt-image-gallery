@@ -10,15 +10,11 @@ export const useImageGallery = () => {
   const refreshImages = ref()
 
   const fetchImages = async () => {
-    const { data: images, refresh } = await useFetch<any>('/api/upload')
+    const { data: files, refresh } = await useFetch('/api/files')
 
     refreshImages.value = refresh
-    imagesStore.images = images.value
+    imagesStore.images = files.value
   }
-
-  const currentIndex: ComputedRef<number> = computed(() => imagesStore.images.indexOf(imagesStore.images.filter((movie: any) => movie.id == route.params.slug)[0]))
-  const isFirstMovie: ComputedRef<boolean> = computed(() => imagesStore.images[0].id === parseInt(route.params.slug[0]))
-  const isLastMovie: ComputedRef<boolean> = computed(() => imagesStore.images[imagesStore.images.length - 1].id === parseInt(route.params.slug[0]))
 
   const initSwipe = (el: Ref<HTMLElement | null>) => {
     useSwipe(el, {
@@ -29,13 +25,13 @@ export const useImageGallery = () => {
           if (isLastMovie.value) {
             router.push('/')
           } else {
-            router.push(`/detail/${imagesStore.images[currentIndex.value + 1].id}`)
+            router.push(`/detail/${imagesStore.images[currentIndex.value + 1].split('.')[0]}`)
           }
         } else {
           if (isFirstMovie.value) {
             router.push('/')
           } else {
-            router.push(`/detail/${imagesStore.images[currentIndex.value - 1].id}`)
+            router.push(`/detail/${imagesStore.images[currentIndex.value - 1].split('.')[0]}`)
           }
         }
       },
@@ -83,9 +79,6 @@ const downloadImage = async (filename: string, imageContainer: HTMLElement | und
 
   return {
     fetchImages,
-    currentIndex,
-    isFirstMovie,
-    isLastMovie,
     initSwipe,
     downloadImage,
     refreshImages,

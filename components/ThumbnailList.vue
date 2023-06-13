@@ -10,7 +10,7 @@ const router = useRouter()
 
 const moveThumbnail = (slug: any) => {
   // get width of current image
-  const currentMovie = imagesStore.images!.filter((image: any) => image.id == slug)
+  const currentMovie = imagesStore.images!.filter((image: any) => image.key.split('.')[0] == slug)
   const index = imagesStore.images?.indexOf(currentMovie[0]) as number
   const thumbnailToMove = ref<HTMLElement | undefined>(thumbnails.value?.children[index] as HTMLElement | undefined)
   const imageWidth: number = thumbnailToMove.value!.offsetWidth;

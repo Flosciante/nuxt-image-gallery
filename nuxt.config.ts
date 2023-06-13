@@ -5,7 +5,7 @@ export default defineNuxtConfig({
   experimental: {
     viewTransition: true,
   },
-  extends: 'nuxt-space-layer',
+  extends: '@nuxthq/neo',
   image: {
     provider: 'proxy',
     providers: {
