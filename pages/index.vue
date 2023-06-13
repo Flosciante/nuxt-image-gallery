@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 import type { Image } from 'types'
 
 defineProps({

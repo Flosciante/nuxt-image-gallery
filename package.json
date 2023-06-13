@@ -10,9 +10,7 @@
   },
   "dependencies": {
     "@iconify-json/fxemoji": "^1.1.4",
-    "@nuxt/content": "^2.6.0",
     "@nuxt/image-edge": "1.0.0-28020728.5df24eb",
-    "@nuxthq/studio": "^0.10.1",
     "@nuxtjs/html-validator": "^1.2.5",
     "@pinia/nuxt": "^0.4.10",
     "@vueuse/core": "^10.0.2",

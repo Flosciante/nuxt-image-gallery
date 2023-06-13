@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useImagesStore } from '../../stores/images'
+import { useImagesStore } from '~/stores/images'
 
 const { loggedIn } = useUserSession()
 const { fetchImages } = useImageGallery()

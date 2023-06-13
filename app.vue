@@ -1,7 +1,5 @@
 <script setup lang="ts">
-const { page } = useContent()
 const { fetchImages } = useImageGallery()
-const description = computed(() => page.value?.head?.description || page.value?.description || 'Page not found')
 
 useHead({
   titleTemplate: chunk => chunk ? `${chunk} - Image-Gallery` : 'Image Gallery template',
@@ -23,8 +21,8 @@ useHead({
 })
 
 useSeoMeta({
-  title: () => page.title,
-  description,
+  title: 'Nuxt Image Galery',
+  description: 'This is a template which allows you to display your pictures within a gallery'
 })
 
 await fetchImages()

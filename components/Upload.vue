@@ -144,7 +144,7 @@ onMounted(async () => {
         <UIcon v-if="isOverDropZone" name="i-heroicons-plus-circle-20-solid" class="w-12 h-12 text-green-500" />
       </div>
       <div v-else @click="upload()">
-        <NuxtImg v-if="base64Img" width="447" height="197" class="object-cover h-[195px] w-[445px]" :src="base64Img" :format="selectedFile.type.split('/')[1]" />
+        <img v-if="base64Img" width="447" height="197" class="object-cover h-[195px] w-[445px]" :src="base64Img" :format="selectedFile.type.split('/')[1]" />
       </div>
     </div>
     <!-- <UInputGroup label="Image Name" hint="Required" required>
