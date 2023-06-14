@@ -10,15 +10,13 @@ const props = defineProps({
 const fileInputEl: Ref<HTMLElement | undefined> = ref()
 const dropZoneRef = ref<HTMLDivElement>()
 
-const { loggedIn } = useUserSession()
-const { fetchImages } = useImageGallery()
 const { isOverDropZone } = useDropZone(dropZoneRef, onDrop)
 
 const selectedFile = ref<File>()
-const name = ref('Nuxt Gallery Image')
 const base64Img = ref<string | ArrayBuffer | null>(null)
 const keepOriginal = ref(false)
 const scrollHeight = document.documentElement.scrollHeight;
+const filesData = ref<{ name: string; size: number; type: string; lastModified: number }[]>([])
 
 const emit = defineEmits(['closeModal', 'success'])
 
@@ -30,7 +28,22 @@ const upload = () => {
 }
 
 async function onDrop(files: File[] | null) {
+
+  // filesData.value = []
+
+  // if (files) {
+  //   filesData.value = files.map(file => ({
+  //     name: file.name,
+  //     size: file.size,
+  //     type: file.type,
+  //     lastModified: file.lastModified,
+  //   }))
+  // }
+
+  console.log('filesData', filesData.value)
+
   if (files) {
+
     selectedFile.value = files[0] as File;
 
     await convertToBase64(selectedFile.value)
@@ -38,6 +51,7 @@ async function onDrop(files: File[] | null) {
 }
 
 const handleFileUpload = async (event: any) => {
+
   selectedFile.value = event.target.files[0];
 
   await convertToBase64(selectedFile.value)
@@ -66,12 +80,10 @@ const convertBase64ToFile = async (image: any) => {
 }
 
 const form = ref()
-const { data: files, refresh } = await useFetch('/api/files')
+const { refresh } = await useFetch('/api/files')
 
 async function newUpload() {
   const formData = new FormData(form.value)
-
-  console.log(formData.getAll('files'))
 
   await $fetch('/api/files/upload', {
     method: 'POST',
@@ -87,12 +99,6 @@ async function newUpload() {
   form.value.reset()
 }
 
-async function deleteFile(key) {
-  await $fetch(`/api/files/${key}`, {
-    method: 'DELETE'
-  })
-  await refresh()
-}
 
 // const saveImage = () => {
 //   if (!loggedIn.value) {

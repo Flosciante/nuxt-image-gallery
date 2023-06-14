@@ -1,24 +1,4 @@
 <script setup lang="ts">
-import { useImagesStore } from '~/stores/images'
-
-const { loggedIn, clear } = useUserSession()
-const { fetchImages } = useImageGallery()
-const { width } = useWindowSize()
-
-const imagesStore = useImagesStore()
-
-const isOpen = ref(false)
-const isOpenUpload = ref(false)
-const mansoryItem = ref<Array<HTMLElement>>([])
-
-const { data: files, refresh } = await useFetch('/api/files')
-
-imagesStore.images = files
-
-watch(() => width.value, () => {
-  resizeMasonryItem()
-})
-
 defineProps({
   bottomMenuDescription: {
     type: String,
@@ -30,20 +10,39 @@ defineProps({
   }
 })
 
+const isOpen = ref(false)
+const isOpenUpload = ref(false)
+const mansoryItem = ref<Array<HTMLElement>>([])
+const dropZoneRef = ref<HTMLButtonElement>()
+
+const { loggedIn, clear } = useUserSession()
+
+const { isOverDropZone } = useDropZone(dropZoneRef, onDrop)
+
 const active = useState()
 
-const resizeMasonryItem = () => {
-  mansoryItem.value.map((item: HTMLElement) => {
-    const img = item.querySelector('img') as HTMLElement
+const { data: files, refresh } = await useFetch('/api/files')
 
-    item.style.gridRowEnd = `span ${Math.ceil(img?.offsetHeight / 10)}`
+async function onDrop(files: any) {
+
+  const formData = new FormData();
+
+  formData.append('files', files[0])
+
+  await $fetch('/api/files/upload', {
+    method: 'POST',
+    body: formData
   })
+
+  await refresh()
 }
 
 async function deleteFile(key: string) {
+
   await $fetch(`/api/files/${key}`, {
     method: 'DELETE'
   })
+
   await refresh()
 }
 
@@ -83,15 +82,18 @@ const onUploadDone = async () => {
     </BottomMenu>
 
     <div class="masonry-container">
-      <UButton v-if="loggedIn" @click="isOpenUpload = true" variant="outline" color="white" class="border border-1 border-gray-500 border-dashed ring-transparent h-[430px] transition-colors duration-200 rounded-md upload group" :rounded="false">
+      <div  ref="dropZoneRef">
+        <UButton v-if="loggedIn" @click="isOpenUpload = true" variant="outline" color="white" class="border border-1 border-gray-500 border-dashed ring-transparent h-[430px] transition-colors duration-200 rounded-md upload group" :rounded="false">
+
           <div class="w-full rounded-md flex items-center justify-center h-[430px]">
             <img src="/icons/upload.svg" class="group-hover:hidden h-12 w-12 m-auto absolute" />
             <div class="relative opacity-0 group-hover:opacity-100 flex w-full h-full justify-center items-center transition-all duration-100">
               <img src="/icons/upload-solid.svg" class="absolute m-auto h-12 w-12 transition-all duration-100 group-hover:-translate-y-5" />
-              <span class="absolute m-auto group-hover:translate-y-5 transition-all duration-100 ">Upload image</span>
+              <span class="absolute m-auto group-hover:translate-y-5 transition-all duration-100 ">Drag & drop to upload</span>
             </div>
           </div>
         </UButton>
+      </div>
 
       <article v-for="image in files" class="relative w-full group masonry-item" ref="mansoryItem">
         <UButton color="white" icon="i-heroicons-trash-20-solid" @click.native="deleteFile(image.key)" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" />

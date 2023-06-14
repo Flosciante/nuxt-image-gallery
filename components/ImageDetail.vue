@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { useImagesStore } from '../stores/images'
+import { UseSwipeDirection } from '@vueuse/core'
 
-const config = useRuntimeConfig()
+const { data: files } = await useFetch('/api/files')
+
 const isSmallScreen = useMediaQuery('(max-width: 1024px)')
-const { initSwipe, downloadImage, applyFilters } = useImageGallery()
 
-const imagesStore = useImagesStore()
-
-console.log('imagesStore', imagesStore.images)
+const { downloadImage, applyFilters } = useImageGallery()
 
 const active = useState()
 
@@ -16,7 +14,6 @@ const router = useRouter()
 
 const bottomMenu = ref()
 const movieEl = ref<HTMLElement>()
-const baseUrl = ref(config.public.imageApi)
 const poster: Ref<any> = ref()
 const imageContainer = ref<HTMLElement>()
 const isOpenUpload = ref(false)
@@ -33,18 +30,37 @@ const sepia = ref(0)
 const objectsFit = ref(['Contain', 'Cover', 'Scale-down', 'Fill', 'None'])
 const objectFitSelected = ref(objectsFit.value[0])
 
-//const { data: image } = await useFetch<any>('/api/image', { params: { idImage: parseInt(route.params.slug[0]) } })
 
 const image: any = computed(() => {
-  return imagesStore.images.filter(file => file.key.split('.')[0] === route.params.slug[0])[0]
+  return files.value!.filter((file: any) => file.key.split('.')[0] === route.params.slug[0])[0]
 })
 
-const currentIndex: ComputedRef<number> = computed(() => imagesStore.images.findIndex((image) => image.key.split('.')[0] === route.params.slug[0]))
-const isFirstMovie: ComputedRef<boolean> = computed(() => imagesStore.images[0].key.split('.')[0] === route.params.slug[0])
-const isLastMovie: ComputedRef<boolean> = computed(() => imagesStore.images[imagesStore.images.length - 1].key.split('.')[0] === route.params.slug[0])
 
-  console.log('isFirstMovie', isFirstMovie)
-  console.log('isLastMovie', isLastMovie)
+const currentIndex: ComputedRef<number> = computed(() => files.value!.findIndex((image) => image.key.split('.')[0] === route.params.slug[0]))
+const isFirstMovie: ComputedRef<boolean> = computed(() => files.value![0].key.split('.')[0] === route.params.slug[0])
+const isLastMovie: ComputedRef<boolean> = computed(() => files.value![files.value!.length - 1].key.split('.')[0] === route.params.slug[0])
+
+const initSwipe = (el: Ref<HTMLElement | null>) => {
+  useSwipe(el, {
+    passive: false,
+
+    onSwipeEnd(e: TouchEvent, direction: UseSwipeDirection) {
+      if (direction === 'left') {
+        if (isLastMovie.value) {
+          router.push('/')
+        } else {
+          router.push(`/detail/${files.value![currentIndex.value + 1].key.split('.')[0]}`)
+        }
+      } else {
+        if (isFirstMovie.value) {
+          router.push('/')
+        } else {
+          router.push(`/detail/${files.value![currentIndex.value - 1].key.split('.')[0]}`)
+        }
+      }
+    },
+  })
+}
 
 onKeyStroke('Escape', (e) => {
   router.push('/')
@@ -54,7 +70,7 @@ onKeyStroke('ArrowLeft', (e) => {
   if (isFirstMovie.value) {
     router.push('/')
   } else {
-    router.push(`/detail/${imagesStore.images[currentIndex.value - 1].key.split('.')[0]}`)
+    router.push(`/detail/${files.value![currentIndex.value - 1].key.split('.')[0]}`)
   }
 })
 
@@ -62,7 +78,7 @@ onKeyStroke('ArrowRight', (e) => {
   if (isLastMovie.value) {
     router.push('/')
   } else {
-    router.push(`/detail/${imagesStore.images[currentIndex.value + 1].key.split('.')[0]}`)
+    router.push(`/detail/${files.value![currentIndex.value + 1].key.split('.')[0]}`)
   }
 })
 
@@ -83,7 +99,7 @@ const saveImage = async () => {
   isOpenUpload.value = true
 }
 
-onMounted(() => {
+onMounted(async () => {
   if (poster.value) {
     initSwipe(poster)
   }
@@ -91,10 +107,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div v-if="currentIndex >= 0">
+  <div v-if="image">
     <!-- background -->
     <div class="absolute inset-0 w-full h-full">
-      <img v-if="image" :src="image.url"
+      <img :src="image.url"
         class="object-cover w-full h-full blur-[70px] brightness-[.2] will-change-[filter]" alt="" />
     </div>
 
@@ -122,7 +138,7 @@ onMounted(() => {
         </div>
       </Filter>
 
-      <div v-if="image" class="h-full w-full max-w-7xl flex items-center justify-center relative mx-auto">
+      <div class="h-full w-full max-w-7xl flex items-center justify-center relative mx-auto">
         <!-- Bottom menu -->
         <BottomMenu class="bottom-menu" :class="{ 'right-[350px]': filter }" ref="bottomMenu">
           <template #description>
@@ -158,7 +174,7 @@ onMounted(() => {
           </template>
         </BottomMenu>
 
-        <div v-if="image"
+        <div
           :class="{ '-translate-x-[100px]': filter }"
           class="transition-all duration-200 md:pt-36 overflow-hidden flex items-center justify-center w-full h-full max-h-[100dvh] relative">
           <!-- back to gallery (mobile/tablet) -->
@@ -166,13 +182,13 @@ onMounted(() => {
             color="gray" aria-label="Back to gallery" />
           <div ref="movieEl" class="flex items-center justify-center md:justify-between gap-x-4 w-full">
             <!-- previous image if not the first image -->
-            <UButton v-if="!isFirstMovie" @click.native="active == image.id"
-              :to="`/detail/${imagesStore.images[currentIndex - 1].key.split('.')[0]}`" size="lg" icon="i-heroicons-chevron-left"
+            <UButton v-if="!isFirstMovie" @click.native="active === image.key.split('.')[0]"
+              :to="`/detail/${files![currentIndex - 1].key.split('.')[0]}`" size="lg" icon="i-heroicons-chevron-left"
               class="hidden md:flex ml-4" aria-label="Go to previous image" />
 
             <div class="flex group" v-else>
               <!-- back to gallery if first movie -->
-              <UButton @click.native="active == image.key" to="/" size="xl" color="gray" variant="ghost"
+              <UButton @click.native="active === image.key.split('.')[0]" to="/" size="xl" color="gray" variant="ghost"
                 class="back hidden md:flex ml-4 transition-colors duration-200" aria-label="Back to gallery">
                 <UIcon name="i-heroicons-rectangle-group-20-solid" class="w-6 h-6" />
               </UButton>
@@ -181,21 +197,21 @@ onMounted(() => {
             <!-- image -->
             <div class="relative flex items-center justify-center h-[84dvh]">
               <div ref="imageContainer">
-                <img v-if="image" :src="image.url" :alt="image.key" class="rounded object-contain transition-all duration-200"
-                  :class="[{ active: route.params.slug === image.key.split('.')[0] }, filter ? 'w-[80%] ml-[12px]' : 'w-full']" ref="poster"
+                <img v-if="image" :src="image.url" :alt="image.key" class="rounded object-contain transition-all duration-200 aspect-[2/3]"
+                  :class="[{ active: route.params.slug[0] === image.key.split('.')[0] }, filter ? 'w-[80%] ml-[12px]' : 'w-full']" ref="poster"
                   :style="`filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%); object-fit:${objectFitSelected.toLowerCase()};`"
                   crossorigin="anonymous" />
               </div>
             </div>
 
             <!-- next image (if not the last image) -->
-            <UButton v-if="!isLastMovie" @click.native="active == image.key"
-              :to="`/detail/${imagesStore.images[currentIndex + 1].key.split('.')[0]}`" size="lg" icon="i-heroicons-chevron-right"
+            <UButton v-if="!isLastMovie" @click.native="active === image.key.split('.')[0]"
+              :to="`/detail/${files![currentIndex + 1].key.split('.')[0]}`" size="lg" icon="i-heroicons-chevron-right"
               :ui="{ rounded: 'rounded-full' }" class="hidden md:flex mr-4" aria-label="Go to next image" />
 
             <!-- back to gallery if last image -->
             <div class="flex" v-else>
-              <UButton @click.native="active == image.key" to="/" size="xl" color="gray" variant="ghost"
+              <UButton @click.native="active === image.key.split('.')[0]" to="/" size="xl" color="gray" variant="ghost"
                 class="back hidden md:flex mr-4 transition-colors duration-200" aria-label="Back to gallery">
                 <UIcon name="i-heroicons-rectangle-group-20-solid" class="w-6 h-6" />
               </UButton>
