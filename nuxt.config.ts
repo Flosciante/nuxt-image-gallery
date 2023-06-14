@@ -35,4 +35,7 @@ export default defineNuxtConfig({
       imageApi,
     },
   },
+  colorMode: {
+    preference: 'dark'
+  }
 })
