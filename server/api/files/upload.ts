@@ -1,6 +1,7 @@
 import { randomUUID } from 'uncrypto'
 
 export default eventHandler(async (event) => {
+  await requireUserSession(event)
   let files = (await readMultipartFormData(event) || [])
 
 

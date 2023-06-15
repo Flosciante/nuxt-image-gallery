@@ -65,7 +65,7 @@ async function onDrop(files: any) {
 
       <ul v-if="images && images.length">
         <li v-for="image in images" class="relative w-full group masonry-item" ref="mansoryItem">
-          <UButton color="white" icon="i-heroicons-trash-20-solid" @click.native="deleteFile(image.key)" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" />
+          <UButton v-if="loggedIn" color="white" icon="i-heroicons-trash-20-solid" @click.native="deleteFile(image.key)" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" />
 
           <NuxtLink :to="`/detail/${image.key.split('.')[0]}`" @click.native="active = image.key.split('.')[0]">
             <img
