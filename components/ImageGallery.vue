@@ -73,7 +73,7 @@ const openFilePicker = () => {
 
       <ul v-if="images && images.length" class="grid grid-cols-1 gap-4 lg:block">
         <li v-for="image in images" class="relative w-full group masonry-item" ref="mansoryItem">
-          <UButton color="white" icon="i-heroicons-trash-20-solid" @click.native="deleteFile(image.key)" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" />
+          <UButton v-if="loggedIn" color="white" icon="i-heroicons-trash-20-solid" @click.native="deleteFile(image.key)" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" />
 
           <NuxtLink :to="`/detail/${image.key.split('.')[0]}`" @click.native="active = image.key.split('.')[0]">
             <img
@@ -88,8 +88,9 @@ const openFilePicker = () => {
           </NuxtLink>
         </li>
       </ul>
-      <div v-if="(!images || !images.length) && !loggedIn" class="absolute inset-0 flex w-full h-screen text-4xl text-white items-center justify-center">
-        Please sign-in to upload images
+      <div v-if="(!images || !images.length) && !loggedIn" class="absolute inset-0 flex flex-col gap-2 w-full h-screen items-center justify-center">
+        <h3 class="text-4xl text-white">Welcome to the Image Gallery template.</h3>
+        <p class="text-gray-300 text-xl">Please sign-in to upload images.</p>
       </div>
     </div>
   </section>

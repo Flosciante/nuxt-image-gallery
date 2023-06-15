@@ -1,4 +1,5 @@
 export default eventHandler(async (event) => {
+  await requireUserSession(event)
   const key = getRouterParam(event, 'key')
 
   if (!key) {
