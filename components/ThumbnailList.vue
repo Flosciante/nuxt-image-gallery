@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-const { data: files } = await useFetch('/api/files')
+const { images } = useFile()
 
 const thumbnails = ref<HTMLElement>()
 const { width } = useWindowSize()
@@ -10,8 +10,8 @@ const router = useRouter()
 const moveThumbnail = (slug: any) => {
 
   // get width of current image
-  const currentMovie = files.value!.filter((image: any) => image.key.split('.')[0] === slug)
-  const index = files.value!.indexOf(currentMovie![0]) as number
+  const currentMovie = images.value!.filter((image: any) => image.key.split('.')[0] === slug)
+  const index = images.value!.indexOf(currentMovie![0]) as number
   const thumbnailToMove = ref<HTMLElement | undefined>(thumbnails.value?.children[index] as HTMLElement | undefined)
   const imageWidth: number = thumbnailToMove.value!.offsetWidth;
 
@@ -39,7 +39,7 @@ router.afterEach(async (to, _) => {
 </script>
 
 <template>
-  <ul v-if="files" class="fixed top-4 left-48 right-0 whitespace-nowrap" ref="thumbnails">
-    <Thumbnail class="transform-gpu transition-all duration-500 mx-4" v-for="(thumbnail, index) in files" :key="index" :thumbnail="thumbnail" :style="`transform: translateX(${x}px) translateZ(0)`" />
+  <ul v-if="images && images.length" class="fixed top-4 left-48 right-0 whitespace-nowrap" ref="thumbnails">
+    <Thumbnail class="transform-gpu transition-all duration-500 mx-4" v-for="(thumbnail, index) in images" :key="index" :thumbnail="thumbnail" :style="`transform: translateX(${x}px) translateZ(0)`" />
   </ul>
 </template>

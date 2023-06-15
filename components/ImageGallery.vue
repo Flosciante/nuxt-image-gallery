@@ -21,49 +21,16 @@ const { isOverDropZone } = useDropZone(dropZoneRef, onDrop)
 
 const active = useState()
 
-const { data: files, refresh } = await useFetch('/api/files')
+const { images, uploadFile, deleteFile } = useFile()
 
 async function onDrop(files: any) {
-
-  const formData = new FormData();
-
-  formData.append('files', files[0])
-
-  await $fetch('/api/files/upload', {
-    method: 'POST',
-    body: formData
-  })
-
-  await refresh()
-}
-
-async function deleteFile(key: string) {
-
-  await $fetch(`/api/files/${key}`, {
-    method: 'DELETE'
-  })
-
-  await refresh()
-}
-
-const onUploadDone = async () => {
-  await refresh()
-
-  isOpenUpload.value = false
+  uploadFile(files)
 }
 
 </script>
 
 <template>
   <section class="gap-[22px] relative p-4">
-    <UModal v-model="isOpen">
-      <Login @close-modal="isOpen = false" />
-    </UModal>
-
-    <UModal v-model="isOpenUpload">
-      <Upload @close-modal="onUploadDone" />
-    </UModal>
-
     <BottomMenu class="bottom-menu">
       <template #logo>
         <img src="/images/logo.svg" width="29" height="20" />
@@ -95,7 +62,7 @@ const onUploadDone = async () => {
         </UButton>
       </div>
 
-      <article v-for="image in files" class="relative w-full group masonry-item" ref="mansoryItem">
+      <article v-for="image in images" class="relative w-full group masonry-item" ref="mansoryItem">
         <UButton color="white" icon="i-heroicons-trash-20-solid" @click.native="deleteFile(image.key)" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" />
 
         <NuxtLink :to="`/detail/${image.key.split('.')[0]}`" @click.native="active = image.key.split('.')[0]">

@@ -1,4 +1,7 @@
 <script setup lang="ts">
+
+const { getFiles } = useFile()
+
 useHead({
   link: [
     { rel: 'icon', href: '/icon.png' }
@@ -21,6 +24,8 @@ useSeoMeta({
   title: 'Nuxt Image Galery',
   description: 'This is a template which allows you to display your pictures within a gallery'
 })
+
+await getFiles()
 </script>
 
 

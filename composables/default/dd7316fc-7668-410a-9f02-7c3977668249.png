@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="utf-8">
+<style>:root {
+--color-primary-50: 239 246 255;
+--color-primary-100: 219 234 254;
+--color-primary-200: 191 219 254;
+--color-primary-300: 147 197 253;
+--color-primary-400: 96 165 250;
+--color-primary-500: 59 130 246;
+--color-primary-600: 37 99 235;
+--color-primary-700: 29 78 216;
+--color-primary-800: 30 64 175;
+--color-primary-900: 30 58 138;
+--color-primary-950: 23 37 84;
+
+--color-gray-50: 250 250 250;
+--color-gray-100: 244 244 245;
+--color-gray-200: 228 228 231;
+--color-gray-300: 212 212 216;
+--color-gray-400: 161 161 170;
+--color-gray-500: 113 113 122;
+--color-gray-600: 82 82 91;
+--color-gray-700: 63 63 70;
+--color-gray-800: 39 39 42;
+--color-gray-900: 24 24 27;
+--color-gray-950: 9 9 11;
+  }</style>
+<title>Nuxt Image Galery</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="/icon.png">
+<meta property="og:site_name" content="NuxtLabs">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://nuxtlabs.com/social.png">
+<meta property="og:image:alt" content="NuxtLabs">
+<meta property="description" content="description">
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:site" content="@nuxtlabs">
+<meta name="description" content="This is a template which allows you to display your pictures within a gallery"><link rel="preload" as="style" href="/_nuxt/node_modules/.pnpm/tailwindcss@3.3.2/node_modules/tailwindcss/tailwind.css"><link rel="preload" as="style" href="/_nuxt/node_modules/.pnpm/@nuxthq+ui@2.0.4/node_modules/@nuxthq/ui/dist/runtime/ui.css"><link rel="preload" as="style" href="/_nuxt/node_modules/.pnpm/vite-plugin-vue-inspector@3.4.2/node_modules/vite-plugin-vue-inspector/src/Overlay.vue?vue&type=style&index=0&scoped=129d1e42&lang.css"><link rel="preload" as="style" href="/_nuxt/components/ImageDetail.vue?vue&type=style&index=0&scoped=3e27e591&lang.postcss"><link rel="preload" as="style" href="/_nuxt/components/ImageDetail.vue?vue&type=style&index=1&lang.css"><link rel="preload" as="style" href="/_nuxt/components/ImageGallery.vue?vue&type=style&index=0&scoped=0b288c1a&lang.postcss"><link rel="preload" as="style" href="/_nuxt/node_modules/.pnpm/@nuxt+ui-templates@1.1.1/node_modules/@nuxt/ui-templates/dist/templates/error-404.vue?vue&type=style&index=0&scoped=8b98f416&lang.css"><link rel="modulepreload" as="script" crossorigin href="/_nuxt/Users/flosciante/Documents/GitHub/image-gallery/node_modules/.pnpm/nuxt@3.4.3_3qfatcekpgbllh6uk5ivyhkbxq/node_modules/nuxt/dist/app/entry.js"><link rel="stylesheet" href="/_nuxt/node_modules/.pnpm/tailwindcss@3.3.2/node_modules/tailwindcss/tailwind.css"><link rel="stylesheet" href="/_nuxt/node_modules/.pnpm/@nuxthq+ui@2.0.4/node_modules/@nuxthq/ui/dist/runtime/ui.css"><link rel="stylesheet" href="/_nuxt/node_modules/.pnpm/vite-plugin-vue-inspector@3.4.2/node_modules/vite-plugin-vue-inspector/src/Overlay.vue?vue&type=style&index=0&scoped=129d1e42&lang.css"><link rel="stylesheet" href="/_nuxt/components/ImageDetail.vue?vue&type=style&index=0&scoped=3e27e591&lang.postcss"><link rel="stylesheet" href="/_nuxt/components/ImageDetail.vue?vue&type=style&index=1&lang.css"><link rel="stylesheet" href="/_nuxt/components/ImageGallery.vue?vue&type=style&index=0&scoped=0b288c1a&lang.postcss"><link rel="stylesheet" href="/_nuxt/node_modules/.pnpm/@nuxt+ui-templates@1.1.1/node_modules/@nuxt/ui-templates/dist/templates/error-404.vue?vue&type=style&index=0&scoped=8b98f416&lang.css"><script>"use strict";const w=window,de=document.documentElement,knownColorSchemes=["dark","light"],preference=window.localStorage.getItem("nuxt-color-mode")||"dark";let value=preference==="system"?getColorScheme():preference;const forcedColorMode=de.getAttribute("data-color-mode-forced");forcedColorMode&&(value=forcedColorMode),addColorScheme(value),w["__NUXT_COLOR_MODE__"]={preference,value,getColorScheme,addColorScheme,removeColorScheme};function addColorScheme(e){const o=""+e+"",t="";de.classList?de.classList.add(o):de.className+=" "+o,t&&de.setAttribute("data-"+t,e)}function removeColorScheme(e){const o=""+e+"",t="";de.classList?de.classList.remove(o):de.className=de.className.replace(new RegExp(o,"g"),""),t&&de.removeAttribute("data-"+t)}function prefersColorScheme(e){return w.matchMedia("(prefers-color-scheme"+e+")")}function getColorScheme(){if(w.matchMedia&&prefersColorScheme("").media!=="not all"){for(const e of knownColorSchemes)if(prefersColorScheme(":"+e).matches)return e}return"light"}
+</script></head>
+<body ><div id="__nuxt"><div class="bg-black min-h-[100dvh] overflow-x-auto relative flex flex-col md:block" data-v-inspector="app.vue:33:3"><!--[--><div data-v-inspector="pages/detail/[...slug].vue:8:3"><!----></div><!--]--><ul class="fixed top-4 left-48 right-0 whitespace-nowrap opacity-100 z-[9999]" data-v-inspector="components/ThumbnailList.vue:43:3"><!--[--><li class="text-black inline-block relative transform-gpu transition-all duration-500 mx-4" data-v-inspector="components/Thumbnail.vue:12:3" style="transform:translateX(0px) translateZ(0);"><a href="/detail/365e5fd0-f939-4aee-a52f-76eb3b7ac227" class=""><img width="83" height="51" src="/_files/default/365e5fd0-f939-4aee-a52f-76eb3b7ac227.png" alt="365e5fd0-f939-4aee-a52f-76eb3b7ac227.png" class="object-cover rounded-md transition-all duration-500 hover:brightness-100 w-[83px] h-[51px] opacity-75 brightness-50" data-v-inspector="components/Thumbnail.vue:14:7"></a></li><!--]--></ul></div></div><script>window.__NUXT__=(function(a,b){return {data:{w7B0jPJUOx:[{key:"365e5fd0-f939-4aee-a52f-76eb3b7ac227.png",version:"pCM6QUZTEJOn8Z8I58\u002FmnFvl9cqc9Vpa",size:778954,etag:"b0967573773f89318b2645e44feab0de",httpEtag:"\"b0967573773f89318b2645e44feab0de\"",uploaded:"2023-06-15T11:02:17.445Z",httpMetadata:{},customMetadata:{},url:"\u002F_files\u002Fdefault\u002F365e5fd0-f939-4aee-a52f-76eb3b7ac227.png"}]},state:{"$scolor-mode":{preference:a,value:a,unknown:b,forced:false},"$snuxt-session":{user:{username:"anonymous"}}},_errors:{w7B0jPJUOx:null},serverRendered:b,pinia:{},config:{public:{imageApi:"https:\u002F\u002Fmovies-proxy.vercel.app"},app:{baseURL:"\u002F",buildAssetsDir:"\u002F_nuxt\u002F",cdnURL:""}}}}("dark",true))</script><script type="module" src="/_nuxt/@vite/client" crossorigin></script><script type="module" src="/_nuxt/Users/flosciante/Documents/GitHub/image-gallery/node_modules/.pnpm/nuxt@3.4.3_3qfatcekpgbllh6uk5ivyhkbxq/node_modules/nuxt/dist/app/entry.js" crossorigin></script></body>
+</html>

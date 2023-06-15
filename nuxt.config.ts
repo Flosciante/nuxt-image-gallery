@@ -5,7 +5,9 @@ export default defineNuxtConfig({
   experimental: {
     viewTransition: true,
   },
+
   extends: '@nuxthq/neo',
+
   // image: {
   //   provider: 'proxy',
   //   providers: {
@@ -27,15 +29,20 @@ export default defineNuxtConfig({
     //https://ui.nuxtlabs.com/
     '@nuxthq/ui'
   ],
+
   devtools: {
     enabled: true
   },
+
   runtimeConfig: {
     public: {
       imageApi,
     },
   },
+
   colorMode: {
     preference: 'dark'
-  }
+  },
+
+  plugins: ['~/plugins/files.ts']
 })
