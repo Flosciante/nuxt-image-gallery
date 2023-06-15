@@ -54,15 +54,11 @@ async function onDrop(files: any) {
     </BottomMenu>
 
     <div class="masonry-container">
-      <div  ref="dropZoneRef">
+      <div ref="dropZoneRef">
         <UButton v-if="loggedIn" @click="isOpenUpload = true" variant="outline" color="white" class="border border-1 border-gray-500 border-dashed ring-transparent h-[430px] transition-colors duration-200 rounded-md upload group" :rounded="false">
-
-          <div class="w-full rounded-md flex items-center justify-center h-[430px]">
-            <img src="/icons/upload.svg" class="group-hover:hidden h-12 w-12 m-auto absolute" />
-            <div class="relative opacity-0 group-hover:opacity-100 flex w-full h-full justify-center items-center transition-all duration-100">
-              <img src="/icons/upload-solid.svg" class="absolute m-auto h-12 w-12 transition-all duration-100 group-hover:-translate-y-5" />
-              <span class="absolute m-auto group-hover:translate-y-5 transition-all duration-100 ">Drag & drop to upload</span>
-            </div>
+          <div class="w-full rounded-md flex flex-col gap-2 items-center justify-center h-[430px opacity-50 group-hover:opacity-100">
+            <span class="i-heroicons-arrow-up-tray-20-solid h-12 w-12" />
+            <span class="transition-all duration-100 ">Drag & drop to upload an image</span>
           </div>
         </UButton>
       </div>
@@ -84,8 +80,9 @@ async function onDrop(files: any) {
           </NuxtLink>
         </li>
       </ul>
-      <div v-if="(!images || !images.length) && !loggedIn" class="absolute inset-0 flex w-full h-screen text-4xl text-white items-center justify-center">
-        Please sign-in to upload images
+      <div v-if="(!images || !images.length) && !loggedIn" class="absolute inset-0 flex flex-col gap-2 w-full h-screen items-center justify-center">
+        <h3 class="text-4xl text-white">Welcome to the Image Gallery template.</h3>
+        <p class="text-gray-300 text-xl">Please sign-in to upload images.</p>
       </div>
     </div>
   </section>
