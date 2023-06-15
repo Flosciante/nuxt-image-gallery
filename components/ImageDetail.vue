@@ -1,6 +1,8 @@
 <script setup lang="ts">
 const { images, uploadFile } = useFile()
 
+const { loggedIn } = useUserSession()
+
 const isSmallScreen = useMediaQuery('(max-width: 1024px)')
 
 const { currentIndex, isFirstMovie, isLastMovie, downloadImage, applyFilters, initSwipe, convertBase64ToFile } = useImageGallery()
@@ -117,7 +119,7 @@ onMounted(() => {
                 <!-- back to gallery (desktop & not the first or last image) -->
                 <UButton v-if="!(isFirstMovie || isLastMovie) && !isSmallScreen" to="/" icon="i-heroicons-rectangle-group-20-solid" aria-label="Back to gallery" class="back hidden md:flex transition-colors duration-200" />
                 <!-- open filters-->
-                <UButton @click="filter = true" icon="i-heroicons-paint-brush-20-solid" aria-label="Add filters on image"
+                <UButton v-if="loggedIn" @click="filter = true" icon="i-heroicons-paint-brush-20-solid" aria-label="Add filters on image"
                   class="hidden lg:flex" />
                 <!-- open original-->
                 <UButton icon="i-heroicons-arrow-up-right-20-solid"
