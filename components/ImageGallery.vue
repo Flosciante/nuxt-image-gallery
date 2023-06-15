@@ -11,9 +11,9 @@ defineProps({
 })
 
 const isOpen = ref(false)
-const isOpenUpload = ref(false)
 const mansoryItem = ref<Array<HTMLElement>>([])
 const dropZoneRef = ref<HTMLButtonElement>()
+const fileInput = ref<HTMLInputElement>()
 
 const { loggedIn, clear } = useUserSession()
 
@@ -23,8 +23,20 @@ const active = useState()
 
 const { images, uploadFile, deleteFile } = useFile()
 
+const isSmallScreen = useMediaQuery('(max-width: 1024px)')
+
 async function onDrop(files: any) {
   uploadFile(files)
+}
+
+const fileSelection = async (event: any) => {
+  const files = event.target.files;
+
+  await uploadFile(files)
+}
+
+const openFilePicker = () => {
+  fileInput.value?.click()
 }
 
 </script>
@@ -53,21 +65,13 @@ async function onDrop(files: any) {
       </template>
     </BottomMenu>
 
-    <div class="masonry-container">
-      <div  ref="dropZoneRef">
-        <UButton v-if="loggedIn" @click="isOpenUpload = true" variant="outline" color="white" class="border border-1 border-gray-500 border-dashed ring-transparent h-[430px] transition-colors duration-200 rounded-md upload group" :rounded="false">
-
-          <div class="w-full rounded-md flex items-center justify-center h-[430px]">
-            <img src="/icons/upload.svg" class="group-hover:hidden h-12 w-12 m-auto absolute" />
-            <div class="relative opacity-0 group-hover:opacity-100 flex w-full h-full justify-center items-center transition-all duration-100">
-              <img src="/icons/upload-solid.svg" class="absolute m-auto h-12 w-12 transition-all duration-100 group-hover:-translate-y-5" />
-              <span class="absolute m-auto group-hover:translate-y-5 transition-all duration-100 ">Drag & drop to upload</span>
-            </div>
-          </div>
-        </UButton>
+    <div class="masonry-container w-full">
+      <div ref="dropZoneRef" v-if="loggedIn" :class="{ 'mb-4': isSmallScreen }">
+        <input ref="fileInput" class="hidden" type="file" accept="image/*" @change="fileSelection">
+        <UploadButton @click="isSmallScreen ? openFilePicker() : () => {}" />
       </div>
 
-      <ul v-if="images && images.length">
+      <ul v-if="images && images.length" class="grid grid-cols-1 gap-4 lg:block">
         <li v-for="image in images" class="relative w-full group masonry-item" ref="mansoryItem">
           <UButton color="white" icon="i-heroicons-trash-20-solid" @click.native="deleteFile(image.key)" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" />
 
@@ -122,20 +126,22 @@ async function onDrop(files: any) {
   border-color: rgba(255, 255, 255, 0.1)
 }
 
-.masonry-container {
-  column-count: 3;
-  column-gap: 20px;
-  column-fill: balance;
-  margin: 20px auto 0;
-  padding: 2rem;
-}
+@media screen and (min-width: 1024px) {
+  .masonry-container {
+    column-count: 3;
+    column-gap: 20px;
+    column-fill: balance;
+    margin: 20px auto 0;
+    padding: 2rem;
+  }
 
-.masonry-item, .upload {
-  display: inline-block;
-  margin: 0 0 20px;
-  -webkit-column-break-inside: avoid;
-  page-break-inside: avoid;
-  break-inside: avoid;
-  width: 100%;
+  .masonry-item, .upload {
+    display: inline-block;
+    margin: 0 0 20px;
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    width: 100%;
+  }
 }
 </style>

@@ -117,7 +117,7 @@ onMounted(() => {
             <div class="bottom-menu-button">
               <div v-if="!filter" class="flex gap-x-2 items-center">
                 <!-- back to gallery (desktop & not the first or last image) -->
-                <UButton v-if="!(isFirstMovie || isLastMovie) && !isSmallScreen" to="/" icon="i-heroicons-rectangle-group-20-solid" aria-label="Back to gallery" class="back hidden md:flex transition-colors duration-200" />
+                <UButton v-if="!(isFirstMovie || isLastMovie) || isSmallScreen" to="/" icon="i-heroicons-rectangle-group-20-solid" aria-label="Back to gallery" class="back flex transition-colors duration-200" />
                 <!-- open filters-->
                 <UButton v-if="loggedIn" @click="filter = true" icon="i-heroicons-paint-brush-20-solid" aria-label="Add filters on image"
                   class="hidden lg:flex" />
@@ -143,9 +143,6 @@ onMounted(() => {
         <div
           :class="{ '-translate-x-[100px]': filter }"
           class="transition-all duration-200 md:pt-36 overflow-hidden flex items-center justify-center w-full h-full max-h-[100dvh] relative">
-          <!-- back to gallery (mobile/tablet) -->
-          <UButton class="z-10 absolute top-4 right-4 lg:hidden" to="/" icon="i-heroicons-x-mark" variant="solid"
-            color="gray" aria-label="Back to gallery" />
           <div ref="movieEl" class="flex items-center justify-center md:justify-between gap-x-4 w-full">
             <!-- previous image if not the first image -->
             <UButton v-if="!isFirstMovie" @click.native="active === image.key.split('.')[0]"
