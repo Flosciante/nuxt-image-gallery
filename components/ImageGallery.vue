@@ -31,6 +31,11 @@ async function onDrop(files: any) {
 
 <template>
   <section class="gap-[22px] relative p-4">
+
+    <UModal v-model="isOpen">
+      <Login @close-modal="isOpen = false" />
+    </UModal>
+
     <BottomMenu class="bottom-menu">
       <template #logo>
         <img src="/images/logo.svg" width="29" height="20" />
@@ -62,21 +67,26 @@ async function onDrop(files: any) {
         </UButton>
       </div>
 
-      <article v-for="image in images" class="relative w-full group masonry-item" ref="mansoryItem">
-        <UButton color="white" icon="i-heroicons-trash-20-solid" @click.native="deleteFile(image.key)" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" />
+      <ul v-if="images && images.length">
+        <li v-for="image in images" class="relative w-full group masonry-item" ref="mansoryItem">
+          <UButton color="white" icon="i-heroicons-trash-20-solid" @click.native="deleteFile(image.key)" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" />
 
-        <NuxtLink :to="`/detail/${image.key.split('.')[0]}`" @click.native="active = image.key.split('.')[0]">
-          <img
-            v-if="image"
-            width="527"
-            height="430"
-            :src="image.url"
-            :alt="image.key"
-            class="h-auto w-full max-h-[430px] rounded-md transition-all duration-200 border-image brightness-[.8] hover:brightness-100 will-change-[filter] object-cover"
-            :class="{ active: active === image.key.split('.')[0] }"
-          />
-        </NuxtLink>
-      </article>
+          <NuxtLink :to="`/detail/${image.key.split('.')[0]}`" @click.native="active = image.key.split('.')[0]">
+            <img
+              v-if="image"
+              width="527"
+              height="430"
+              :src="image.url"
+              :alt="image.key"
+              class="h-auto w-full max-h-[430px] rounded-md transition-all duration-200 border-image brightness-[.8] hover:brightness-100 will-change-[filter] object-cover"
+              :class="{ active: active === image.key.split('.')[0] }"
+            />
+          </NuxtLink>
+        </li>
+      </ul>
+      <div v-if="(!images || !images.length) && !loggedIn" class="absolute inset-0 flex w-full h-screen text-4xl text-white items-center justify-center">
+        Please sign-in to upload images
+      </div>
     </div>
   </section>
 </template>
