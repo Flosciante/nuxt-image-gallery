@@ -9,27 +9,18 @@
     "postinstall": "nuxt prepare",
     "deploy": "NITRO_PRESET=cloudflare_pages npx nuxi build && wrangler pages publish dist/"
   },
-  "dependencies": {
-    "@iconify-json/fxemoji": "^1.1.4",
-    "@nuxt/image-edge": "1.0.0-28020728.5df24eb",
-    "@nuxtjs/html-validator": "^1.2.5",
-    "@pinia/nuxt": "^0.4.10",
-    "@vueuse/core": "^10.0.2",
-    "@vueuse/nuxt": "^10.0.2",
-    "nuxt-icon": "^0.3.2",
-    "pinia": "^2.0.36"
-  },
   "devDependencies": {
-    "@nuxt/devtools": "^0.4.1",
+    "@iconify-json/fxemoji": "^1.1.4",
+    "@nuxt/devtools": "^0.6.1",
     "@nuxt/eslint-config": "^0.1.1",
+    "@nuxt/image": "1.0.0-rc.1",
     "@nuxthq/neo": "^0.1.1",
-    "@nuxthq/ui": "^2.0.4",
-    "@vueuse/nuxt": "^9.13.0",
-    "eslint": "^8.38.0",
-    "nuxt": "^3.4.3",
+    "@nuxthq/ui": "^2.4.0",
+    "@nuxtjs/html-validator": "^1.4.0",
+    "@vueuse/core": "^10.2.0",
+    "@vueuse/nuxt": "^10.0.2",
+    "eslint": "^8.42.0",
+    "nuxt": "^3.5.3",
     "typescript": "^5.0.4"
-  },
-  "overrides": {
-    "vue": "latest"
   }
 }

@@ -24,8 +24,6 @@ export default defineNuxtConfig({
     // '@nuxt/image-edge',
     // https://vueuse.org/
     '@vueuse/nuxt',
-    // https://pinia.vuejs.org/ssr/nuxt.html
-    '@pinia/nuxt',
     //https://ui.nuxtlabs.com/
     '@nuxthq/ui'
   ],
