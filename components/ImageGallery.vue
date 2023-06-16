@@ -42,7 +42,7 @@ const openFilePicker = () => {
 </script>
 
 <template>
-  <section class="gap-[22px] relative p-4">
+  <section ref="dropZoneRef" class="gap-[22px] relative p-4">
 
     <UModal v-model="isOpen">
       <Login @close-modal="isOpen = false" />
@@ -66,7 +66,7 @@ const openFilePicker = () => {
     </BottomMenu>
 
     <div class="masonry-container w-full">
-      <div ref="dropZoneRef" v-if="loggedIn" :class="{ 'mb-4': isSmallScreen }">
+      <div v-if="loggedIn" :class="{ 'mb-4': isSmallScreen }">
         <input ref="fileInput" class="hidden" type="file" accept="image/*" @change="fileSelection">
         <UploadButton @click="isSmallScreen ? openFilePicker() : () => {}" />
       </div>
