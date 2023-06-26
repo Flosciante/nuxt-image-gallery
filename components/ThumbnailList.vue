@@ -1,14 +1,13 @@
 <script setup lang="ts">
 
 const { images } = useFile()
+const router = useRouter()
+const { width } = useWindowSize()
 
 const thumbnails = ref<HTMLElement>()
-const { width } = useWindowSize()
 const x = ref(0)
-const router = useRouter()
 
 const moveThumbnail = (slug: any) => {
-
   // get width of current image
   const currentMovie = images.value!.filter((image: any) => image.key.split('.')[0] === slug)
   const index = images.value!.indexOf(currentMovie![0]) as number
@@ -35,11 +34,12 @@ router.afterEach(async (to, _) => {
     moveThumbnail(to.params.slug[0])
   }
 })
-
 </script>
 
 <template>
-  <ul v-if="images && images.length" class="fixed top-4 left-48 right-0 whitespace-nowrap" ref="thumbnails">
-    <Thumbnail class="transform-gpu transition-all duration-500 mx-4" v-for="(thumbnail, index) in images" :key="index" :thumbnail="thumbnail" :style="`transform: translateX(${x}px) translateZ(0)`" />
-  </ul>
+  <div class="bg-black/10 backdrop-blur-md w-screen top-0 h-[68px] absolute overflow-hidden">
+    <ul v-if="images && images.length" class="fixed top-2 left-48 right-0 whitespace-nowrap" ref="thumbnails">
+      <Thumbnail class="transform-gpu transition-all duration-500 mx-4" v-for="(thumbnail, index) in images" :key="index" :thumbnail="thumbnail" :style="`transform: translateX(${x}px) translateZ(0)`" />
+    </ul>
+  </div>
 </template>
