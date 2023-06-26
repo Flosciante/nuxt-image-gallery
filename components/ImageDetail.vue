@@ -16,6 +16,11 @@ const bottomMenu = ref()
 const movieEl = ref<HTMLElement>()
 const imageEl: Ref<any> = ref()
 const imageContainer = ref<HTMLElement>()
+const resizeEl = ref<HTMLElement>()
+const resizeTopLeftEl = ref<HTMLElement>()
+const resizeBottomLeftEl = ref<HTMLElement>()
+const resizeTopRightEl = ref<HTMLElement>()
+const resizeBottomRightEl = ref<HTMLElement>()
 
 //filter
 const filter = ref(false)
@@ -27,6 +32,17 @@ const saturate = ref(100)
 const sepia = ref(0)
 const objectsFit = ref(['Contain', 'Cover', 'Scale-down', 'Fill', 'None'])
 const objectFitSelected = ref(objectsFit.value[0])
+const filterUpdated = ref(false)
+const imageProperties = ref({ left: 0, top: 0, width: 0, height: 0 })
+
+const minimumSize = 20;
+
+let originalWidth = 0;
+let originalHeight = 0;
+let originalX = 0;
+let originalY = 0;
+let originalMouseX = 0;
+let originalMouseY = 0;
 
 const image: any = computed(() => {
   return images.value!.filter((file: any) => file.key.split('.')[0] === route.params.slug[0])[0]
@@ -59,17 +75,127 @@ const resetFilter = () => {
   saturate.value = 100
   hueRotate.value = 0
   sepia.value = 0
+  filterUpdated.value = false
 }
+
+const cancelFilter = () => {
+  filter.value = false
+
+  resetFilter()
+}
+
+watch([contrast, blur, invert, saturate, hueRotate, sepia], () => {
+  filterUpdated.value = true
+})
 
 const saveImage = async () => {
-  const modifiedImage = await applyFilters(imageContainer.value, imageEl.value, contrast.value, blur.value, invert.value, saturate.value, hueRotate.value, sepia.value, true)
+  if (filterUpdated.value) {
+    const modifiedImage = await applyFilters(imageContainer.value, imageEl.value, contrast.value, blur.value, invert.value, saturate.value, hueRotate.value, sepia.value, true)
 
-  const imageToUpload = await convertBase64ToFile(modifiedImage, image)
+    const imageToUpload = await convertBase64ToFile(modifiedImage, image)
 
-  await uploadFile([imageToUpload], true)
+    await uploadFile([imageToUpload], true)
+  }
 }
 
+const initResize = () => {
+
+  const resizers = [resizeTopLeftEl, resizeTopRightEl, resizeBottomLeftEl, resizeBottomRightEl]
+
+  resizers.forEach(resizer => {
+    resizer.value!.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      originalWidth = parseFloat(getComputedStyle(resizeEl.value!).getPropertyValue('width').replace('px', ''));
+      originalHeight = parseFloat(getComputedStyle(resizeEl.value!).getPropertyValue('height').replace('px', ''));
+      originalX = resizeEl.value!.getBoundingClientRect().left;
+      originalY = resizeEl.value!.getBoundingClientRect().top;
+      originalMouseX = e.pageX;
+      originalMouseY = e.pageY;
+
+      console.log('originalWidth', originalWidth)
+      console.log('originalHeight', originalHeight)
+      console.log('originalX', originalX)
+      console.log('originalY', originalY)
+      console.log('originalMouseX', originalMouseX)
+      console.log('originalMouseY', originalMouseY)
+
+      window.addEventListener('mousemove', resize);
+      window.addEventListener('mouseup', stopResize);
+    });
+  })
+
+}
+
+const resize = (e: MouseEvent) => {
+
+  if (!(e.target instanceof HTMLElement)) return;
+
+  const currentResizer = e.target;
+  const pageX = e.pageX;
+  const pageY = e.pageY;
+
+  if (currentResizer.classList.contains('bottom-right')) {
+    const width = originalWidth + (pageX - originalMouseX);
+    const height = originalHeight + (pageY - originalMouseY);
+
+    if (width > minimumSize) {
+      resizeEl.value!.style.width = width + 'px';
+    }
+    if (height > minimumSize) {
+      resizeEl.value!.style.height = height + 'px';
+    }
+  } else if (currentResizer.classList.contains('bottom-left')) {
+    const height = originalHeight + (pageY - originalMouseY);
+    const width = originalWidth - (pageX - originalMouseX);
+
+    if (height > minimumSize) {
+      resizeEl.value!.style.height = height + 'px';
+    }
+    if (width > minimumSize) {
+      resizeEl.value!.style.width = width + 'px';
+      resizeEl.value!.style.left = originalX + (pageX - originalMouseX) + 'px';
+    }
+  } else if (currentResizer.classList.contains('top-right')) {
+    const width = originalWidth + (pageX - originalMouseX);
+    const height = originalHeight - (pageY - originalMouseY);
+
+    if (width > minimumSize) {
+      resizeEl.value!.style.width = width + 'px';
+    }
+    if (height > minimumSize) {
+      resizeEl.value!.style.height = height + 'px';
+      resizeEl.value!.style.top = originalY + (pageY - originalMouseY) + 'px';
+    }
+  } else {
+    const width = originalWidth - (pageX - originalMouseX);
+    const height = originalHeight - (pageY - originalMouseY);
+
+    if (width > minimumSize) {
+      resizeEl.value!.style.width = width + 'px';
+      resizeEl.value!.style.left = originalX + (pageX - originalMouseX) + 'px';
+    }
+    if (height > minimumSize) {
+      resizeEl.value!.style.height = height + 'px';
+      resizeEl.value!.style.top = originalY + (pageY - originalMouseY) + 'px';
+    }
+  }
+};
+
+const stopResize = () => {
+  window.removeEventListener('mousemove', resize);
+};
+
 onMounted(() => {
+
+  initResize()
+
+  imageProperties.value.left = imageEl?.value.getBoundingClientRect().left
+  imageProperties.value.top = imageEl?.value.getBoundingClientRect().top
+  imageProperties.value.width = imageEl?.value.getBoundingClientRect().width
+  imageProperties.value.height = imageEl?.value.getBoundingClientRect().height
+
+  console.log("imageEl", imageEl.value.getBoundingClientRect())
+
   if (imageEl.value) {
     initSwipe(imageEl)
   }
@@ -84,6 +210,15 @@ onMounted(() => {
         class="object-cover w-full h-full blur-[70px] brightness-[.2] will-change-[filter]" alt="" />
     </div>
 
+    <div ref="resizeEl" class="absolute bg-white" :style="`left:${imageProperties.left}px; top:${imageProperties.top}px; width:${imageProperties.width}px; height:${imageProperties.height}px;`">
+      <div class="w-full h-full border-2 border-blue-700">
+        <div ref="resizeTopLeftEl" class="h-4 w-4 rounded-full bg-white border-2 border-blue-700 absolute -left-[6px] -top-[6px] z-50" />
+        <div ref="resizeTopRightEl" class="h-4 w-4 rounded-full bg-white border-2 border-blue-700 absolute -right-[6px] -top-[6px] z-50" />
+        <div ref="resizeBottomLeftEl" class="h-4 w-4 rounded-full bg-white border-2 border-blue-700 absolute -left-[6px] -bottom-[6px] z-50" />
+        <div ref="resizeBottomRightEl" class="h-4 w-4 rounded-full bg-white border-2 border-blue-700 absolute -right-[6px] -bottom-[6px] z-50" />
+      </div>
+    </div>
+
     <UContainer class="overflow-x-hidden relative flex items-center justify-center">
       <Filter class="absolute md:mt-36 transition-transform duration-200" :class="filter ? 'translate-x-0 right-8 ' : 'translate-x-full right-0'"
         @reset-filter="resetFilter" @close-filter="filter = false">
@@ -92,7 +227,7 @@ onMounted(() => {
             <!-- filters list -->
             <div class="flex gap-x-4 justify-between items-center pb-4">
               <span class="text-white w-40">Fit</span>
-              <USelectMenu v-model="objectFitSelected" :options="objectsFit" class="w-full mr-12" />
+              <USelectMenu v-model="objectFitSelected" :options="objectsFit" class="w-full" />
             </div>
             <Gauge v-model="sepia" :max="100" title="Sepia" />
             <Gauge v-model="hueRotate" :max="180" title="Hue-rotate" />
@@ -117,24 +252,36 @@ onMounted(() => {
             <div class="bottom-menu-button">
               <div v-if="!filter" class="flex gap-x-2 items-center">
                 <!-- back to gallery (desktop & not the first or last image) -->
-                <UButton v-if="!(isFirstMovie || isLastMovie) || isSmallScreen" to="/" icon="i-heroicons-rectangle-group-20-solid" aria-label="Back to gallery" class="back flex transition-colors duration-200" />
+                <UTooltip text="Back to gallery" :shortcuts="['Esc']">
+                  <UButton v-if="!(isFirstMovie || isLastMovie) || isSmallScreen" to="/" size="md" icon="i-heroicons-rectangle-group-20-solid" aria-label="Back to gallery" class="back flex transition-colors duration-200" />
+                </UTooltip>
                 <!-- open filters-->
-                <UButton v-if="loggedIn" @click="filter = true" icon="i-heroicons-paint-brush-20-solid" aria-label="Add filters on image"
-                  class="hidden lg:flex" />
+                <UTooltip text="Add filters">
+                  <UButton v-if="loggedIn" @click="filter = true" size="md" icon="i-heroicons-paint-brush-20-solid" aria-label="Add filters on image"
+                    class="hidden lg:flex" />
+                </UTooltip>
                 <!-- open original-->
-                <UButton icon="i-heroicons-arrow-up-right-20-solid"
-                  :to="image.url" target="_blank" aria-label="Open original image" />
+                <UTooltip text="Open in a new tab">
+                  <UButton icon="i-heroicons-arrow-up-right-20-solid" size="md"
+                    :to="image.url" target="_blank" aria-label="Open original image" />
+                </UTooltip>
                 <!-- download original or modified image -->
-                <UButton icon="i-heroicons-arrow-down-tray-20-solid"
-                  @click="downloadImage(image.key, imageContainer, imageEl, contrast, blur, invert, saturate, hueRotate, sepia)"
-                  class="hidden md:flex" aria-label="Download original or modified image" />
+                <UTooltip text="Download">
+                  <UButton icon="i-heroicons-arrow-down-tray-20-solid" size="md"
+                    @click="downloadImage(image.key, imageContainer, imageEl, contrast, blur, invert, saturate, hueRotate, sepia)"
+                    class="hidden md:flex" aria-label="Download original or modified image" />
+                </UTooltip>
               </div>
 
               <div v-else class="flex gap-x-2 items-center">
-                <UButton icon="i-heroicons-check-20-solid" @click="saveImage()" class="hidden md:flex"
-                aria-label="Upload original or modified image to gallery" />
-                <UButton icon="i-heroicons-x-mark" @click="filter = false" class="hidden md:flex"
-                aria-label="Upload original or modified image to gallery" />
+                <UTooltip text="Save filtered image">
+                  <UButton icon="i-heroicons-check-20-solid" @click="saveImage()" class="hidden md:flex"
+                  aria-label="Upload original or modified image to gallery" />
+                </UTooltip>
+                <UTooltip text="Cancel filters">
+                  <UButton icon="i-heroicons-x-mark" @click="cancelFilter()" class="hidden md:flex"
+                  aria-label="Upload original or modified image to gallery" />
+                </UTooltip>
               </div>
             </div>
           </template>
@@ -142,23 +289,27 @@ onMounted(() => {
 
         <div
           :class="{ '-translate-x-[100px]': filter }"
-          class="transition-all duration-200 md:pt-36 overflow-hidden flex items-center justify-center w-full h-full max-h-[100dvh] relative">
+          class="transition-all duration-200 overflow-hidden pt-8 flex items-center justify-center w-full h-screen relative">
           <div ref="movieEl" class="flex items-center justify-center md:justify-between gap-x-4 w-full">
             <!-- previous image if not the first image -->
-            <UButton v-if="!isFirstMovie" @click.native="active === image.key.split('.')[0]"
-              :to="`/detail/${images![currentIndex - 1].key.split('.')[0]}`" size="lg" icon="i-heroicons-chevron-left"
-              class="hidden md:flex ml-4" aria-label="Go to previous image" />
+            <UTooltip v-if="!isFirstMovie" text="Previous" :shortcuts="['←']">
+              <UButton  @click.native="active === image.key.split('.')[0]"
+                :to="`/detail/${images![currentIndex - 1].key.split('.')[0]}`" size="lg" icon="i-heroicons-chevron-left"
+                class="hidden md:flex ml-4" aria-label="Go to previous image" />
+            </UTooltip>
 
             <div class="flex group" v-else>
               <!-- back to gallery if first movie -->
-              <UButton @click.native="active === image.key.split('.')[0]" to="/" size="xl" color="gray" variant="ghost"
-                class="back hidden md:flex ml-4 transition-colors duration-200" aria-label="Back to gallery">
-                <UIcon name="i-heroicons-rectangle-group-20-solid" class="w-6 h-6" />
-              </UButton>
+              <UTooltip text="Back to gallery" :shortcuts="['Esc']">
+                <UButton @click.native="active === image.key.split('.')[0]" to="/" size="xl" color="gray" variant="ghost"
+                  class="back hidden md:flex ml-4 transition-colors duration-200" aria-label="Back to gallery">
+                  <UIcon name="i-heroicons-rectangle-group-20-solid" class="w-6 h-6" />
+                </UButton>
+              </UTooltip>
             </div>
 
             <!-- image -->
-            <div class="relative flex items-center justify-center h-[84dvh]">
+            <div class="relative flex items-center justify-center xl:m-16">
               <div ref="imageContainer">
                 <img v-if="image" :src="image.url" :alt="image.key" class="rounded object-contain transition-all duration-200"
                   width="1000"
@@ -170,17 +321,21 @@ onMounted(() => {
             </div>
 
             <!-- next image (if not the last image) -->
-            <UButton v-if="!isLastMovie" @click.native="active === image.key.split('.')[0]"
-              :to="`/detail/${images![currentIndex + 1].key.split('.')[0]}`" size="lg" icon="i-heroicons-chevron-right"
-              :ui="{ rounded: 'rounded-full' }" class="hidden md:flex mr-4" aria-label="Go to next image" />
+            <UTooltip v-if="!isLastMovie" text="Next" :shortcuts="['→']">
+              <UButton @click.native="active === image.key.split('.')[0]"
+                :to="`/detail/${images![currentIndex + 1].key.split('.')[0]}`" size="lg" icon="i-heroicons-chevron-right"
+                :ui="{ rounded: 'rounded-full' }" class="hidden md:flex mr-4" aria-label="Go to next image" />
+            </UTooltip>
 
             <!-- back to gallery if last image -->
-            <div class="flex" v-else>
-              <UButton @click.native="active === image.key.split('.')[0]" to="/" size="xl" color="gray" variant="ghost"
-                class="back hidden md:flex mr-4 transition-colors duration-200" aria-label="Back to gallery">
-                <UIcon name="i-heroicons-rectangle-group-20-solid" class="w-6 h-6" />
-              </UButton>
-            </div>
+            <UTooltip v-else text="Back to gallery" :shortcuts="['Esc']">
+              <div class="flex">
+                <UButton @click.native="active === image.key.split('.')[0]" to="/" size="xl" color="gray" variant="ghost"
+                  class="back hidden md:flex mr-4 transition-colors duration-200" aria-label="Back to gallery">
+                  <UIcon name="i-heroicons-rectangle-group-20-solid" class="w-6 h-6" />
+                </UButton>
+              </div>
+            </UTooltip>
           </div>
         </div>
       </div>
