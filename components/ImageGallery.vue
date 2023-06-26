@@ -66,11 +66,6 @@ const openFilePicker = () => {
     </BottomMenu>
 
     <div class="masonry-container w-full">
-      <div v-if="loggedIn" :class="{ 'mb-4': isSmallScreen }">
-        <input ref="fileInput" class="hidden" type="file" accept="image/*" @change="fileSelection">
-        <UploadButton @click="isSmallScreen ? openFilePicker() : () => {}" />
-      </div>
-
       <ul v-if="images && images.length" class="grid grid-cols-1 gap-4 lg:block">
         <li v-for="image in images" class="relative w-full group masonry-item" ref="mansoryItem">
           <UButton v-if="loggedIn" color="white" icon="i-heroicons-trash-20-solid" @click.native="deleteFile(image.key)" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" />
@@ -91,6 +86,10 @@ const openFilePicker = () => {
       <div v-if="(!images || !images.length) && !loggedIn" class="absolute inset-0 flex flex-col gap-2 w-full h-screen items-center justify-center">
         <h3 class="text-4xl text-white">Welcome to the Image Gallery template.</h3>
         <p class="text-gray-300 text-xl">Please sign-in to upload images.</p>
+      </div>
+      <div v-if="loggedIn" :class="{ 'mb-4': isSmallScreen }">
+        <input ref="fileInput" class="hidden" type="file" accept="image/*" @change="fileSelection">
+        <UploadButton @click="openFilePicker()" />
       </div>
     </div>
   </section>
