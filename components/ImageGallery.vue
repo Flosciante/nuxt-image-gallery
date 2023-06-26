@@ -42,7 +42,7 @@ const openFilePicker = () => {
 </script>
 
 <template>
-  <section ref="dropZoneRef" class="gap-[22px] relative p-4">
+  <section ref="dropZoneRef" class="relative h-screen gap-[22px] p-4">
 
     <UModal v-model="isOpen">
       <Login @close-modal="isOpen = false" />
