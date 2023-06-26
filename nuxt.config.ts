@@ -25,7 +25,9 @@ export default defineNuxtConfig({
     // https://vueuse.org/
     '@vueuse/nuxt',
     //https://ui.nuxtlabs.com/
-    '@nuxthq/ui'
+    '@nuxthq/ui',
+    //https://github.com/nuxt-modules/fontaine
+    '@nuxtjs/fontaine'
   ],
 
   devtools: {
