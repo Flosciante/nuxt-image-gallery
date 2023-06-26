@@ -10,7 +10,7 @@ const isSmallScreen = useMediaQuery('(max-width: 1024px)')
       <UIcon name="i-heroicons-arrow-up-tray" class="group-hover:hidden h-12 w-12 m-auto absolute" />
       <div class="relative opacity-0 group-hover:opacity-100 flex w-full h-full justify-center items-center transition-all duration-100">
         <UIcon name="i-heroicons-arrow-up-tray" class="absolute m-auto h-12 w-12 transition-all duration-100 group-hover:-translate-y-5" />
-        <span class="absolute m-auto group-hover:translate-y-5 transition-all duration-100 ">Drag & drop to upload</span>
+        <span class="absolute m-auto opacity-0 group-hover:opacity-100 group-hover:translate-y-5 transition-all duration-200 ">Click or Drag & drop to upload</span>
       </div>
     </div>
     <div v-else class="w-full rounded-md flex items-center justify-center h-[100px] md:h-[200px]">
