@@ -1,29 +1,17 @@
 <script setup lang="ts">
-defineProps({
-  bottomMenuDescription: {
-    type: String,
-    default: 'Media Gallery template'
-  },
-  bottomMenuButtonText: {
-    type: String,
-    default: 'Clone'
-  }
-})
 
 const isOpen = ref(false)
 const mansoryItem = ref<Array<HTMLElement>>([])
 const dropZoneRef = ref<HTMLButtonElement>()
 const fileInput = ref<HTMLInputElement>()
-
-const { loggedIn, clear } = useUserSession()
-
-const { isOverDropZone } = useDropZone(dropZoneRef, onDrop)
-
-const active = useState()
-
-const { images, uploadFile, deleteFile } = useFile()
+const bottomMenu = ref<HTMLDivElement>()
 
 const isSmallScreen = useMediaQuery('(max-width: 1024px)')
+const active = useState()
+const { isOverDropZone } = useDropZone(dropZoneRef, onDrop)
+
+const { loggedIn, clear } = useUserSession()
+const { images, uploadFile, deleteFile } = useFile()
 
 async function onDrop(files: any) {
   uploadFile(files)
@@ -38,15 +26,15 @@ const fileSelection = async (event: any) => {
 const openFilePicker = () => {
   fileInput.value?.click()
 }
-
 </script>
 
 <template>
-  <section ref="dropZoneRef" class="relative h-screen gap-[22px] p-4">
+  <section ref="dropZoneRef" class="relative h-screen gap-[22px] p-4" @open-login="isOpen = true" @close-login="isOpen = false">
 
-    <UModal v-model="isOpen">
-      <Login @close-modal="isOpen = false" />
-    </UModal>
+    <USlideover v-model="isOpen" class="flex items-center justify-center" side="left">
+      <Login class="z-50 bg-gray-800 rounded-md" />
+      <UButton @click="isOpen = false" icon="i-heroicons-x-mark" class="absolute right-4 top-4" />
+    </USlideover>
 
     <BottomMenu class="bottom-menu">
       <template #logo>
@@ -54,7 +42,7 @@ const openFilePicker = () => {
       </template>
       <template #description>
         <p class="bottom-menu-description">
-          {{ bottomMenuDescription }}
+          Media Gallery template
         </p>
       </template>
       <template #buttons>

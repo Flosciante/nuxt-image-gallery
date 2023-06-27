@@ -2,22 +2,25 @@
 const { fetch: refreshSession } = useUserSession()
 const password = ref()
 
-const emit = defineEmits(['closeModal'])
+const emit = defineEmits(['closeLogin', 'openLogin'])
 
 async function login () {
   await $fetch('/api/auth', {
     method: 'POST',
     body: { password: password.value }
   })
+
   await refreshSession()
-  emit('closeModal')
+
+  emit('closeLogin')
 }
 </script>
 
 <template>
-  <form class="flex flex-col gap-y-4" @submit.prevent="login">
-    <h1>Login to upload images</h1>
-    <UInput v-model="password" type="password" placeholder="Enter password"/>
-    <UButton type="submit" label="Login" />
+  <form class="flex flex-col gap-y-4 p-4 items-center" @submit.prevent="login">
+    <h1 class="text-lg">Login to upload images</h1>
+    <UInput type="password" placeholder="Enter password" icon="i-heroicons-key" class="!w-60" />
+
+    <UButton type="submit" label="Login" color="green" variant="outline" class="px-4" size="lg" />
   </form>
 </template>
