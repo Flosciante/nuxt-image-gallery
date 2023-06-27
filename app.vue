@@ -34,4 +34,5 @@ await getFiles()
     <NuxtPage />
     <ThumbnailList :class="$router.currentRoute.value.fullPath !== '/' ? 'opacity-100 z-[9999]' : 'opacity-0 z-[-1]'" />
   </div>
+  <UNotifications />
 </template>

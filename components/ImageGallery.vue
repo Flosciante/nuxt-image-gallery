@@ -29,10 +29,10 @@ const openFilePicker = () => {
 </script>
 
 <template>
-  <section ref="dropZoneRef" class="relative h-screen gap-[22px] p-4" @open-login="isOpen = true" @close-login="isOpen = false">
+  <section ref="dropZoneRef" class="relative h-screen gap-[22px] p-4">
 
     <USlideover v-model="isOpen" class="flex items-center justify-center" side="left">
-      <Login class="z-50 bg-gray-800 rounded-md" />
+      <Login class="z-50 bg-gray-800 rounded-md" @close-login="isOpen = false" />
       <UButton @click="isOpen = false" icon="i-heroicons-x-mark" class="absolute right-4 top-4" />
     </USlideover>
 

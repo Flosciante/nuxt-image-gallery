@@ -11,17 +11,17 @@
   },
   "devDependencies": {
     "@iconify-json/fxemoji": "^1.1.4",
-    "@nuxt/devtools": "^0.6.1",
+    "@nuxt/devtools": "^0.6.4",
     "@nuxt/eslint-config": "^0.1.1",
     "@nuxt/image": "1.0.0-rc.1",
-    "@nuxthq/neo": "^0.1.1",
+    "@nuxthq/neo": "^0.3.2",
     "@nuxthq/ui": "npm:@nuxthq/ui-edge@latest",
     "@nuxtjs/fontaine": "^0.4.0",
     "@nuxtjs/html-validator": "^1.4.0",
     "@vueuse/core": "^10.2.0",
-    "@vueuse/nuxt": "^10.0.2",
-    "eslint": "^8.42.0",
-    "nuxt": "^3.5.3",
+    "@vueuse/nuxt": "^10.2.0",
+    "eslint": "^8.43.0",
+    "nuxt": "^3.6.1",
     "typescript": "^5.0.4"
   }
 }
