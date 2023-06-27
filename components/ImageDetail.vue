@@ -1,7 +1,6 @@
 <script setup lang="ts">
 
 const bottomMenu = ref()
-const movieEl = ref<HTMLElement>()
 const imageEl: Ref<any> = ref()
 const imageContainer = ref<HTMLElement>()
 
@@ -80,6 +79,8 @@ const saveImage = async () => {
 watch([contrast, blur, invert, saturate, hueRotate, sepia], () => {
   filterUpdated.value = true
 })
+
+onMounted(() => initSwipe(imageEl))
 </script>
 
 <template>
@@ -162,7 +163,7 @@ watch([contrast, blur, invert, saturate, hueRotate, sepia], () => {
         <div
           :class="{ '-translate-x-[100px]': filter }"
           class="transition-all duration-200 overflow-hidden pt-8 flex items-center justify-center w-full h-screen relative">
-          <div ref="movieEl" class="flex items-center justify-center md:justify-between gap-x-4 w-full">
+          <div class="flex items-center justify-center md:justify-between gap-x-4 w-full">
             <!-- previous image if not the first image -->
             <UTooltip v-if="!isFirstMovie" text="Previous" :shortcuts="['←']">
               <UButton  @click.native="active === image.key.split('.')[0]"
