@@ -98,8 +98,9 @@ watch([contrast, blur, invert, saturate, hueRotate, sepia], () => {
             <!-- filters list -->
             <div class="flex gap-x-4 justify-between items-center pb-4">
               <span class="text-white w-40">Fit</span>
-              <USelectMenu v-model="objectFitSelected" :options="objectsFit" class="w-full" />
+              <USelectMenu v-model="objectFitSelected" :options="objectsFit" class="!w-52 mr-4" />
             </div>
+
             <Gauge v-model="sepia" :max="100" title="Sepia" />
             <Gauge v-model="hueRotate" :max="180" title="Hue-rotate" />
             <Gauge v-model="saturate" :max="100" title="Saturate" />

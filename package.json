@@ -15,7 +15,7 @@
     "@nuxt/eslint-config": "^0.1.1",
     "@nuxt/image": "1.0.0-rc.1",
     "@nuxthq/neo": "^0.1.1",
-    "@nuxthq/ui": "^2.4.0",
+    "@nuxthq/ui": "npm:@nuxthq/ui-edge@latest",
     "@nuxtjs/fontaine": "^0.4.0",
     "@nuxtjs/html-validator": "^1.4.0",
     "@vueuse/core": "^10.2.0",
