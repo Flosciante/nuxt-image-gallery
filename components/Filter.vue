@@ -1,5 +1,7 @@
 <script setup lang="ts">
+
 defineEmits(['resetFilter, closeFilter'])
+
 </script>
 
 <template>

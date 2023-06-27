@@ -3,7 +3,6 @@
 const { images } = useFile()
 const router = useRouter()
 const { width } = useWindowSize()
-
 const thumbnails = ref<HTMLElement>()
 const x = ref(0)
 
@@ -30,6 +29,7 @@ onMounted(async () => {
 //move thumbnail after route changes
 router.afterEach(async (to, _) => {
   await nextTick()
+
   if (router.currentRoute.value.fullPath !== '/') {
     moveThumbnail(to.params.slug[0])
   }
