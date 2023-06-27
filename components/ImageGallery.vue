@@ -2,7 +2,7 @@
 
 const isOpen = ref(false)
 const mansoryItem = ref<Array<HTMLElement>>([])
-const dropZoneRef = ref<HTMLButtonElement>()
+const dropZoneRef = ref<HTMLElement>()
 const fileInput = ref<HTMLInputElement>()
 const bottomMenu = ref<HTMLDivElement>()
 
