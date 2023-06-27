@@ -1,26 +1,9 @@
 <script setup lang="ts">
-const { images, uploadFile } = useFile()
-
-const { loggedIn } = useUserSession()
-
-const isSmallScreen = useMediaQuery('(max-width: 1024px)')
-
-const { currentIndex, isFirstMovie, isLastMovie, downloadImage, applyFilters, initSwipe, convertBase64ToFile } = useImageGallery()
-
-const active = useState()
-
-const route = useRoute()
-const router = useRouter()
 
 const bottomMenu = ref()
 const movieEl = ref<HTMLElement>()
 const imageEl: Ref<any> = ref()
 const imageContainer = ref<HTMLElement>()
-const resizeEl = ref<HTMLElement>()
-const resizeTopLeftEl = ref<HTMLElement>()
-const resizeBottomLeftEl = ref<HTMLElement>()
-const resizeTopRightEl = ref<HTMLElement>()
-const resizeBottomRightEl = ref<HTMLElement>()
 
 //filter
 const filter = ref(false)
@@ -33,16 +16,16 @@ const sepia = ref(0)
 const objectsFit = ref(['Contain', 'Cover', 'Scale-down', 'Fill', 'None'])
 const objectFitSelected = ref(objectsFit.value[0])
 const filterUpdated = ref(false)
-const imageProperties = ref({ left: 0, top: 0, width: 0, height: 0 })
 
-const minimumSize = 20;
+const { images, uploadFile } = useFile()
+const { loggedIn } = useUserSession()
 
-let originalWidth = 0;
-let originalHeight = 0;
-let originalX = 0;
-let originalY = 0;
-let originalMouseX = 0;
-let originalMouseY = 0;
+const isSmallScreen = useMediaQuery('(max-width: 1024px)')
+const { currentIndex, isFirstMovie, isLastMovie, downloadImage, applyFilters, initSwipe, convertBase64ToFile } = useImageGallery()
+
+const active = useState()
+const route = useRoute()
+const router = useRouter()
 
 const image: any = computed(() => {
   return images.value!.filter((file: any) => file.key.split('.')[0] === route.params.slug[0])[0]
@@ -84,10 +67,6 @@ const cancelFilter = () => {
   resetFilter()
 }
 
-watch([contrast, blur, invert, saturate, hueRotate, sepia], () => {
-  filterUpdated.value = true
-})
-
 const saveImage = async () => {
   if (filterUpdated.value) {
     const modifiedImage = await applyFilters(imageContainer.value, imageEl.value, contrast.value, blur.value, invert.value, saturate.value, hueRotate.value, sepia.value, true)
@@ -98,107 +77,8 @@ const saveImage = async () => {
   }
 }
 
-const initResize = () => {
-
-  const resizers = [resizeTopLeftEl, resizeTopRightEl, resizeBottomLeftEl, resizeBottomRightEl]
-
-  resizers.forEach(resizer => {
-    resizer.value!.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      originalWidth = parseFloat(getComputedStyle(resizeEl.value!).getPropertyValue('width').replace('px', ''));
-      originalHeight = parseFloat(getComputedStyle(resizeEl.value!).getPropertyValue('height').replace('px', ''));
-      originalX = resizeEl.value!.getBoundingClientRect().left;
-      originalY = resizeEl.value!.getBoundingClientRect().top;
-      originalMouseX = e.pageX;
-      originalMouseY = e.pageY;
-
-      console.log('originalWidth', originalWidth)
-      console.log('originalHeight', originalHeight)
-      console.log('originalX', originalX)
-      console.log('originalY', originalY)
-      console.log('originalMouseX', originalMouseX)
-      console.log('originalMouseY', originalMouseY)
-
-      window.addEventListener('mousemove', resize);
-      window.addEventListener('mouseup', stopResize);
-    });
-  })
-
-}
-
-const resize = (e: MouseEvent) => {
-
-  if (!(e.target instanceof HTMLElement)) return;
-
-  const currentResizer = e.target;
-  const pageX = e.pageX;
-  const pageY = e.pageY;
-
-  if (currentResizer.classList.contains('bottom-right')) {
-    const width = originalWidth + (pageX - originalMouseX);
-    const height = originalHeight + (pageY - originalMouseY);
-
-    if (width > minimumSize) {
-      resizeEl.value!.style.width = width + 'px';
-    }
-    if (height > minimumSize) {
-      resizeEl.value!.style.height = height + 'px';
-    }
-  } else if (currentResizer.classList.contains('bottom-left')) {
-    const height = originalHeight + (pageY - originalMouseY);
-    const width = originalWidth - (pageX - originalMouseX);
-
-    if (height > minimumSize) {
-      resizeEl.value!.style.height = height + 'px';
-    }
-    if (width > minimumSize) {
-      resizeEl.value!.style.width = width + 'px';
-      resizeEl.value!.style.left = originalX + (pageX - originalMouseX) + 'px';
-    }
-  } else if (currentResizer.classList.contains('top-right')) {
-    const width = originalWidth + (pageX - originalMouseX);
-    const height = originalHeight - (pageY - originalMouseY);
-
-    if (width > minimumSize) {
-      resizeEl.value!.style.width = width + 'px';
-    }
-    if (height > minimumSize) {
-      resizeEl.value!.style.height = height + 'px';
-      resizeEl.value!.style.top = originalY + (pageY - originalMouseY) + 'px';
-    }
-  } else {
-    const width = originalWidth - (pageX - originalMouseX);
-    const height = originalHeight - (pageY - originalMouseY);
-
-    if (width > minimumSize) {
-      resizeEl.value!.style.width = width + 'px';
-      resizeEl.value!.style.left = originalX + (pageX - originalMouseX) + 'px';
-    }
-    if (height > minimumSize) {
-      resizeEl.value!.style.height = height + 'px';
-      resizeEl.value!.style.top = originalY + (pageY - originalMouseY) + 'px';
-    }
-  }
-};
-
-const stopResize = () => {
-  window.removeEventListener('mousemove', resize);
-};
-
-onMounted(() => {
-
-  initResize()
-
-  imageProperties.value.left = imageEl?.value.getBoundingClientRect().left
-  imageProperties.value.top = imageEl?.value.getBoundingClientRect().top
-  imageProperties.value.width = imageEl?.value.getBoundingClientRect().width
-  imageProperties.value.height = imageEl?.value.getBoundingClientRect().height
-
-  console.log("imageEl", imageEl.value.getBoundingClientRect())
-
-  if (imageEl.value) {
-    initSwipe(imageEl)
-  }
+watch([contrast, blur, invert, saturate, hueRotate, sepia], () => {
+  filterUpdated.value = true
 })
 </script>
 
@@ -208,15 +88,6 @@ onMounted(() => {
     <div class="absolute inset-0 w-full h-full">
       <img :src="image.url"
         class="object-cover w-full h-full blur-[70px] brightness-[.2] will-change-[filter]" alt="" />
-    </div>
-
-    <div ref="resizeEl" class="absolute bg-white" :style="`left:${imageProperties.left}px; top:${imageProperties.top}px; width:${imageProperties.width}px; height:${imageProperties.height}px;`">
-      <div class="w-full h-full border-2 border-blue-700">
-        <div ref="resizeTopLeftEl" class="h-4 w-4 rounded-full bg-white border-2 border-blue-700 absolute -left-[6px] -top-[6px] z-50" />
-        <div ref="resizeTopRightEl" class="h-4 w-4 rounded-full bg-white border-2 border-blue-700 absolute -right-[6px] -top-[6px] z-50" />
-        <div ref="resizeBottomLeftEl" class="h-4 w-4 rounded-full bg-white border-2 border-blue-700 absolute -left-[6px] -bottom-[6px] z-50" />
-        <div ref="resizeBottomRightEl" class="h-4 w-4 rounded-full bg-white border-2 border-blue-700 absolute -right-[6px] -bottom-[6px] z-50" />
-      </div>
     </div>
 
     <UContainer class="overflow-x-hidden relative flex items-center justify-center">
@@ -252,12 +123,12 @@ onMounted(() => {
             <div class="bottom-menu-button">
               <div v-if="!filter" class="flex gap-x-2 items-center">
                 <!-- back to gallery (desktop & not the first or last image) -->
-                <UTooltip text="Back to gallery" :shortcuts="['Esc']">
-                  <UButton v-if="!(isFirstMovie || isLastMovie) || isSmallScreen" to="/" size="md" icon="i-heroicons-rectangle-group-20-solid" aria-label="Back to gallery" class="back flex transition-colors duration-200" />
+                <UTooltip v-if="!(isFirstMovie || isLastMovie) || isSmallScreen" text="Back to gallery" :shortcuts="['Esc']">
+                  <UButton to="/" size="md" icon="i-heroicons-rectangle-group-20-solid" aria-label="Back to gallery" class="back flex transition-colors duration-200" />
                 </UTooltip>
                 <!-- open filters-->
-                <UTooltip text="Add filters">
-                  <UButton v-if="loggedIn" @click="filter = true" size="md" icon="i-heroicons-paint-brush-20-solid" aria-label="Add filters on image"
+                <UTooltip v-if="loggedIn" text="Add filters">
+                  <UButton  @click="filter = true" size="md" icon="i-heroicons-paint-brush-20-solid" aria-label="Add filters on image"
                     class="hidden lg:flex" />
                 </UTooltip>
                 <!-- open original-->
