@@ -83,6 +83,37 @@ export const useImageGallery = () => {
     return convertedFile;
   }
 
+  const magnifierImage = (e: any, containerEl: any, imageEl: HTMLElement, magnifierEl: HTMLElement, zoomFactor: number = 2) => {
+    const imageRect = imageEl.getBoundingClientRect()
+    const containerRect = containerEl.getBoundingClientRect()
+
+    const x = e.pageX - containerRect.left
+    const y = e.pageY - containerRect.top
+
+    const imgWidth = imageRect.width
+    const imgHeight = imageRect.height
+
+    let zoomedWidth = imgWidth * (zoomFactor === 1 ? 1.5 : zoomFactor);
+    let zoomedHeight = imgHeight * (zoomFactor === 1 ? 1.5 : zoomFactor);
+
+    let xperc = (x / imgWidth) * 100
+    let yperc = (y / imgHeight) * 100
+
+    if (x > 0.01 * imgWidth) {
+      xperc += 0.15 * xperc;
+    }
+
+    if (y >= 0.01 * imgHeight) {
+      yperc += 0.15 * yperc;
+    }
+
+    magnifierEl.style.backgroundSize = `${zoomedWidth}px ${zoomedHeight}px`
+    magnifierEl.style.backgroundPositionX = xperc - 9 + "%";
+    magnifierEl.style.backgroundPositionY = yperc - 9 + "%";
+    magnifierEl.style.left = x - 50 + "px";
+    magnifierEl.style.top = y - 50 + "px";
+  }
+
   return {
     downloadImage,
     applyFilters,
@@ -90,6 +121,7 @@ export const useImageGallery = () => {
     isFirstMovie,
     isLastMovie,
     initSwipe,
-    convertBase64ToFile
+    convertBase64ToFile,
+    magnifierImage
   }
 }

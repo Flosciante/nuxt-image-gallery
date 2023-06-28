@@ -1,7 +1,8 @@
 <script setup lang="ts">
 
 const bottomMenu = ref()
-const imageEl: Ref<any> = ref()
+const imageEl = ref<any>()
+const magnifierEl = ref<HTMLElement>()
 const imageContainer = ref<HTMLElement>()
 
 //filter
@@ -12,6 +13,8 @@ const hueRotate = ref(0)
 const invert = ref(0)
 const saturate = ref(100)
 const sepia = ref(0)
+const magnifier = ref(false)
+const zoomFactor = ref(1)
 const objectsFit = ref(['Contain', 'Cover', 'Scale-down', 'Fill', 'None'])
 const objectFitSelected = ref(objectsFit.value[0])
 const filterUpdated = ref(false)
@@ -20,7 +23,7 @@ const { images, uploadFile } = useFile()
 const { loggedIn } = useUserSession()
 
 const isSmallScreen = useMediaQuery('(max-width: 1024px)')
-const { currentIndex, isFirstMovie, isLastMovie, downloadImage, applyFilters, initSwipe, convertBase64ToFile } = useImageGallery()
+const { currentIndex, isFirstMovie, isLastMovie, downloadImage, applyFilters, initSwipe, convertBase64ToFile, magnifierImage } = useImageGallery()
 
 const active = useState()
 const route = useRoute()
@@ -102,6 +105,12 @@ onMounted(() => initSwipe(imageEl))
               <USelectMenu v-model="objectFitSelected" :options="objectsFit" class="!w-52 mr-4" />
             </div>
 
+            <div class="flex gap-x-4 w-full justify-end pr-4 pb-4">
+              <UCheckbox v-model="magnifier" name="magnifier" label="Magnifier" />
+              <UIcon name="i-heroicons-magnifying-glass-solid" class="w-5 h-5" />
+            </div>
+
+            <Gauge v-if="magnifier" v-model="zoomFactor" :max="4" title="Zoom level" />
             <Gauge v-model="sepia" :max="100" title="Sepia" />
             <Gauge v-model="hueRotate" :max="180" title="Hue-rotate" />
             <Gauge v-model="saturate" :max="100" title="Saturate" />
@@ -184,13 +193,14 @@ onMounted(() => initSwipe(imageEl))
             <!-- image -->
             <div class="relative flex items-center justify-center xl:m-16">
               <div ref="imageContainer">
-                <img v-if="image" :src="image.url" :alt="image.key" class="rounded object-contain transition-all duration-200"
-                  width="1000"
-                  height="1000"
-                  :class="[{ active: route.params.slug[0] === image.key.split('.')[0] }, filter ? 'w-[80%] ml-[12px]' : 'w-full']" ref="imageEl"
-                  :style="`filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%); object-fit:${objectFitSelected.toLowerCase()};`"
-                  crossorigin="anonymous" />
-              </div>
+                <div class="group">
+                  <img v-if="image" :src="image.url" :alt="image.key" class="rounded object-contain transition-all duration-200 block"
+                    :class="[{ active: route.params.slug[0] === image.key.split('.')[0] }, filter ? 'w-[80%] ml-[12px]' : 'w-full']" ref="imageEl"
+                    :style="`filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%); object-fit:${objectFitSelected.toLowerCase()};`"
+                    crossorigin="anonymous"   @mousemove="magnifierImage($event, imageContainer, imageEl, magnifierEl!, zoomFactor)" />
+                    <div v-if="magnifier" ref="magnifierEl" class="w-[100px] h-[100px] absolute border border-gray-200 pointer-events-none rounded-full block opacity-0 group-hover:opacity-100 transition-opacity duration-200 " :style="`background-image: url(${image.url}`" />
+                  </div>
+                </div>
             </div>
 
             <!-- next image (if not the last image) -->
@@ -217,6 +227,7 @@ onMounted(() => initSwipe(imageEl))
 </template>
 
 <style scoped lang="postcss">
+
 @media (min-width: 768px) {
   img.active {
     contain: layout;

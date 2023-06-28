@@ -18,10 +18,10 @@
     "@nuxthq/ui": "npm:@nuxthq/ui-edge@latest",
     "@nuxtjs/fontaine": "^0.4.0",
     "@nuxtjs/html-validator": "^1.4.0",
-    "@vueuse/core": "^10.2.0",
-    "@vueuse/nuxt": "^10.2.0",
+    "@vueuse/core": "^10.2.1",
+    "@vueuse/nuxt": "^10.2.1",
     "eslint": "^8.43.0",
     "nuxt": "^3.6.1",
-    "typescript": "^5.0.4"
+    "typescript": "^5.1.5"
   }
 }
