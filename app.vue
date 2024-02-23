@@ -1,5 +1,6 @@
 <script setup lang="ts">
-const { fetchImages } = useImageGallery()
+
+const { getFiles } = useFile()
 
 useHead({
   link: [
@@ -24,7 +25,7 @@ useSeoMeta({
   description: 'This is a template which allows you to display your pictures within a gallery'
 })
 
-await fetchImages()
+await getFiles()
 </script>
 
 
@@ -33,4 +34,5 @@ await fetchImages()
     <NuxtPage />
     <ThumbnailList :class="$router.currentRoute.value.fullPath !== '/' ? 'opacity-100 z-[9999]' : 'opacity-0 z-[-1]'" />
   </div>
+  <UNotifications />
 </template>

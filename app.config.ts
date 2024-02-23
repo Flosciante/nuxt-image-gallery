@@ -16,5 +16,22 @@ export default defineAppConfig({
         }
       }
     },
+    slideover: {
+      background: '',
+      base: "flex-1 flex flex-col w-full focus:outline-none",
+      overlay: {
+        background: 'bg-gray-200/75 dark:bg-gray-800/50 backdrop-blur-md',
+      }
+    },
+    range: {
+      thumb: {
+        color: 'dark:text-gray-100'
+      },
+      progress: {
+        color: 'dark:text-gray-100',
+        rounded: 'rounded-s-lg',
+        background: 'bg-gray-500 dark:bg-gray-100'
+      },
+    }
   }
 })

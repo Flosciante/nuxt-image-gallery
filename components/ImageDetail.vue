@@ -1,26 +1,9 @@
 <script setup lang="ts">
-import { useImagesStore } from '../stores/images'
-
-const config = useRuntimeConfig()
-const isSmallScreen = useMediaQuery('(max-width: 1024px)')
-const { initSwipe, downloadImage, applyFilters } = useImageGallery()
-
-const imagesStore = useImagesStore()
-
-console.log('imagesStore', imagesStore.images)
-
-const active = useState()
-
-const route = useRoute()
-const router = useRouter()
 
 const bottomMenu = ref()
-const movieEl = ref<HTMLElement>()
-const baseUrl = ref(config.public.imageApi)
-const poster: Ref<any> = ref()
+const imageEl = ref<any>()
+const magnifierEl = ref<HTMLElement>()
 const imageContainer = ref<HTMLElement>()
-const isOpenUpload = ref(false)
-const imageToUpload = ref()
 
 //filter
 const filter = ref(false)
@@ -30,21 +13,25 @@ const hueRotate = ref(0)
 const invert = ref(0)
 const saturate = ref(100)
 const sepia = ref(0)
+const magnifier = ref(false)
+const zoomFactor = ref(1)
 const objectsFit = ref(['Contain', 'Cover', 'Scale-down', 'Fill', 'None'])
 const objectFitSelected = ref(objectsFit.value[0])
+const filterUpdated = ref(false)
 
-//const { data: image } = await useFetch<any>('/api/image', { params: { idImage: parseInt(route.params.slug[0]) } })
+const { images, uploadFile } = useFile()
+const { loggedIn } = useUserSession()
+
+const isSmallScreen = useMediaQuery('(max-width: 1024px)')
+const { currentIndex, isFirstMovie, isLastMovie, downloadImage, applyFilters, initSwipe, convertBase64ToFile, magnifierImage } = useImageGallery()
+
+const active = useState()
+const route = useRoute()
+const router = useRouter()
 
 const image: any = computed(() => {
-  return imagesStore.images.filter(file => file.key.split('.')[0] === route.params.slug[0])[0]
+  return images.value!.filter((file: any) => file.key.split('.')[0] === route.params.slug[0])[0]
 })
-
-const currentIndex: ComputedRef<number> = computed(() => imagesStore.images.findIndex((image) => image.key.split('.')[0] === route.params.slug[0]))
-const isFirstMovie: ComputedRef<boolean> = computed(() => imagesStore.images[0].key.split('.')[0] === route.params.slug[0])
-const isLastMovie: ComputedRef<boolean> = computed(() => imagesStore.images[imagesStore.images.length - 1].key.split('.')[0] === route.params.slug[0])
-
-  console.log('isFirstMovie', isFirstMovie)
-  console.log('isLastMovie', isLastMovie)
 
 onKeyStroke('Escape', (e) => {
   router.push('/')
@@ -54,7 +41,7 @@ onKeyStroke('ArrowLeft', (e) => {
   if (isFirstMovie.value) {
     router.push('/')
   } else {
-    router.push(`/detail/${imagesStore.images[currentIndex.value - 1].key.split('.')[0]}`)
+    router.push(`/detail/${images.value![currentIndex.value - 1].key.split('.')[0]}`)
   }
 })
 
@@ -62,7 +49,7 @@ onKeyStroke('ArrowRight', (e) => {
   if (isLastMovie.value) {
     router.push('/')
   } else {
-    router.push(`/detail/${imagesStore.images[currentIndex.value + 1].key.split('.')[0]}`)
+    router.push(`/detail/${images.value![currentIndex.value + 1].key.split('.')[0]}`)
   }
 })
 
@@ -73,36 +60,41 @@ const resetFilter = () => {
   saturate.value = 100
   hueRotate.value = 0
   sepia.value = 0
+  filterUpdated.value = false
+}
+
+const cancelFilter = () => {
+  filter.value = false
+
+  resetFilter()
 }
 
 const saveImage = async () => {
-  const modifiedImage = await applyFilters(imageContainer.value, poster.value, contrast.value, blur.value, invert.value, saturate.value, hueRotate.value, sepia.value, true)
+  if (filterUpdated.value) {
+    const modifiedImage = await applyFilters(imageContainer.value, imageEl.value, contrast.value, blur.value, invert.value, saturate.value, hueRotate.value, sepia.value, true)
 
-  imageToUpload.value = { newImage: modifiedImage, key: image.value.key }
+    const imageToUpload = await convertBase64ToFile(modifiedImage, image)
 
-  isOpenUpload.value = true
+    await uploadFile([imageToUpload], true)
+  }
 }
 
-onMounted(() => {
-  if (poster.value) {
-    initSwipe(poster)
-  }
+watch([contrast, blur, invert, saturate, hueRotate, sepia], () => {
+  filterUpdated.value = true
 })
+
+onMounted(() => initSwipe(imageEl))
 </script>
 
 <template>
-  <div v-if="currentIndex >= 0">
+  <div v-if="image">
     <!-- background -->
     <div class="absolute inset-0 w-full h-full">
-      <img v-if="image" :src="image.url"
+      <img :src="image.url"
         class="object-cover w-full h-full blur-[70px] brightness-[.2] will-change-[filter]" alt="" />
     </div>
 
     <UContainer class="overflow-x-hidden relative flex items-center justify-center">
-      <UModal v-if="imageToUpload" v-model="isOpenUpload">
-        <Upload @close-modal="isOpenUpload = false" :image="imageToUpload" />
-      </UModal>
-
       <Filter class="absolute md:mt-36 transition-transform duration-200" :class="filter ? 'translate-x-0 right-8 ' : 'translate-x-full right-0'"
         @reset-filter="resetFilter" @close-filter="filter = false">
         <div class="flex flex-col gap-y-12 pb-6 h-[60dvh]" :class="filter ? 'block opacity-100' : 'hidden opacity-0'">
@@ -110,8 +102,15 @@ onMounted(() => {
             <!-- filters list -->
             <div class="flex gap-x-4 justify-between items-center pb-4">
               <span class="text-white w-40">Fit</span>
-              <USelectMenu v-model="objectFitSelected" :options="objectsFit" class="w-full mr-12" />
+              <USelectMenu v-model="objectFitSelected" :options="objectsFit" class="!w-52 mr-4" />
             </div>
+
+            <div class="flex gap-x-4 w-full justify-end pr-4 pb-4">
+              <UCheckbox v-model="magnifier" name="magnifier" label="Magnifier" />
+              <UIcon name="i-heroicons-magnifying-glass-solid" class="w-5 h-5" />
+            </div>
+
+            <Gauge v-if="magnifier" v-model="zoomFactor" :max="4" title="Zoom level" />
             <Gauge v-model="sepia" :max="100" title="Sepia" />
             <Gauge v-model="hueRotate" :max="180" title="Hue-rotate" />
             <Gauge v-model="saturate" :max="100" title="Saturate" />
@@ -122,7 +121,7 @@ onMounted(() => {
         </div>
       </Filter>
 
-      <div v-if="image" class="h-full w-full max-w-7xl flex items-center justify-center relative mx-auto">
+      <div class="h-full w-full max-w-7xl flex items-center justify-center relative mx-auto">
         <!-- Bottom menu -->
         <BottomMenu class="bottom-menu" :class="{ 'right-[350px]': filter }" ref="bottomMenu">
           <template #description>
@@ -135,71 +134,91 @@ onMounted(() => {
             <div class="bottom-menu-button">
               <div v-if="!filter" class="flex gap-x-2 items-center">
                 <!-- back to gallery (desktop & not the first or last image) -->
-                <UButton v-if="!(isFirstMovie || isLastMovie) && !isSmallScreen" to="/" icon="i-heroicons-rectangle-group-20-solid" aria-label="Back to gallery" class="back hidden md:flex transition-colors duration-200" />
+                <UTooltip v-if="!(isFirstMovie || isLastMovie) || isSmallScreen" text="Back to gallery" :shortcuts="['Esc']">
+                  <UButton to="/" size="md" icon="i-heroicons-rectangle-group-20-solid" aria-label="Back to gallery" class="back flex transition-colors duration-200" />
+                </UTooltip>
                 <!-- open filters-->
-                <!-- <UButton @click="filter = true" icon="i-heroicons-paint-brush-20-solid" aria-label="Add filters on image"
-                  class="hidden lg:flex" /> -->
+                <UTooltip v-if="loggedIn" text="Add filters">
+                  <UButton  @click="filter = true" size="md" icon="i-heroicons-paint-brush-20-solid" aria-label="Add filters on image"
+                    class="hidden lg:flex" />
+                </UTooltip>
                 <!-- open original-->
-                <UButton icon="i-heroicons-arrow-up-right-20-solid"
-                  :to="image.url" target="_blank" aria-label="Open original image" />
+                <UTooltip text="Open in a new tab">
+                  <UButton icon="i-heroicons-arrow-up-right-20-solid" size="md"
+                    :to="image.url" target="_blank" aria-label="Open original image" />
+                </UTooltip>
                 <!-- download original or modified image -->
-                <UButton icon="i-heroicons-arrow-down-tray-20-solid"
-                  @click="downloadImage(image.key, imageContainer, poster, contrast, blur, invert, saturate, hueRotate, sepia)"
-                  class="hidden md:flex" aria-label="Download original or modified image" />
+                <UTooltip text="Download">
+                  <UButton icon="i-heroicons-arrow-down-tray-20-solid" size="md"
+                    @click="downloadImage(image.key, imageContainer, imageEl, contrast, blur, invert, saturate, hueRotate, sepia)"
+                    class="hidden md:flex" aria-label="Download original or modified image" />
+                </UTooltip>
               </div>
 
               <div v-else class="flex gap-x-2 items-center">
-                <UButton icon="i-heroicons-check-20-solid" @click="saveImage()" class="hidden md:flex"
-                aria-label="Upload original or modified image to gallery" />
-                <UButton icon="i-heroicons-x-mark" @click="filter = false" class="hidden md:flex"
-                aria-label="Upload original or modified image to gallery" />
+                <UTooltip text="Save filtered image">
+                  <UButton icon="i-heroicons-check-20-solid" @click="saveImage()" class="hidden md:flex"
+                  aria-label="Upload original or modified image to gallery" />
+                </UTooltip>
+                <UTooltip text="Cancel filters">
+                  <UButton icon="i-heroicons-x-mark" @click="cancelFilter()" class="hidden md:flex"
+                  aria-label="Upload original or modified image to gallery" />
+                </UTooltip>
               </div>
             </div>
           </template>
         </BottomMenu>
 
-        <div v-if="image"
+        <div
           :class="{ '-translate-x-[100px]': filter }"
-          class="transition-all duration-200 md:pt-36 overflow-hidden flex items-center justify-center w-full h-full max-h-[100dvh] relative">
-          <!-- back to gallery (mobile/tablet) -->
-          <UButton class="z-10 absolute top-4 right-4 lg:hidden" to="/" icon="i-heroicons-x-mark" variant="solid"
-            color="gray" aria-label="Back to gallery" />
-          <div ref="movieEl" class="flex items-center justify-center md:justify-between gap-x-4 w-full">
+          class="transition-all duration-200 overflow-hidden pt-8 flex items-center justify-center w-full h-screen relative">
+          <div class="flex items-center justify-center md:justify-between gap-x-4 w-full">
             <!-- previous image if not the first image -->
-            <UButton v-if="!isFirstMovie" @click.native="active == image.id"
-              :to="`/detail/${imagesStore.images[currentIndex - 1].key.split('.')[0]}`" size="lg" icon="i-heroicons-chevron-left"
-              class="hidden md:flex ml-4" aria-label="Go to previous image" />
+            <UTooltip v-if="!isFirstMovie" text="Previous" :shortcuts="['←']">
+              <UButton  @click.native="active === image.key.split('.')[0]"
+                :to="`/detail/${images![currentIndex - 1].key.split('.')[0]}`" size="lg" icon="i-heroicons-chevron-left"
+                class="hidden md:flex ml-4" aria-label="Go to previous image" />
+            </UTooltip>
 
             <div class="flex group" v-else>
               <!-- back to gallery if first movie -->
-              <UButton @click.native="active == image.key" to="/" size="xl" color="gray" variant="ghost"
-                class="back hidden md:flex ml-4 transition-colors duration-200" aria-label="Back to gallery">
-                <UIcon name="i-heroicons-rectangle-group-20-solid" class="w-6 h-6" />
-              </UButton>
+              <UTooltip text="Back to gallery" :shortcuts="['Esc']">
+                <UButton @click.native="active === image.key.split('.')[0]" to="/" size="xl" color="gray" variant="ghost"
+                  class="back hidden md:flex ml-4 transition-colors duration-200" aria-label="Back to gallery">
+                  <UIcon name="i-heroicons-rectangle-group-20-solid" class="w-6 h-6" />
+                </UButton>
+              </UTooltip>
             </div>
 
             <!-- image -->
-            <div class="relative flex items-center justify-center h-[84dvh]">
+            <div class="relative flex items-center justify-center xl:m-16">
               <div ref="imageContainer">
-                <img v-if="image" :src="image.url" :alt="image.key" class="rounded object-contain transition-all duration-200"
-                  :class="[{ active: route.params.slug === image.key.split('.')[0] }, filter ? 'w-[80%] ml-[12px]' : 'w-full']" ref="poster"
-                  :style="`filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%); object-fit:${objectFitSelected.toLowerCase()};`"
-                  crossorigin="anonymous" />
-              </div>
+                <div class="group">
+                  <img v-if="image" :src="image.url" :alt="image.key" class="rounded object-contain transition-all duration-200 block"
+                    :class="[{ active: route.params.slug[0] === image.key.split('.')[0] }, filter ? 'w-[80%] ml-[12px]' : 'w-full']" ref="imageEl"
+                    :style="`filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%); object-fit:${objectFitSelected.toLowerCase()};`"
+                    crossorigin="anonymous"   @mousemove="magnifierImage($event, imageContainer, imageEl, magnifierEl!, zoomFactor)" />
+                    <div v-if="magnifier" ref="magnifierEl" class="w-[100px] h-[100px] absolute border border-gray-200 pointer-events-none rounded-full block opacity-0 group-hover:opacity-100 transition-opacity duration-200 " :style="`background-image: url(${image.url}`" />
+                  </div>
+                </div>
             </div>
 
             <!-- next image (if not the last image) -->
-            <UButton v-if="!isLastMovie" @click.native="active == image.key"
-              :to="`/detail/${imagesStore.images[currentIndex + 1].key.split('.')[0]}`" size="lg" icon="i-heroicons-chevron-right"
-              :ui="{ rounded: 'rounded-full' }" class="hidden md:flex mr-4" aria-label="Go to next image" />
+            <UTooltip v-if="!isLastMovie" text="Next" :shortcuts="['→']">
+              <UButton @click.native="active === image.key.split('.')[0]"
+                :to="`/detail/${images![currentIndex + 1].key.split('.')[0]}`" size="lg" icon="i-heroicons-chevron-right"
+                :ui="{ rounded: 'rounded-full' }" class="hidden md:flex mr-4" aria-label="Go to next image" />
+            </UTooltip>
 
             <!-- back to gallery if last image -->
-            <div class="flex" v-else>
-              <UButton @click.native="active == image.key" to="/" size="xl" color="gray" variant="ghost"
-                class="back hidden md:flex mr-4 transition-colors duration-200" aria-label="Back to gallery">
-                <UIcon name="i-heroicons-rectangle-group-20-solid" class="w-6 h-6" />
-              </UButton>
-            </div>
+            <UTooltip v-else text="Back to gallery" :shortcuts="['Esc']">
+              <div class="flex">
+                <UButton @click.native="active === image.key.split('.')[0]" to="/" size="xl" color="gray" variant="ghost"
+                  class="back hidden md:flex mr-4 transition-colors duration-200" aria-label="Back to gallery">
+                  <UIcon name="i-heroicons-rectangle-group-20-solid" class="w-6 h-6" />
+                </UButton>
+              </div>
+            </UTooltip>
           </div>
         </div>
       </div>
@@ -208,6 +227,7 @@ onMounted(() => {
 </template>
 
 <style scoped lang="postcss">
+
 @media (min-width: 768px) {
   img.active {
     contain: layout;

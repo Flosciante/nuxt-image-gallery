@@ -5,7 +5,9 @@ export default defineNuxtConfig({
   experimental: {
     viewTransition: true,
   },
+
   extends: '@nuxthq/neo',
+
   // image: {
   //   provider: 'proxy',
   //   providers: {
@@ -22,17 +24,25 @@ export default defineNuxtConfig({
     // '@nuxt/image-edge',
     // https://vueuse.org/
     '@vueuse/nuxt',
-    // https://pinia.vuejs.org/ssr/nuxt.html
-    '@pinia/nuxt',
     //https://ui.nuxtlabs.com/
-    '@nuxthq/ui'
+    '@nuxthq/ui',
+    //https://github.com/nuxt-modules/fontaine
+    '@nuxtjs/fontaine'
   ],
+
   devtools: {
     enabled: true
   },
+
   runtimeConfig: {
     public: {
       imageApi,
     },
   },
+
+  colorMode: {
+    preference: 'dark'
+  },
+
+  plugins: ['~/plugins/files.ts']
 })

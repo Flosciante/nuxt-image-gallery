@@ -1,69 +1,40 @@
 <script setup lang="ts">
-import { useImagesStore } from '~/stores/images'
-
-const { loggedIn, clear } = useUserSession()
-const { fetchImages } = useImageGallery()
-const { width } = useWindowSize()
-
-const imagesStore = useImagesStore()
 
 const isOpen = ref(false)
-const isOpenUpload = ref(false)
 const mansoryItem = ref<Array<HTMLElement>>([])
+const dropZoneRef = ref<HTMLElement>()
+const fileInput = ref<HTMLInputElement>()
+const bottomMenu = ref<HTMLDivElement>()
 
-const { data: files, refresh } = await useFetch('/api/files')
-
-imagesStore.images = files
-
-watch(() => width.value, () => {
-  resizeMasonryItem()
-})
-
-defineProps({
-  bottomMenuDescription: {
-    type: String,
-    default: 'Media Gallery template'
-  },
-  bottomMenuButtonText: {
-    type: String,
-    default: 'Clone'
-  }
-})
-
+const isSmallScreen = useMediaQuery('(max-width: 1024px)')
 const active = useState()
+const { isOverDropZone } = useDropZone(dropZoneRef, onDrop)
 
-const resizeMasonryItem = () => {
-  mansoryItem.value.map((item: HTMLElement) => {
-    const img = item.querySelector('img') as HTMLElement
+const { loggedIn, clear } = useUserSession()
+const { images, uploadFile, deleteFile } = useFile()
 
-    item.style.gridRowEnd = `span ${Math.ceil(img?.offsetHeight / 10)}`
-  })
+async function onDrop(files: any) {
+  uploadFile(files)
 }
 
-async function deleteFile(key: string) {
-  await $fetch(`/api/files/${key}`, {
-    method: 'DELETE'
-  })
-  await refresh()
+const fileSelection = async (event: any) => {
+  const files = event.target.files;
+
+  await uploadFile(files)
 }
 
-const onUploadDone = async () => {
-  await refresh()
-
-  isOpenUpload.value = false
+const openFilePicker = () => {
+  fileInput.value?.click()
 }
-
 </script>
 
 <template>
-  <section class="gap-[22px] relative p-4">
-    <UModal v-model="isOpen">
-      <Login @close-modal="isOpen = false" />
-    </UModal>
+  <section ref="dropZoneRef" class="relative h-screen gap-[22px] p-4">
 
-    <UModal v-model="isOpenUpload">
-      <Upload @close-modal="onUploadDone" />
-    </UModal>
+    <USlideover v-model="isOpen" class="flex items-center justify-center" side="left">
+      <Login class="z-50 bg-gray-800 rounded-md" @close-login="isOpen = false" />
+      <UButton @click="isOpen = false" icon="i-heroicons-x-mark" class="absolute right-4 top-4" />
+    </USlideover>
 
     <BottomMenu class="bottom-menu">
       <template #logo>
@@ -71,7 +42,7 @@ const onUploadDone = async () => {
       </template>
       <template #description>
         <p class="bottom-menu-description">
-          {{ bottomMenuDescription }}
+          Media Gallery template
         </p>
       </template>
       <template #buttons>
@@ -82,32 +53,32 @@ const onUploadDone = async () => {
       </template>
     </BottomMenu>
 
-    <div class="masonry-container">
-      <UButton v-if="loggedIn" @click="isOpenUpload = true" variant="outline" color="white" class="border border-1 border-gray-500 border-dashed ring-transparent h-[430px] transition-colors duration-200 rounded-md upload group" :rounded="false">
-          <div class="w-full rounded-md flex items-center justify-center h-[430px]">
-            <img src="/icons/upload.svg" class="group-hover:hidden h-12 w-12 m-auto absolute" />
-            <div class="relative opacity-0 group-hover:opacity-100 flex w-full h-full justify-center items-center transition-all duration-100">
-              <img src="/icons/upload-solid.svg" class="absolute m-auto h-12 w-12 transition-all duration-100 group-hover:-translate-y-5" />
-              <span class="absolute m-auto group-hover:translate-y-5 transition-all duration-100 ">Upload image</span>
-            </div>
-          </div>
-        </UButton>
+    <div class="masonry-container w-full">
+      <ul v-if="images && images.length" class="grid grid-cols-1 gap-4 lg:block">
+        <li v-for="image in images" class="relative w-full group masonry-item" ref="mansoryItem">
+          <UButton v-if="loggedIn" color="white" icon="i-heroicons-trash-20-solid" @click.native="deleteFile(image.key)" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" />
 
-      <article v-for="image in files" class="relative w-full group masonry-item" ref="mansoryItem">
-        <UButton color="white" icon="i-heroicons-trash-20-solid" @click.native="deleteFile(image.key)" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" />
-
-        <NuxtLink :to="`/detail/${image.key.split('.')[0]}`" @click.native="active = image.key.split('.')[0]">
-          <img
-            v-if="image"
-            width="527"
-            height="430"
-            :src="image.url"
-            :alt="image.key"
-            class="h-auto w-full max-h-[430px] rounded-md transition-all duration-200 border-image brightness-[.8] hover:brightness-100 will-change-[filter] object-cover"
-            :class="{ active: active === image.key.split('.')[0] }"
-          />
-        </NuxtLink>
-      </article>
+          <NuxtLink :to="`/detail/${image.key.split('.')[0]}`" @click.native="active = image.key.split('.')[0]">
+            <img
+              v-if="image"
+              width="527"
+              height="430"
+              :src="image.url"
+              :alt="image.key"
+              class="h-auto w-full max-h-[430px] rounded-md transition-all duration-200 border-image brightness-[.8] hover:brightness-100 will-change-[filter] object-cover"
+              :class="{ active: active === image.key.split('.')[0] }"
+            />
+          </NuxtLink>
+        </li>
+      </ul>
+      <div v-if="(!images || !images.length) && !loggedIn" class="absolute inset-0 flex flex-col gap-2 w-full h-screen items-center justify-center">
+        <h3 class="text-4xl text-white">Welcome to the Image Gallery template.</h3>
+        <p class="text-gray-300 text-xl">Please sign-in to upload images.</p>
+      </div>
+      <div v-if="loggedIn" :class="{ 'mb-4': isSmallScreen }">
+        <input ref="fileInput" class="hidden" type="file" accept="image/*" @change="fileSelection">
+        <UploadButton @click="openFilePicker()" />
+      </div>
     </div>
   </section>
 </template>
@@ -143,20 +114,22 @@ const onUploadDone = async () => {
   border-color: rgba(255, 255, 255, 0.1)
 }
 
-.masonry-container {
-  column-count: 3;
-  column-gap: 20px;
-  column-fill: balance;
-  margin: 20px auto 0;
-  padding: 2rem;
-}
+@media screen and (min-width: 1024px) {
+  .masonry-container {
+    column-count: 3;
+    column-gap: 20px;
+    column-fill: balance;
+    margin: 20px auto 0;
+    padding: 2rem;
+  }
 
-.masonry-item, .upload {
-  display: inline-block;
-  margin: 0 0 20px;
-  -webkit-column-break-inside: avoid;
-  page-break-inside: avoid;
-  break-inside: avoid;
-  width: 100%;
+  .masonry-item, .upload {
+    display: inline-block;
+    margin: 0 0 20px;
+    -webkit-column-break-inside: avoid;
+    page-break-inside: avoid;
+    break-inside: avoid;
+    width: 100%;
+  }
 }
 </style>

@@ -23,6 +23,13 @@ Make sure to install the dependencies:
 pnpm install
 ```
 
+Copy the `.env.example` to `.env` and adjust the values:
+
+```bash
+NUXT_SESSION_PASSWORD=password-with-at-least-32-characters
+NUXT_ADMIN_PASSWORD=your-admin-password
+```
+
 ## Development Server
 
 Start the development server on `http://localhost:3000`
