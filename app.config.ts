@@ -3,15 +3,9 @@ export default defineAppConfig({
     primary: 'green',
     gray: 'zinc',
     button: {
-      default: {
-        color: 'transparent',
-      },
       color: {
-        transparent: {
-          solid: 'text-gray-900 dark:text-white ring-1 ring-inset ring-gray-900/30 dark:ring-white/30 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors duration-200',
-        },
-        green: {
-          outline: 'ring-1 ring-inset ring-green-700/70 text-green-500 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-950 focus-visible:ring-2 focus-visible:ring-green-500 dark:focus-visible:ring-green-400',
+        gray: {
+          ghost: 'text-gray-400 bg-gray-900 ring-1 ring-gray-400 rounded-full hover:ring-gray-200 hover:text-gray-200 hover:bg-gray-900 transition-hover duration-200',
         },
       },
     },

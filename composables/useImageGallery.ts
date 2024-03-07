@@ -2,7 +2,7 @@ export function useImageGallery() {
   const config = useRuntimeConfig()
   const imageToDownload = ref()
 
-  const applyFilters = async (imageContainer: HTMLElement | undefined, poster: CanvasImageSource | null, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number, filter: boolean = false) => {
+  const applyFilters = async (imageContainer: HTMLElement | undefined, poster: CanvasImageSource | null, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number, rounded: number, filter: boolean = false) => {
     const canvas: HTMLCanvasElement = document.createElement('canvas')
     const context: CanvasRenderingContext2D | null = canvas.getContext('2d')
 
@@ -11,7 +11,7 @@ export function useImageGallery() {
     canvas.height = filter ? (imageContainer!.getBoundingClientRect().height * 100) / 80 : imageContainer!.getBoundingClientRect().height
 
     context!.filter = `contrast(${contrast}%) blur(${blur}px) invert(${invert}%)
-      saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%)`
+      saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%) border-radius(${rounded}px)`
 
     context!.drawImage(poster!, 0, 0, canvas.width, canvas.height)
 
@@ -23,8 +23,8 @@ export function useImageGallery() {
     return imageToDownload
   }
 
-  const downloadImage = async (filename: string, imageContainer: HTMLElement | undefined, poster: CanvasImageSource, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number) => {
-    await applyFilters(imageContainer, poster, contrast, blur, invert, saturate, hueRotate, sepia)
+  const downloadImage = async (filename: string, imageContainer: HTMLElement | undefined, poster: CanvasImageSource, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number, rounded: number) => {
+    await applyFilters(imageContainer, poster, contrast, blur, invert, saturate, hueRotate, sepia, rounded)
 
     await useFetch(imageToDownload.value.src, {
       baseURL: `${config.public.imageApi}/ipx/_/tmdb/`,
@@ -43,8 +43,10 @@ export function useImageGallery() {
     const url = image.value.currentSrc
 
     const response = await fetch(url)
+
     const blob = await response.blob()
-    const convertedFile = new File([blob], originalImage.value.key.split('.')[1], { type: `image/${originalImage.value.key.split('.')[1]}` })
+
+    const convertedFile = new File([blob], originalImage.split('.')[1], { type: `image/${originalImage.split('.')[1]}` })
 
     return convertedFile
   }

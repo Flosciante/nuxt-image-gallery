@@ -1,6 +1,5 @@
 <script setup lang="ts">
 const carouselRef = ref(null)
-const imgEl = ref()
 const imageEl = ref()
 const imageContainer = ref()
 const bottomMenu = ref()
@@ -13,15 +12,17 @@ const hueRotate = ref(0)
 const invert = ref(0)
 const saturate = ref(100)
 const sepia = ref(0)
+const rounded = ref(0)
 const magnifier = ref(false)
 const zoomFactor = ref(1)
 const objectsFit = ref(['Contain', 'Cover', 'Scale-down', 'Fill', 'None'])
 const objectFitSelected = ref(objectsFit.value[0])
 const filterUpdated = ref(false)
 
+const router = useRouter()
 const { downloadImage, applyFilters, convertBase64ToFile, magnifierImage } = useImageGallery()
 
-const { data: images } = await useFetch('/api/images')
+const { data: images, refresh } = await useFetch('/api/images')
 
 const imagesPath = computed(() => images.value?.map((img: any) => `/api/images/${img.pathname}`))
 
@@ -32,11 +33,12 @@ function resetFilter() {
   saturate.value = 100
   hueRotate.value = 0
   sepia.value = 0
+  rounded.value = 0
   filterUpdated.value = false
 }
 
 function getCurrentSrc() {
-  const img = ref(imgEl.value)
+  const img = ref(imageEl.value)
 
   if (img.value)
     return img.value.currentSrc.split('/').pop()
@@ -48,13 +50,27 @@ function cancelFilter() {
   resetFilter()
 }
 
-async function saveImage() {
+async function uploadImage(image: File) {
+  const formData = new FormData()
+  formData.append('image', image)
+
+  await $fetch('/api/images/upload', {
+    method: 'POST',
+    body: formData,
+  }).catch(err => alert(`Failed to upload image:\n${err.data?.message}`))
+  await refresh()
+}
+
+async function saveImage(filter: true) {
   if (filterUpdated.value) {
-    const modifiedImage = await applyFilters(imageContainer.value, imageEl.value, contrast.value, blur.value, invert.value, saturate.value, hueRotate.value, sepia.value, true)
+    const modifiedImage = await applyFilters(imageContainer.value, imageEl.value, contrast.value, blur.value, invert.value, saturate.value, hueRotate.value, sepia.value, rounded.value, true)
 
-    const imageToUpload = await convertBase64ToFile(modifiedImage, image)
+    const imageToUpload = await convertBase64ToFile(modifiedImage, getCurrentSrc())
 
-    await uploadFile([imageToUpload], true)
+    await uploadImage(imageToUpload)
+
+    if (filter)
+      router.push('/')
   }
 }
 
@@ -69,7 +85,10 @@ watch([contrast, blur, invert, saturate, hueRotate, sepia], () => {
       <UCarousel ref="carouselRef" :items="imagesPath" :ui="{ item: 'basis-full', indicators: { wrapper: 'top-0 bottom-full' } }" indicators arrows>
         <template #default="{ item }">
           <div ref="imageContainer" class="w-full h-full flex items-center justify-center">
-            <img ref="imageEl" :src="item" class="w-3/4 h-3/4" draggable="false">
+            <img
+              ref="imageEl" :src="item" class="w-3/4 h-3/4" draggable="false"
+              :style="`filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%); border-radius: ${rounded}px; object-fit: ${objectFitSelected.toLowerCase()};`"
+            >
           </div>
         </template>
 
@@ -92,7 +111,7 @@ watch([contrast, blur, invert, saturate, hueRotate, sepia], () => {
               <!-- open filters -->
               <UTooltip text="Add filters">
                 <UButton
-                  size="md" color="transparent" icon="i-heroicons-paint-brush-20-solid" aria-label="Add filters on image" class="hidden lg:flex"
+                  size="md" color="gray" variant="ghost" icon="i-heroicons-paint-brush-20-solid" aria-label="Add filters on image" class="hidden lg:flex"
                   @click="filter = true"
                 />
               </UTooltip>
@@ -101,6 +120,7 @@ watch([contrast, blur, invert, saturate, hueRotate, sepia], () => {
                 <UButton
                   icon="i-heroicons-arrow-up-right-20-solid" size="md"
                   :to="`/images/${getCurrentSrc()}`" target="_blank" aria-label="Open original image"
+                  color="gray" variant="ghost"
                 />
               </UTooltip>
               <!-- download original or modified image -->
@@ -109,7 +129,8 @@ watch([contrast, blur, invert, saturate, hueRotate, sepia], () => {
                   icon="i-heroicons-arrow-down-tray-20-solid" size="md"
                   class="hidden md:flex"
                   aria-label="Download original or modified image"
-                  @click="downloadImage(getCurrentSrc(), imageContainer, imageEl, contrast, blur, invert, saturate, hueRotate, sepia)"
+                  color="gray" variant="ghost"
+                  @click="downloadImage(getCurrentSrc(), imageContainer, imageEl, contrast, blur, invert, saturate, hueRotate, sepia, rounded)"
                 />
               </UTooltip>
             </div>
@@ -118,13 +139,15 @@ watch([contrast, blur, invert, saturate, hueRotate, sepia], () => {
               <UTooltip text="Save filtered image">
                 <UButton
                   icon="i-heroicons-check-20-solid" class="hidden md:flex" aria-label="Upload original or modified image to gallery"
-                  @click="saveImage()"
+                  color="gray"
+                  variant="ghost" @click="saveImage(true)"
                 />
               </UTooltip>
               <UTooltip text="Cancel filters">
                 <UButton
                   icon="i-heroicons-x-mark" class="hidden md:flex" aria-label="Upload original or modified image to gallery"
-                  @click="cancelFilter()"
+                  color="gray"
+                  variant="ghost" @click="cancelFilter()"
                 />
               </UTooltip>
             </div>
@@ -156,6 +179,7 @@ watch([contrast, blur, invert, saturate, hueRotate, sepia], () => {
             <Gauge v-model="invert" :max="100" title="Invert" />
             <Gauge v-model="contrast" :max="200" title="Contrast" />
             <Gauge v-model="blur" :max="5" title="Blur" />
+            <Gauge v-model="rounded" :max="9999" title="Rounded" />
           </div>
         </div>
       </Filter>
