@@ -1,48 +1,25 @@
-const imageApi = 'https://movies-proxy.vercel.app';
-
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  experimental: {
-    viewTransition: true,
-  },
+  extends: ['@nuxthub/core', '@nuxt/ui-pro'],
 
-  extends: '@nuxthq/neo',
-
-  // image: {
-  //   provider: 'proxy',
-  //   providers: {
-  //     proxy: {
-  //       provider: 'ipx',
-  //       options: {
-  //         baseURL: `${imageApi}/ipx`,
-  //       },
-  //     },
-  //   },
-  // },
   modules: [
-    // https://v1.image.nuxtjs.org
-    // '@nuxt/image-edge',
-    // https://vueuse.org/
+    '@nuxt/ui',
+    '@nuxtjs/fontaine',
+    '@nuxtjs/google-fonts',
     '@vueuse/nuxt',
-    //https://ui.nuxtlabs.com/
-    '@nuxthq/ui',
-    //https://github.com/nuxt-modules/fontaine
-    '@nuxtjs/fontaine'
   ],
 
-  devtools: {
-    enabled: true
+  fontMetrics: {
+    fonts: ['DM Sans'],
   },
 
-  runtimeConfig: {
-    public: {
-      imageApi,
+  googleFonts: {
+    display: 'swap',
+    download: true,
+    families: {
+      'DM+Sans': [400, 500, 600, 700],
     },
   },
 
-  colorMode: {
-    preference: 'dark'
-  },
-
-  plugins: ['~/plugins/files.ts']
+  devtools: { enabled: true },
 })

@@ -1,83 +1,74 @@
 <script setup lang="ts">
-
-const isOpen = ref(false)
-const mansoryItem = ref<Array<HTMLElement>>([])
 const dropZoneRef = ref<HTMLElement>()
 const fileInput = ref<HTMLInputElement>()
-const bottomMenu = ref<HTMLDivElement>()
+const mansoryItem = ref<Array<HTMLElement>>([])
+
+const { data: images, refresh } = await useFetch('/api/images')
 
 const isSmallScreen = useMediaQuery('(max-width: 1024px)')
-const active = useState()
-const { isOverDropZone } = useDropZone(dropZoneRef, onDrop)
+useDropZone(dropZoneRef, onDrop)
 
-const { loggedIn, clear } = useUserSession()
-const { images, uploadFile, deleteFile } = useFile()
+async function uploadImage(image: File) {
+  const formData = new FormData()
+  formData.append('image', image)
+
+  await $fetch('/api/images/upload', {
+    method: 'POST',
+    body: formData,
+  }).catch(err => alert(`Failed to upload image:\n${err.data?.message}`))
+  await refresh()
+}
+
+function openFilePicker() {
+  fileInput.value?.click()
+}
+
+async function fileSelection(event: any) {
+  await uploadImage(event.target.files[0])
+}
 
 async function onDrop(files: any) {
-  uploadFile(files)
+  await uploadImage(files[0])
 }
 
-const fileSelection = async (event: any) => {
-  const files = event.target.files;
-
-  await uploadFile(files)
-}
-
-const openFilePicker = () => {
-  fileInput.value?.click()
+async function deleteImage(pathname: string) {
+  await $fetch(`/api/images/${pathname}`, { method: 'DELETE' })
+  await refresh()
 }
 </script>
 
 <template>
   <section ref="dropZoneRef" class="relative h-screen gap-[22px] p-4">
-
-    <USlideover v-model="isOpen" class="flex items-center justify-center" side="left">
-      <Login class="z-50 bg-gray-800 rounded-md" @close-login="isOpen = false" />
-      <UButton @click="isOpen = false" icon="i-heroicons-x-mark" class="absolute right-4 top-4" />
-    </USlideover>
-
     <BottomMenu class="bottom-menu">
       <template #logo>
-        <img src="/images/logo.svg" width="29" height="20" />
+        <img src="/logo.svg" width="29" height="20">
       </template>
       <template #description>
         <p class="bottom-menu-description">
           Media Gallery template
         </p>
       </template>
-      <template #buttons>
-        <div class="flex gap-x-2">
-          <UButton v-if="loggedIn" @click="clear" icon="i-heroicons-power-20-solid" color="red" variant="outline" />
-          <UButton v-else @click="isOpen = true" label="Sign in" color="green" variant="outline" aria-label="Sign in" />
-        </div>
-      </template>
     </BottomMenu>
 
     <div class="masonry-container w-full">
       <ul v-if="images && images.length" class="grid grid-cols-1 gap-4 lg:block">
-        <li v-for="image in images" class="relative w-full group masonry-item" ref="mansoryItem">
-          <UButton v-if="loggedIn" color="white" icon="i-heroicons-trash-20-solid" @click.native="deleteFile(image.key)" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" />
+        <li v-for="image in images" ref="mansoryItem" :key="image.pathname" class="relative w-full group masonry-item">
+          <UButton color="white" icon="i-heroicons-trash-20-solid" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" @click="deleteImage(image.pathname)" />
 
-          <NuxtLink :to="`/detail/${image.key.split('.')[0]}`" @click.native="active = image.key.split('.')[0]">
+          <NuxtLink to="/detail">
             <img
               v-if="image"
               width="527"
               height="430"
-              :src="image.url"
-              :alt="image.key"
+              :src="`/images/${image.pathname}`"
               class="h-auto w-full max-h-[430px] rounded-md transition-all duration-200 border-image brightness-[.8] hover:brightness-100 will-change-[filter] object-cover"
-              :class="{ active: active === image.key.split('.')[0] }"
-            />
+            >
           </NuxtLink>
         </li>
       </ul>
-      <div v-if="(!images || !images.length) && !loggedIn" class="absolute inset-0 flex flex-col gap-2 w-full h-screen items-center justify-center">
-        <h3 class="text-4xl text-white">Welcome to the Image Gallery template.</h3>
-        <p class="text-gray-300 text-xl">Please sign-in to upload images.</p>
-      </div>
-      <div v-if="loggedIn" :class="{ 'mb-4': isSmallScreen }">
+      <div :class="{ 'mb-4': isSmallScreen }">
         <input ref="fileInput" class="hidden" type="file" accept="image/*" @change="fileSelection">
-        <UploadButton @click="openFilePicker()" />
+        <UploadButton type="submit" @click="openFilePicker" />
       </div>
     </div>
   </section>

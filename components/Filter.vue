@@ -1,7 +1,5 @@
 <script setup lang="ts">
-
-defineEmits(['resetFilter, closeFilter'])
-
+defineEmits(['resetFilter', 'closeFilter'])
 </script>
 
 <template>
@@ -13,6 +11,6 @@ defineEmits(['resetFilter, closeFilter'])
       </div>
     </div>
     <UButton label="Reset" variant="ghost" class="text-gray-400 hover:text-gray-500 transition-colors duration-200" @click="$emit('resetFilter')" />
-    <UButton icon="i-heroicons-x-mark" @click="$emit('closeFilter')" class="flex absolute top-4 right-4" />
+    <UButton icon="i-heroicons-x-mark" class="flex absolute top-4 right-4" @click="$emit('closeFilter')" />
   </div>
 </template>
