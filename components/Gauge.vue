@@ -14,14 +14,13 @@ const props = defineProps({
   },
   title: {
     type: String,
-    default: ''
-  }
+    default: '',
+  },
 })
 
 const emit = defineEmits(['update:modelValue'])
 
 const value = useVModel(props, 'modelValue', emit)
-
 </script>
 
 <template>
@@ -30,7 +29,7 @@ const value = useVModel(props, 'modelValue', emit)
       {{ title }}
     </span>
 
-    <URange :min="min" :max="max" v-model="value" color="gray" />
+    <URange v-model="value" :min="min" :max="max" />
 
     <span class="text-center text-medium text-white w-16 px-2"> {{ Math.round(modelValue) }} </span>
   </div>

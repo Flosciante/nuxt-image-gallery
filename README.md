@@ -1,41 +1,49 @@
-# Nuxt Template Starter
+# NuxtHub Starter Template
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+This starter lets you get started with [NuxtHub](https://hub.nuxt.com) in seconds.
+
+- [Documentation](https://hub.nuxt.com)
 
 ## Features
 
-- Latest Nuxt version
-- Nuxt Image
-- Nuxt Content with document driven mode
-- Nuxt Studio
-- TailwindCSS with Icons (soon with Nuxt UI)
-- VueUse with auto import
-- Color Mode configured for Tailwind
-- ESLint configured
-- VSCode settings & recommended extensions
+- Image upload with [`hubBlob()`](http://hub.nuxt.com/docs/storage/blob)
+- Save chat messages with [`hubDatababse()`](http://hub.nuxt.com/docs/storage/database)
+- Save server redirects with [`hubKV()`](http://hub.nuxt.com/docs/storage/kv)
 
 ## Setup
 
 Make sure to install the dependencies:
 
 ```bash
+# npm
+npm install
+
 # pnpm
 pnpm install
-```
 
-Copy the `.env.example` to `.env` and adjust the values:
+# yarn
+yarn install
 
-```bash
-NUXT_SESSION_PASSWORD=password-with-at-least-32-characters
-NUXT_ADMIN_PASSWORD=your-admin-password
+# bun
+bun install
 ```
 
 ## Development Server
 
-Start the development server on `http://localhost:3000`
+Start the development server on `http://localhost:3000`:
 
 ```bash
+# npm
 npm run dev
+
+# pnpm
+pnpm run dev
+
+# yarn
+yarn dev
+
+# bun
+bun run dev
 ```
 
 ## Production
@@ -43,13 +51,33 @@ npm run dev
 Build the application for production:
 
 ```bash
+# npm
 npm run build
+
+# pnpm
+pnpm run build
+
+# yarn
+yarn build
+
+# bun
+bun run build
 ```
 
 Locally preview production build:
 
 ```bash
+# npm
 npm run preview
+
+# pnpm
+pnpm run preview
+
+# yarn
+yarn preview
+
+# bun
+bun run preview
 ```
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+Check out the [deployment documentation](https://hub.nuxt.com/docs/getting-started/deploy) for more information.
