@@ -3,21 +3,12 @@ const dropZoneRef = ref<HTMLElement>()
 const fileInput = ref<HTMLInputElement>()
 const mansoryItem = ref<Array<HTMLElement>>([])
 
-const { data: images, refresh } = await useFetch('/api/images')
+const { uploadImage, deleteImage, images } = useFile()
+
+const active = useState()
 
 const isSmallScreen = useMediaQuery('(max-width: 1024px)')
 useDropZone(dropZoneRef, onDrop)
-
-async function uploadImage(image: File) {
-  const formData = new FormData()
-  formData.append('image', image)
-
-  await $fetch('/api/images/upload', {
-    method: 'POST',
-    body: formData,
-  }).catch(err => alert(`Failed to upload image:\n${err.data?.message}`))
-  await refresh()
-}
 
 function openFilePicker() {
   fileInput.value?.click()
@@ -29,11 +20,6 @@ async function fileSelection(event: any) {
 
 async function onDrop(files: any) {
   await uploadImage(files[0])
-}
-
-async function deleteImage(pathname: string) {
-  await $fetch(`/api/images/${pathname}`, { method: 'DELETE' })
-  await refresh()
 }
 </script>
 
@@ -54,8 +40,7 @@ async function deleteImage(pathname: string) {
       <ul v-if="images && images.length" class="grid grid-cols-1 gap-4 lg:block">
         <li v-for="image in images" ref="mansoryItem" :key="image.pathname" class="relative w-full group masonry-item">
           <UButton color="white" icon="i-heroicons-trash-20-solid" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" @click="deleteImage(image.pathname)" />
-
-          <NuxtLink to="/detail">
+          <NuxtLink :to="`/detail/${image.pathname.split('.')[0]}`" @click="active = image.pathname.split('.')[0]">
             <img
               v-if="image"
               width="527"
