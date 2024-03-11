@@ -83,8 +83,6 @@ export function useImageGallery() {
     const imageRect = imageEl.getBoundingClientRect()
     const containerRect = containerEl.getBoundingClientRect()
 
-    console.log('magnifierEl', magnifierEl)
-
     const x = e.pageX - containerRect.left
     const y = e.pageY - containerRect.top
 
@@ -108,6 +106,13 @@ export function useImageGallery() {
     magnifierEl.style.backgroundPositionY = `${yperc - 9}%`
     magnifierEl.style.left = `${x - 50}px`
     magnifierEl.style.top = `${y - 50}px`
+    magnifierEl.style.zIndex = '9999'
+
+    console.log('magnifierEl.style.backgroundSize', magnifierEl.style.backgroundSize)
+    console.log('magnifierEl.style.backgroundPositionX', magnifierEl.style.backgroundPositionX)
+    console.log('magnifierEl.style.backgroundPositionY', magnifierEl.style.backgroundPositionY)
+    console.log('magnifierEl.style.left', magnifierEl.style.left)
+    console.log('magnifierEl.style.top', magnifierEl.style.top)
   }
 
   return {

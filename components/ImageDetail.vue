@@ -107,8 +107,8 @@ onMounted(() => initSwipe(imageEl))
             </div>
 
             <div class="flex gap-x-4 w-full justify-end pr-4 pb-4">
-              <UCheckbox v-model="magnifier" name="magnifier" label="Magnifier" />
-              <UIcon name="i-heroicons-magnifying-glass-solid" class="w-5 h-5" />
+              <UCheckbox v-model="magnifier" name="magnifier" label="Magnifier" color="primary" :ui="{ label: 'text-gray-300 dark:text-gray-300' }" />
+              <UIcon name="i-heroicons-magnifying-glass-solid" class="w-5 h-5 text-gray-300" />
             </div>
 
             <Gauge v-if="magnifier" v-model="zoomFactor" :max="4" title="Zoom level" />
@@ -221,9 +221,9 @@ onMounted(() => initSwipe(imageEl))
                     v-if="image" ref="imageEl" :src="`/images/${image.pathname}`" :alt="image.pathname"
                     class="rounded object-contain transition-all duration-200 block" :class="[{ active: route.params.slug[0] === image.pathname.split('.')[0] }, filter ? 'w-[80%] ml-[12px]' : 'w-full']"
                     :style="`filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%); object-fit:${objectFitSelected.toLowerCase()};`"
-                    crossorigin="anonymous" @mousemove="magnifierImage($event, imageContainer, imageEl, magnifierEl!, zoomFactor)"
+                    crossorigin="anonymous" @mousemove="magnifier ? magnifierImage($event, imageContainer, imageEl, magnifierEl!, zoomFactor) : () => {}"
                   >
-                  <div v-if="magnifier" ref="magnifierEl" class="w-[100px] h-[100px] absolute border border-gray-200 pointer-events-none rounded-full block opacity-0 group-hover:opacity-100 transition-opacity duration-200 " :style="`background-image: url(${image.pathname}`" />
+                  <div v-if="magnifier" ref="magnifierEl" class="w-[100px] h-[100px] absolute border border-gray-200 pointer-events-none rounded-full block opacity-0 group-hover:opacity-100 transition-opacity duration-200 " :style="`background-image: url('/images/${image.pathname}'`" />
                 </div>
               </div>
             </div>
