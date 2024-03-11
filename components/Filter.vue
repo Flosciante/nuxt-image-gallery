@@ -10,7 +10,7 @@ defineEmits(['resetFilter', 'closeFilter'])
         <slot />
       </div>
     </div>
-    <UButton label="Reset" variant="ghost" class="text-gray-400 hover:text-gray-500 transition-colors duration-200" @click="$emit('resetFilter')" />
-    <UButton icon="i-heroicons-x-mark" class="flex absolute top-4 right-4" @click="$emit('closeFilter')" />
+    <UButton label="Reset" color="black" variant="outline" class="text-gray-400 hover:text-gray-300 transition-colors duration-200 w-fit" @click="$emit('resetFilter')" />
+    <UButton icon="i-heroicons-x-mark" variant="ghost" color="gray" size="xs" class="flex absolute top-4 right-4" @click="$emit('closeFilter')" />
   </div>
 </template>
