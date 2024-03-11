@@ -4,8 +4,6 @@ export function useImageGallery() {
   const nuxtApp = useNuxtApp()
   const config = useRuntimeConfig()
   const imageToDownload = ref()
-  const route = useRoute()
-  const router = useRouter()
 
   const currentIndex: ComputedRef<number> = computed(() => nuxtApp.$file.images.value!.findIndex((image: any) => image.pathname.split('.')[0] === route.params.slug[0]))
   const isFirstMovie: ComputedRef<boolean> = computed(() => nuxtApp.$file.images.value![0].pathname.split('.')[0] === route.params.slug[0])
@@ -41,7 +39,7 @@ export function useImageGallery() {
     canvas.height = filter ? (imageContainer!.getBoundingClientRect().height * 100) / 80 : imageContainer!.getBoundingClientRect().height
 
     context!.filter = `contrast(${contrast}%) blur(${blur}px) invert(${invert}%)
-      saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%)`
+      saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%) border-radius(${rounded}px)`
 
     context!.drawImage(poster!, 0, 0, canvas.width, canvas.height)
 
@@ -107,21 +105,11 @@ export function useImageGallery() {
     magnifierEl.style.left = `${x - 50}px`
     magnifierEl.style.top = `${y - 50}px`
     magnifierEl.style.zIndex = '9999'
-
-    console.log('magnifierEl.style.backgroundSize', magnifierEl.style.backgroundSize)
-    console.log('magnifierEl.style.backgroundPositionX', magnifierEl.style.backgroundPositionX)
-    console.log('magnifierEl.style.backgroundPositionY', magnifierEl.style.backgroundPositionY)
-    console.log('magnifierEl.style.left', magnifierEl.style.left)
-    console.log('magnifierEl.style.top', magnifierEl.style.top)
   }
 
   return {
     downloadImage,
     applyFilters,
-    currentIndex,
-    isFirstMovie,
-    isLastMovie,
-    initSwipe,
     convertBase64ToFile,
     magnifierImage,
   }
