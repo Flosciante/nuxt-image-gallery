@@ -7,6 +7,12 @@ export default defineAppConfig({
         gray: {
           ghost: 'text-gray-400 bg-gray-900 ring-1 ring-gray-400 rounded-full hover:ring-gray-200 hover:text-gray-200 hover:bg-gray-900 transition-hover duration-200',
         },
+        green: {
+          ghost: 'text-green-400 bg-gray-900 ring-1 ring-green-400 rounded-full hover:ring-green-300 hover:text-green-300 hover:bg-gray-900 transition-hover duration-200',
+        },
+        red: {
+          ghost: 'text-red-400 bg-gray-900 ring-1 ring-red-400 rounded-full hover:ring-red-300 hover:text-red-300 hover:bg-gray-900 transition-hover duration-200',
+        },
       },
     },
     slideover: {

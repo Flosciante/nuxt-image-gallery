@@ -1,9 +1,12 @@
 <script setup lang="ts">
+const isOpen = ref(false)
+
 const dropZoneRef = ref<HTMLElement>()
 const fileInput = ref<HTMLInputElement>()
 const mansoryItem = ref<Array<HTMLElement>>([])
 
 const { uploadImage, deleteImage, images } = useFile()
+const { loggedIn, clear } = useUserSession()
 
 const active = useState()
 
@@ -25,6 +28,11 @@ async function onDrop(files: any) {
 
 <template>
   <section ref="dropZoneRef" class="relative h-screen gap-[22px] p-4">
+    <USlideover v-model="isOpen" class="flex items-center justify-center" side="left">
+      <Login class="z-50 bg-gray-800 rounded-md" @close-login="isOpen = false" />
+      <UButton icon="i-heroicons-x-mark" class="absolute right-4 top-4" @click="isOpen = false" />
+    </USlideover>
+
     <BottomMenu class="bottom-menu">
       <template #logo>
         <img src="/logo.svg" width="29" height="20">
@@ -34,12 +42,18 @@ async function onDrop(files: any) {
           Media Gallery template
         </p>
       </template>
+      <template #buttons>
+        <div class="flex gap-x-2">
+          <UButton v-if="loggedIn" icon="i-heroicons-power-20-solid" color="red" variant="ghost" @click="clear" />
+          <UButton v-else label="Sign in" color="green" variant="ghost" aria-label="Sign in" @click="isOpen = true" />
+        </div>
+      </template>
     </BottomMenu>
 
     <div class="masonry-container w-full">
       <ul v-if="images && images.length" class="grid grid-cols-1 gap-4 lg:block">
         <li v-for="image in images" ref="mansoryItem" :key="image.pathname" class="relative w-full group masonry-item">
-          <UButton color="white" icon="i-heroicons-trash-20-solid" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" @click="deleteImage(image.pathname)" />
+          <UButton v-if="loggedIn" color="white" icon="i-heroicons-trash-20-solid" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" @click="deleteImage(image.pathname)" />
           <NuxtLink :to="`/detail/${image.pathname.split('.')[0]}`" @click="active = image.pathname.split('.')[0]">
             <img
               v-if="image"
@@ -51,7 +65,7 @@ async function onDrop(files: any) {
           </NuxtLink>
         </li>
       </ul>
-      <div :class="{ 'mb-4': isSmallScreen }">
+      <div v-if="loggedIn" :class="{ 'mb-4': isSmallScreen }">
         <input ref="fileInput" class="hidden" type="file" accept="image/*" @change="fileSelection">
         <UploadButton type="submit" @click="openFilePicker" />
       </div>

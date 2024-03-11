@@ -4,6 +4,8 @@ export function useImageGallery() {
   const nuxtApp = useNuxtApp()
   const config = useRuntimeConfig()
   const imageToDownload = ref()
+  const router = useRouter()
+  const route = useRoute()
 
   const currentIndex: ComputedRef<number> = computed(() => nuxtApp.$file.images.value!.findIndex((image: any) => image.pathname.split('.')[0] === route.params.slug[0]))
   const isFirstMovie: ComputedRef<boolean> = computed(() => nuxtApp.$file.images.value![0].pathname.split('.')[0] === route.params.slug[0])
@@ -39,7 +41,7 @@ export function useImageGallery() {
     canvas.height = filter ? (imageContainer!.getBoundingClientRect().height * 100) / 80 : imageContainer!.getBoundingClientRect().height
 
     context!.filter = `contrast(${contrast}%) blur(${blur}px) invert(${invert}%)
-      saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%) border-radius(${rounded}px)`
+      saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%)`
 
     context!.drawImage(poster!, 0, 0, canvas.width, canvas.height)
 
@@ -112,5 +114,9 @@ export function useImageGallery() {
     applyFilters,
     convertBase64ToFile,
     magnifierImage,
+    initSwipe,
+    currentIndex,
+    isFirstMovie,
+    isLastMovie,
   }
 }

@@ -25,39 +25,13 @@ export default defineNuxtPlugin(() => {
 
   async function deleteImage(pathname: string) {
     await $fetch(`/api/images/${pathname}`, { method: 'DELETE' })
-    // await refresh()
+
     getImages()
   }
-
-  // const uploadFile = async (files: any, filter: boolean = false) => {
-  //   const formData = new FormData()
-
-  //   formData.append('files', files[0])
-
-  //   await $fetch('/api/files/upload', {
-  //     method: 'POST',
-  //     body: formData,
-  //   })
-
-  //   await getFiles()
-
-  //   if (filter)
-  //     router.push('/')
-  // }
-
-  // async function deleteFile(key: string) {
-  //   await $fetch(`/api/files/${key}`, {
-  //     method: 'DELETE',
-  //   })
-
-  //   await getFiles()
-  // }
 
   return {
     provide: {
       file: {
-        // uploadFile,
-        // deleteFile,
         getImages,
         images,
         uploadImage,

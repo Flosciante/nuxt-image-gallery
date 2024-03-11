@@ -19,7 +19,7 @@ const objectFitSelected = ref(objectsFit.value[0])
 const filterUpdated = ref(false)
 
 const { images, uploadImage } = useFile()
-// const { loggedIn } = useUserSession()
+const { loggedIn } = useUserSession()
 
 const isSmallScreen = useMediaQuery('(max-width: 1024px)')
 const { currentIndex, isFirstMovie, isLastMovie, downloadImage, applyFilters, initSwipe, convertBase64ToFile, magnifierImage } = useImageGallery()
@@ -167,7 +167,7 @@ onMounted(() => initSwipe(imageEl))
               </div>
 
               <div v-else class="flex gap-x-2 items-center">
-                <UTooltip text="Save filtered image">
+                <UTooltip v-if="loggedIn" text="Save filtered image">
                   <UButton
                     variant="ghost" color="gray"
                     icon="i-heroicons-check-20-solid" class="hidden md:flex" aria-label="Upload original or modified image to gallery"
