@@ -80,6 +80,9 @@ export function useImageGallery() {
   }
 
   const magnifierImage = (e: any, containerEl: any, imageEl: HTMLElement, magnifierEl: HTMLElement, zoomFactor: number = 2) => {
+    if (magnifierEl.style.filter !== imageEl.style.filter)
+      magnifierEl.style.filter = imageEl.style.filter
+
     const imageRect = imageEl.getBoundingClientRect()
     const containerRect = containerEl.getBoundingClientRect()
 

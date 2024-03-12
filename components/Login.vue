@@ -2,25 +2,30 @@
 const emit = defineEmits(['closeLogin'])
 const { fetch: refreshSession } = useUserSession()
 const password = ref('')
+const loading = ref(false)
 
 const toast = useToast()
 
 async function login() {
-  await $fetch('/api/auth', {
-    method: 'POST',
-    body: { password: password.value },
-  })
-    .then(async () => {
-      await refreshSession()
-      emit('closeLogin')
+  loading.value = true
+
+  if (password.value) {
+    await $fetch('/api/auth', {
+      method: 'POST',
+      body: { password: password.value },
     })
-    .catch(() => {
-      toast.add({
-        title: 'Wrong password',
-        description: 'Please try again',
-        color: 'red',
+      .then(async () => {
+        await refreshSession()
+        emit('closeLogin')
       })
-    })
+      .catch((err) => {
+        toast.add({
+          title: `Error ${err.statusCode}`,
+          description: `${err.statusMessage}. Please try again`,
+          color: 'red',
+        })
+      }).finally(() => loading.value = false)
+  }
 }
 </script>
 
@@ -31,6 +36,6 @@ async function login() {
     </h1>
     <UInput v-model="password" type="password" placeholder="Enter password" icon="i-heroicons-key" class="!w-60" />
 
-    <UButton type="submit" label="Login" color="green" variant="ghost" class="px-4" size="lg" />
+    <UButton :loading="loading" type="submit" label="Login" color="green" variant="ghost" class="px-4" size="lg" />
   </form>
 </template>

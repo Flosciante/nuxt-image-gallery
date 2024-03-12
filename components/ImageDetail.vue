@@ -3,6 +3,7 @@ const bottomMenu = ref()
 const imageEl = ref<any>()
 const magnifierEl = ref<HTMLElement>()
 const imageContainer = ref<HTMLElement>()
+const savingImg = ref(false)
 
 // filter
 const filter = ref(false)
@@ -32,18 +33,18 @@ const image: any = computed(() => {
   return images.value!.filter((file: any) => file.pathname.split('.')[0] === route.params.slug[0])[0]
 })
 
-onKeyStroke('Escape', (e) => {
+onKeyStroke('Escape', () => {
   router.push('/')
 })
 
-onKeyStroke('ArrowLeft', (e) => {
+onKeyStroke('ArrowLeft', () => {
   if (isFirstMovie.value)
     router.push('/')
   else
     router.push(`/detail/${images.value![currentIndex.value - 1].pathname.split('.')[0]}`)
 })
 
-onKeyStroke('ArrowRight', (e) => {
+onKeyStroke('ArrowRight', () => {
   if (isLastMovie.value)
     router.push('/')
   else
@@ -58,6 +59,8 @@ function resetFilter() {
   hueRotate.value = 0
   sepia.value = 0
   filterUpdated.value = false
+  magnifier.value = false
+  zoomFactor.value = 1
 }
 
 function cancelFilter() {
@@ -68,11 +71,13 @@ function cancelFilter() {
 
 async function saveImage() {
   if (filterUpdated.value) {
+    savingImg.value = true
+
     const modifiedImage = await applyFilters(imageContainer.value, imageEl.value, contrast.value, blur.value, invert.value, saturate.value, hueRotate.value, sepia.value, true)
 
     const imageToUpload = await convertBase64ToFile(modifiedImage, image)
 
-    await uploadImage(imageToUpload, true)
+    await uploadImage(imageToUpload, true).finally(() => savingImg.value = false)
   }
 }
 
@@ -80,7 +85,9 @@ watch([contrast, blur, invert, saturate, hueRotate, sepia], () => {
   filterUpdated.value = true
 })
 
-onMounted(() => initSwipe(imageEl))
+onMounted(() => {
+  initSwipe(imageEl)
+})
 </script>
 
 <template>
@@ -169,6 +176,7 @@ onMounted(() => initSwipe(imageEl))
               <div v-else class="flex gap-x-2 items-center">
                 <UTooltip v-if="loggedIn" text="Save filtered image">
                   <UButton
+                    :loading="savingImg"
                     variant="ghost" color="gray"
                     icon="i-heroicons-check-20-solid" class="hidden md:flex" aria-label="Upload original or modified image to gallery"
                     @click="saveImage()"
@@ -219,8 +227,9 @@ onMounted(() => initSwipe(imageEl))
                 <div class="group">
                   <img
                     v-if="image" ref="imageEl" :src="`/images/${image.pathname}`" :alt="image.pathname"
-                    class="rounded object-contain transition-all duration-200 block" :class="[{ active: route.params.slug[0] === image.pathname.split('.')[0] }, filter ? 'w-[80%] ml-[12px]' : 'w-full']"
-                    :style="`filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%); object-fit:${objectFitSelected.toLowerCase()};`"
+                    class="rounded object-contain transition-all duration-200 block"
+                    :class="[{ active: route.params.slug[0] === image.pathname.split('.')[0] }, filter ? 'w-[80%] ml-[12px]' : 'w-full']"
+                    :style="`view-transition-name: image-${image.pathname} filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%); object-fit:${objectFitSelected.toLowerCase()};`"
                     crossorigin="anonymous" @mousemove="magnifier ? magnifierImage($event, imageContainer, imageEl, magnifierEl!, zoomFactor) : () => {}"
                   >
                   <div v-if="magnifier" ref="magnifierEl" class="w-[100px] h-[100px] absolute border border-gray-200 pointer-events-none rounded-full block opacity-0 group-hover:opacity-100 transition-opacity duration-200 " :style="`background-image: url('/images/${image.pathname}'`" />
@@ -259,11 +268,6 @@ onMounted(() => initSwipe(imageEl))
 
 <style scoped lang="postcss">
 @media (min-width: 768px) {
-  img.active {
-    contain: layout;
-    view-transition-name: vtn-image;
-  }
-
   .bottom-menu {
     view-transition-name: vtn-bottom-menu;
   }
@@ -285,7 +289,7 @@ onMounted(() => initSwipe(imageEl))
 <style>
 @keyframes slide-from-right {
   from {
-    transform: translateX(0px);
+    transform: translateX(100%);
   }
 }
 
@@ -304,16 +308,5 @@ onMounted(() => initSwipe(imageEl))
 ::view-transition-new(vtn-bottom-menu-description) {
   animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
   width: auto;
-}
-
-::view-transition-old(vtn-img),
-::view-transition-new(vtn-img) {
-  animation: none;
-  mix-blend-mode: normal;
-  padding-bottom: 16px;
-}
-
-::view-transition-image-pair(vtn-img) {
-  isolation: none;
 }
 </style>
