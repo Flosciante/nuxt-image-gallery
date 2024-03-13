@@ -228,7 +228,7 @@ onMounted(() => {
                   <img
                     v-if="image" ref="imageEl" :src="`/images/${image.pathname}`" :alt="image.pathname"
                     class="rounded object-contain transition-all duration-200 block"
-                    :class="[{ active: route.params.slug[0] === image.pathname.split('.')[0] }, filter ? 'w-[80%] ml-[12px]' : 'w-full']"
+                    :class="[{ imageEl: route.params.slug[0] === image.pathname.split('.')[0] }, filter ? 'w-[80%] ml-[12px]' : 'w-full']"
                     :style="`filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%); object-fit:${objectFitSelected.toLowerCase()};`"
                     crossorigin="anonymous" @mousemove="magnifier ? magnifierImage($event, imageContainer, imageEl, magnifierEl!, zoomFactor) : () => {}"
                   >
@@ -268,6 +268,10 @@ onMounted(() => {
 
 <style scoped lang="postcss">
 @media (min-width: 768px) {
+  .imageEl {
+    view-transition-name: vtn-image;
+  }
+
   .bottom-menu {
     view-transition-name: vtn-bottom-menu;
   }
@@ -287,15 +291,18 @@ onMounted(() => {
 </style>
 
 <style>
-@keyframes slide-from-right {
-  from {
-    transform: translateX(100%);
-  }
-}
-
 @keyframes slide-to-left {
   to {
     transform: translateX(0px);
+  }
+}
+
+@keyframes grow {
+  from {
+    transform: scale(0.4);
+  },
+  to {
+    transform: scale(1);
   }
 }
 
@@ -303,10 +310,5 @@ onMounted(() => {
   animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-to-left;
   width: auto;
   opacity: 0;
-}
-
-::view-transition-new(vtn-bottom-menu-description) {
-  animation: 300ms cubic-bezier(0.4, 0, 0.2, 1) both slide-from-right;
-  width: auto;
 }
 </style>

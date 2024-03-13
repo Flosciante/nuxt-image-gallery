@@ -95,8 +95,8 @@ async function clearSession() {
                 width="527"
                 height="430"
                 :src="`/images/${image.pathname}`"
+                :class="{ imageEl: image.pathname.split('.')[0] === active }"
                 class="h-auto w-full max-h-[430px] rounded-md transition-all duration-200 border-image brightness-[.8] hover:brightness-100 will-change-[filter] object-cover"
-                :style="`view-transition-name: image-${image.pathname}`"
               >
             </NuxtLink>
           </li>
@@ -115,12 +115,16 @@ async function clearSession() {
 
 <style scoped lang="postcss">
 @media (min-width: 768px) {
+  .imageEl {
+    view-transition-name: vtn-image;
+  }
+
   .bottom-menu-description {
-    view-transition-name: vtn-bottom-menu-description
+    view-transition-name: vtn-bottom-menu-description;
   }
 
   .bottom-menu-button {
-    view-transition-name: vtn-bottom-menu-button
+    view-transition-name: vtn-bottom-menu-button;
   }
 
   .container-image {
