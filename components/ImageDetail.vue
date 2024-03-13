@@ -229,7 +229,7 @@ onMounted(() => {
                     v-if="image" ref="imageEl" :src="`/images/${image.pathname}`" :alt="image.pathname"
                     class="rounded object-contain transition-all duration-200 block"
                     :class="[{ active: route.params.slug[0] === image.pathname.split('.')[0] }, filter ? 'w-[80%] ml-[12px]' : 'w-full']"
-                    :style="`view-transition-name: image-${image.pathname} filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%); object-fit:${objectFitSelected.toLowerCase()};`"
+                    :style="`filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%); object-fit:${objectFitSelected.toLowerCase()};`"
                     crossorigin="anonymous" @mousemove="magnifier ? magnifierImage($event, imageContainer, imageEl, magnifierEl!, zoomFactor) : () => {}"
                   >
                   <div v-if="magnifier" ref="magnifierEl" class="w-[100px] h-[100px] absolute border border-gray-200 pointer-events-none rounded-full block opacity-0 group-hover:opacity-100 transition-opacity duration-200 " :style="`background-image: url('/images/${image.pathname}'`" />
