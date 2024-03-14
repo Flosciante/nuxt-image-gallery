@@ -159,7 +159,7 @@ onMounted(() => {
                   <UButton
                     variant="ghost" color="gray"
                     icon="i-heroicons-arrow-up-right-20-solid" size="md"
-                    :to="image.pathname" target="_blank" aria-label="Open original image"
+                    :to="`/images/${image.pathname}`" target="_blank" aria-label="Open original image"
                   />
                 </UTooltip>
                 <!-- download original or modified image -->
