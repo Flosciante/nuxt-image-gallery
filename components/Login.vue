@@ -21,7 +21,7 @@ async function login() {
       .catch((err) => {
         toast.add({
           title: `Error ${err.statusCode}`,
-          description: `${err.statusMessage}. Please try again`,
+          description: `${err.data?.message || err.message}. Please try again`,
           color: 'red',
         })
       }).finally(() => loading.value = false)
