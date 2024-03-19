@@ -1,6 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  extends: ['@nuxthub/core', '@nuxt/ui-pro'],
+  extends: ['@nuxthub/core'],
 
   experimental: {
     viewTransition: true,
