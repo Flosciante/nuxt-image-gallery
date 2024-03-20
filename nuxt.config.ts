@@ -2,6 +2,12 @@
 export default defineNuxtConfig({
   extends: ['@nuxthub/core'],
 
+  $development: {
+    hub: {
+      remote: true,
+    },
+  },
+
   experimental: {
     viewTransition: true,
   },

@@ -15,6 +15,11 @@ export default defineAppConfig({
         },
       },
     },
+    tooltip: {
+      background: 'bg-gray-900',
+      color: 'text-gray-200',
+      ring: 'ring-1 ring-gray-800',
+    },
     slideover: {
       background: '',
       base: 'flex-1 flex flex-col w-full focus:outline-none',

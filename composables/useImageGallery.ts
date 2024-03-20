@@ -32,13 +32,13 @@ export function useImageGallery() {
     })
   }
 
-  const applyFilters = async (imageContainer: HTMLElement | undefined, poster: CanvasImageSource | null, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number, filter: boolean = false) => {
+  const applyFilters = async (imageContainer: HTMLElement | null, poster: HTMLImageElement | null, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number, filter: boolean = false) => {
     const canvas: HTMLCanvasElement = document.createElement('canvas')
     const context: CanvasRenderingContext2D | null = canvas.getContext('2d')
 
-    canvas.width = imageContainer!.getBoundingClientRect().width
+    canvas.width = poster?.naturalWidth
     // if filter panel we must restore orignal height
-    canvas.height = filter ? (imageContainer!.getBoundingClientRect().height * 100) / 80 : imageContainer!.getBoundingClientRect().height
+    canvas.height = poster?.naturalHeight
 
     context!.filter = `contrast(${contrast}%) blur(${blur}px) invert(${invert}%)
       saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%)`
@@ -74,7 +74,7 @@ export function useImageGallery() {
 
     const response = await fetch(url)
     const blob = await response.blob()
-    const convertedFile = new File([blob], originalImage.value.pathname.split('.')[1], { type: `image/${originalImage.value.pathname.split('.')[1]}` })
+    const convertedFile = new File([blob], originalImage.pathname.split('.')[1], { type: `image/${originalImage.pathname.split('.')[1]}` })
 
     return convertedFile
   }

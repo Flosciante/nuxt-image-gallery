@@ -76,10 +76,18 @@ async function clearSession() {
         </template>
       </BottomMenu>
 
-      <div class="masonry-container w-full">
+      <div class="w-full" :class="{ 'masonry-container': images && images.length }">
         <div v-if="loggedIn">
           <input ref="fileInput" class="hidden" type="file" accept="image/*" @change="fileSelection">
           <UploadButton :uploading="uploadingImg" type="submit" class="mb-6" :is-over-drop-zone="isOverDropZone" @click="openFilePicker" />
+        </div>
+        <div v-else class="text-2xl text-white flex flex-col gap-y-4 items-center justify-center h-full w-full">
+          <h1 class="font-medium text-5xl">
+            Welcome to image gallery
+          </h1>
+          <p class="text-gray-400">
+            you must be logged in to start uploading images
+          </p>
         </div>
 
         <ul v-if="images && images.length" class="grid grid-cols-1 gap-4 lg:block">
@@ -89,7 +97,7 @@ async function clearSession() {
               :loading="deletingImg === image.pathname"
               color="white" icon="i-heroicons-trash-20-solid" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" @click="deleteFile(image.pathname)"
             />
-            <NuxtLink :to="`/detail/${image.pathname.split('.')[0]}`" @click="active = image.pathname.split('.')[0]">
+            <NuxtLink :to="{ path: '/detail-carousel', query: { image: image.pathname } }" @click="active = image.pathname.split('.')[0]">
               <img
                 v-if="image"
                 width="527"
