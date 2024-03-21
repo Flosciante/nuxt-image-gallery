@@ -223,10 +223,6 @@ function onClick(prev: boolean = false) {
               }"
             >
               <template #default="{ item, index }">
-                <div class="text-white">
-                  {{ index }}
-                </div>
-
                 <div :id="`imageContainer${(index)}`">
                   <div class="group">
                     <img
