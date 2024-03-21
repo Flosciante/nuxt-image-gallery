@@ -1,12 +1,12 @@
 <script lang="ts" setup>
 const { images, uploadImage } = useFile()
 
-const carouselRef = ref<any>(null)
+const carouselEl = ref<any>(null)
+const isMounted = ref()
 
 const bottomMenu = ref()
 const savingImg = ref(false)
 const currentIndex = ref()
-
 // filter
 const filter = ref(false)
 const contrast = ref(100)
@@ -25,6 +25,7 @@ const { loggedIn } = useUserSession()
 
 const isSmallScreen = useMediaQuery('(max-width: 1024px)')
 const { applyFilters, initSwipe, convertBase64ToFile, magnifierImage, downloadImage } = useImageGallery()
+const router = useRouter()
 
 // onKeyStroke('Escape', () => {
 //   router.push('/')
@@ -54,10 +55,18 @@ onMounted(async () => {
   const { image } = useRoute().query
   currentIndex.value = (images.value.findIndex((img: any) => img.pathname === image)) + 1
 
-  setTimeout(() => {
-    carouselRef.value.select(currentIndex.value)
+  setTimeout(async () => {
+    isMounted.value = true
+    carouselEl.value.select(currentIndex.value)
+    if (isMounted.value) {
+      watch(() => carouselEl.value && carouselEl.value.page, () => {
+        updateQuery()
+      }, { immediate: true })
+    }
   }, 100)
 })
+
+onBeforeUnmount(() => isMounted.value = false)
 
 function resetFilter() {
   contrast.value = 100
@@ -78,7 +87,7 @@ function cancelFilter() {
 }
 
 async function saveImage() {
-  const indexEl = carouselRef.value.page - 1
+  const indexEl = carouselEl.value.page - 1
   const imageEl: any = document.getElementById(`imageEl${indexEl}`)
   const imageContainer = document.getElementById(`imageContainer${indexEl}`)
 
@@ -92,7 +101,7 @@ async function saveImage() {
 }
 
 function applyMagnifier(e: any) {
-  const indexEl: any = carouselRef.value.page - 1
+  const indexEl: any = carouselEl.value.page - 1
   const imageEl: any = document.getElementById(`imageEl${indexEl}`)
   const imageContainer: any = document.getElementById(`imageContainer${indexEl}`)
   const magnifierEl: any = document.getElementById(`magnifierEl${indexEl}`)
@@ -101,7 +110,7 @@ function applyMagnifier(e: any) {
 }
 
 async function download() {
-  const indexEl: any = carouselRef.value.page - 1
+  const indexEl: any = carouselEl.value.page - 1
   const imageContainer: any = document.getElementById(`imageContainer${indexEl}`)
   const imageEl: any = document.getElementById(`imageEl${indexEl}`)
 
@@ -109,16 +118,23 @@ async function download() {
 }
 
 function onClickNavigation(prev: boolean = false) {
-  const index = carouselRef.value.page
+  const index = carouselEl.value.page
 
   if (prev && index.value !== 1) {
     currentIndex.value = index - 1
-    carouselRef.value.select(currentIndex.value)
+    carouselEl.value.select(currentIndex.value)
   }
-  else if (!prev && index.value !== carouselRef.value.pages) {
+  else if (!prev && index.value !== carouselEl.value.pages) {
     currentIndex.value = index + 1
-    carouselRef.value.select(currentIndex.value)
+    carouselEl.value.select(currentIndex.value)
   }
+
+  updateQuery()
+}
+
+function updateQuery() {
+  if (carouselEl.value)
+    useRouter().replace(`${useRoute().path}?image=${images.value[carouselEl.value.page - 1].pathname}`)
 }
 </script>
 
@@ -181,16 +197,18 @@ function onClickNavigation(prev: boolean = false) {
                 <!-- open original -->
                 <UTooltip text="Open in a new tab">
                   <UButton
+                    v-if="carouselEl && carouselEl.page"
                     variant="ghost" color="gray"
                     icon="i-heroicons-arrow-up-right-20-solid"
                     size="md"
-                    :to="`/images/${images[currentIndex - 1].pathname}`"
+                    :to="`/images/${images[carouselEl.page - 1].pathname}`"
                     target="_blank"
                     aria-label="Open original image"
                   />
                 </UTooltip>
                 <UTooltip text="Download image">
                   <UButton
+                    v-if="carouselEl && carouselEl.page"
                     variant="ghost" color="gray"
                     icon="i-heroicons-arrow-down-tray-20-solid"
                     size="md"
@@ -226,10 +244,10 @@ function onClickNavigation(prev: boolean = false) {
         >
           <div class="flex items-center justify-center md:justify-between gap-x-4 w-full h-full">
             <UCarousel
-              ref="carouselRef"
+              ref="carouselEl"
               indicators
               :items="imagesPath" arrows class="rounded-lg overflow-hidden h-full flex items-center justify-center"
-              :ui="{ item: 'basis-full flex items-center justify-center', base: 'h-full', indicators: { wrapper: 'absolute overflow-x-auto flex items-start justify-center gap-3 bottom-auto top-0 z-50' } }"
+              :ui="{ item: 'basis-full flex items-center justify-center', base: 'h-full', indicators: { wrapper: 'absolute overflow-x-auto flex items-start justify-center gap-3 bottom-auto top-0 z-50', container: 'carousel-class' } }"
               :prev-button="{
                 color: 'gray',
                 icon: 'i-heroicons-arrow-left-20-solid',
