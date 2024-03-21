@@ -168,7 +168,10 @@ onMounted(() => {
                     variant="ghost" color="gray"
                     icon="i-heroicons-arrow-down-tray-20-solid" size="md"
                     class="hidden md:flex"
-                    aria-label="Download original or modified image" @click="downloadImage(image.pathname, imageContainer, imageEl, contrast, blur, invert, saturate, hueRotate, sepia)"
+                    :to="`/images/${image.pathname}`"
+                    target="_blank"
+                    aria-label="Download original image"
+                    download
                   />
                 </UTooltip>
               </div>

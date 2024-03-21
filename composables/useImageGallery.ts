@@ -36,9 +36,9 @@ export function useImageGallery() {
     const canvas: HTMLCanvasElement = document.createElement('canvas')
     const context: CanvasRenderingContext2D | null = canvas.getContext('2d')
 
-    canvas.width = poster?.naturalWidth
+    canvas.width = poster?.naturalWidth as any
     // if filter panel we must restore orignal height
-    canvas.height = poster?.naturalHeight
+    canvas.height = poster?.naturalHeight as any
 
     context!.filter = `contrast(${contrast}%) blur(${blur}px) invert(${invert}%)
       saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%)`
@@ -53,7 +53,7 @@ export function useImageGallery() {
     return imageToDownload
   }
 
-  const downloadImage = async (filename: string, imageContainer: HTMLElement | undefined, poster: CanvasImageSource, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number) => {
+  const downloadImage = async (filename: string, imageContainer: HTMLElement | null, poster: any, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number) => {
     await applyFilters(imageContainer, poster, contrast, blur, invert, saturate, hueRotate, sepia)
 
     await useFetch(imageToDownload.value.src, {

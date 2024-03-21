@@ -4,9 +4,6 @@ const { images, uploadImage } = useFile()
 const carouselRef = ref<any>(null)
 
 const bottomMenu = ref()
-const imagesEl = ref([])
-const magnifierEl = ref<HTMLElement>()
-const imageContainer = ref<HTMLElement>()
 const savingImg = ref(false)
 const currentIndex = ref()
 
@@ -27,7 +24,7 @@ const filterUpdated = ref(false)
 const { loggedIn } = useUserSession()
 
 const isSmallScreen = useMediaQuery('(max-width: 1024px)')
-const { applyFilters, initSwipe, convertBase64ToFile } = useImageGallery()
+const { applyFilters, initSwipe, convertBase64ToFile, magnifierImage, downloadImage } = useImageGallery()
 
 // onKeyStroke('Escape', () => {
 //   router.push('/')
@@ -81,22 +78,37 @@ function cancelFilter() {
 }
 
 async function saveImage() {
-  if (filterUpdated.value) {
-    const indexEl = carouselRef.value.page - 1
-    const imageEl: any = document.getElementById(`imageEl${indexEl}`)
-    const imageContainer = document.getElementById(`imageContainer${indexEl}`)
+  const indexEl = carouselRef.value.page - 1
+  const imageEl: any = document.getElementById(`imageEl${indexEl}`)
+  const imageContainer = document.getElementById(`imageContainer${indexEl}`)
 
-    savingImg.value = true
+  savingImg.value = true
 
-    const modifiedImage = await applyFilters(imageContainer, imageEl, contrast.value, blur.value, invert.value, saturate.value, hueRotate.value, sepia.value, true)
+  const modifiedImage = await applyFilters(imageContainer, imageEl, contrast.value, blur.value, invert.value, saturate.value, hueRotate.value, sepia.value, true)
 
-    const imageToUpload = await convertBase64ToFile(modifiedImage, images.value[currentIndex.value])
+  const imageToUpload = await convertBase64ToFile(modifiedImage, images.value[currentIndex.value])
 
-    await uploadImage(imageToUpload, true).finally(() => savingImg.value = false)
-  }
+  await uploadImage(imageToUpload, true).finally(() => savingImg.value = false)
 }
 
-function onClick(prev: boolean = false) {
+function applyMagnifier(e: any) {
+  const indexEl: any = carouselRef.value.page - 1
+  const imageEl: any = document.getElementById(`imageEl${indexEl}`)
+  const imageContainer: any = document.getElementById(`imageContainer${indexEl}`)
+  const magnifierEl: any = document.getElementById(`magnifierEl${indexEl}`)
+
+  magnifierImage(e, imageContainer, imageEl, magnifierEl, zoomFactor.value)
+}
+
+async function download() {
+  const indexEl: any = carouselRef.value.page - 1
+  const imageContainer: any = document.getElementById(`imageContainer${indexEl}`)
+  const imageEl: any = document.getElementById(`imageEl${indexEl}`)
+
+  await downloadImage(images.value[indexEl].pathname, imageContainer, imageEl, contrast.value, blur.value, invert.value, saturate.value, hueRotate.value, sepia.value)
+}
+
+function onClickNavigation(prev: boolean = false) {
   const index = carouselRef.value.page
 
   if (prev && index.value !== 1) {
@@ -111,7 +123,7 @@ function onClick(prev: boolean = false) {
 </script>
 
 <template>
-  <div>
+  <div v-if="images && currentIndex">
     <UContainer class="overflow-x-hidden relative flex items-center justify-center">
       <Filter
         class="absolute md:mt-36 transition-transform duration-200" :class="filter ? 'translate-x-0 right-8 ' : 'translate-x-full right-0'"
@@ -154,9 +166,9 @@ function onClick(prev: boolean = false) {
             <div class="bottom-menu-button">
               <div v-if="!filter" class="flex gap-x-2 items-center">
                 <!-- back to gallery (desktop & not the first or last image) -->
-                <!-- <UTooltip v-if="!(isFirstMovie || isLastMovie) || isSmallScreen" text="Back to gallery" :shortcuts="['Esc']">
-                <UButton variant="ghost" color="gray" to="/" size="md" icon="i-heroicons-rectangle-group-20-solid" aria-label="Back to gallery" class="back flex transition-colors duration-200" />
-              </UTooltip> -->
+                <UTooltip text="Back to gallery" :shortcuts="['Esc']">
+                  <UButton variant="ghost" color="gray" to="/" size="md" icon="i-heroicons-rectangle-group-20-solid" aria-label="Back to gallery" class="back flex transition-colors duration-200" />
+                </UTooltip>
                 <!-- open filters -->
                 <!-- v-if="loggedIn"  -->
                 <UTooltip text="Add filters">
@@ -170,16 +182,20 @@ function onClick(prev: boolean = false) {
                 <UTooltip text="Open in a new tab">
                   <UButton
                     variant="ghost" color="gray"
-                    icon="i-heroicons-arrow-up-right-20-solid" size="md"
+                    icon="i-heroicons-arrow-up-right-20-solid"
+                    size="md"
+                    :to="`/images/${images[currentIndex - 1].pathname}`"
+                    target="_blank"
+                    aria-label="Open original image"
                   />
-                <!-- :to="`/images/${images[currentIndex].pathname}`" target="_blank" aria-label="Open original image" -->
                 </UTooltip>
-                <!-- download original or modified image -->
-                <UTooltip text="Download">
+                <UTooltip text="Download image">
                   <UButton
                     variant="ghost" color="gray"
-                    icon="i-heroicons-arrow-down-tray-20-solid" size="md"
+                    icon="i-heroicons-arrow-down-tray-20-solid"
+                    size="md"
                     class="hidden md:flex"
+                    @click="download()"
                   />
                 </UTooltip>
               </div>
@@ -208,11 +224,12 @@ function onClick(prev: boolean = false) {
           :class="{ '-translate-x-[100px]': filter }"
           class="transition-all duration-200 overflow-hidden pt-8 flex items-center justify-center w-full h-screen relative"
         >
-          <div class="flex items-center justify-center md:justify-between gap-x-4 w-full">
+          <div class="flex items-center justify-center md:justify-between gap-x-4 w-full h-full">
             <UCarousel
               ref="carouselRef"
-              :items="imagesPath" arrows class="rounded-lg overflow-hidden "
-              :ui="{ item: 'basis-full flex items-center justify-center' }"
+              indicators
+              :items="imagesPath" arrows class="rounded-lg overflow-hidden h-full flex items-center justify-center"
+              :ui="{ item: 'basis-full flex items-center justify-center', base: 'h-full', indicators: { wrapper: 'absolute overflow-x-auto flex items-start justify-center gap-3 bottom-auto top-0 z-50' } }"
               :prev-button="{
                 color: 'gray',
                 icon: 'i-heroicons-arrow-left-20-solid',
@@ -223,36 +240,44 @@ function onClick(prev: boolean = false) {
               }"
             >
               <template #default="{ item, index }">
-                <div :id="`imageContainer${(index)}`">
-                  <div class="group">
-                    <img
-                      :id="`imageEl${(index)}`"
-                      class="h-[800px] transition-all duration-[0.4s]"
-                      :src="item" width="800" height="800" draggable="false"
-                      :class="[filter ? 'h-[600px]' : 'w-full']"
-                      :style="`filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%); object-fit:${objectFitSelected.toLowerCase()};`"
-                      crossorigin="anonymous"
-                    >
+                <div class="relative flex items-center justify-center xl:m-16">
+                  <div :id="`imageContainer${(index)}`">
+                    <div class="group">
+                      <img
+                        :id="`imageEl${(index)}`"
+                        :src="item" width="800" height="800" draggable
+                        :class="[filter ? 'h-[600px]' : 'w-full']"
+                        :style="`filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%); object-fit:${objectFitSelected.toLowerCase()};`"
+                        class="h-[800px] transition-all duration-[0.4s]"
+                        crossorigin="anonymous"
+                        @mousemove="magnifier ? applyMagnifier($event) : () => {}"
+                      >
+                      <div v-if="magnifier" :id="`magnifierEl${(index)}`" class="w-[100px] h-[100px] absolute border border-gray-200 pointer-events-none rounded-full block opacity-0 group-hover:opacity-100 transition-opacity duration-200" :style="`background-image: url('${item}'`" />
+                    </div>
                   </div>
                 </div>
+              </template>
 
-                <!-- @mousemove="magnifier ? magnifierImage($event, imageContainer, imageEl, magnifierEl!, zoomFactor) : () => {}" -->
+              <template #indicator="{ onClick, page, active }">
+                <img :src="`images/${images[page - 1].pathname}`" width="80" height="50" class="h-[50px] w-[80px] cursor-pointer rounded-md object-cover" :class="{ 'brightness-[.6]': !active }" @click="onClick(page)">
               </template>
 
               <template #prev="{ disabled }">
                 <UTooltip :text="disabled ? 'Back to gallery' : 'previous image'" :shortcuts="[disabled ? 'Esc' : '←']" class="absolute left-4 top-1/2 transform -translate-y-1/2">
                   <UButton
                     color="black" size="xl" class="text-gray-200 rtl:[&_span:first-child]:rotate-180 rounded-full ring-gray-200" :icon="disabled ? 'i-heroicons-rectangle-group-20-solid' : 'i-heroicons-chevron-left-20-solid'"
-                    @click="disabled ? $router.push('/') : onClick(true)"
+                    @click="disabled ? $router.push('/') : onClickNavigation(true)"
                   />
                 </UTooltip>
               </template>
 
               <template #next="{ disabled }">
-                <UButton
-                  :disabled="disabled" color="black" class="rtl:[&_span:last-child]:rotate-180 absolute right-4 top-1/2 transform -translate-y-1/2 rounded-full" icon="i-heroicons-chevron-right-20-solid "
-                  @click="disabled ? $router.push('/') : onClick()"
-                />
+                <UTooltip :text="disabled ? 'Back to gallery' : 'next image'" :shortcuts="[disabled ? 'Esc' : '→']" class="absolute right-4 top-1/2 transform -translate-y-1/2">
+                  <UButton
+                    color="black" class="rtl:[&_span:last-child]:rotate-180 rounded-full" :icon="disabled ? 'i-heroicons-rectangle-group-20-solid' : ' i-heroicons-chevron-right-20-solid'" size="xl"
+                    @click="disabled ? $router.push('/') : onClickNavigation()"
+                  />
+                </UTooltip>
               </template>
             </UCarousel>
           </div>
