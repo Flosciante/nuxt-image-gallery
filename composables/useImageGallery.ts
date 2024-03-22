@@ -8,8 +8,8 @@ export function useImageGallery() {
   const route = useRoute()
 
   const currentIndex: ComputedRef<number> = computed(() => nuxtApp.$file.images.value!.findIndex((image: any) => image.pathname.split('.')[0] === route.params.slug[0]))
-  const isFirstMovie: ComputedRef<boolean> = computed(() => nuxtApp.$file.images.value![0].pathname.split('.')[0] === route.params.slug[0])
-  const isLastMovie: ComputedRef<boolean> = computed(() => nuxtApp.$file.images.value![nuxtApp.$file.images.value!.length - 1].pathname.split('.')[0] === route.params.slug[0])
+  const isFirstImg: ComputedRef<boolean> = computed(() => nuxtApp.$file.images.value![0].pathname.split('.')[0] === route.params.slug[0])
+  const isLastImg: ComputedRef<boolean> = computed(() => nuxtApp.$file.images.value![nuxtApp.$file.images.value!.length - 1].pathname.split('.')[0] === route.params.slug[0])
 
   const initSwipe = (el: Ref<HTMLElement | null>) => {
     useSwipe(el, {
@@ -17,13 +17,13 @@ export function useImageGallery() {
 
       onSwipeEnd(e: TouchEvent, direction: UseSwipeDirection) {
         if (direction === 'left') {
-          if (isLastMovie.value)
+          if (isLastImg.value)
             router.push('/')
           else
             router.push(`/detail/${nuxtApp.$file.images.value![currentIndex.value + 1].pathname.split('.')[0]}`)
         }
         else {
-          if (isFirstMovie.value)
+          if (isFirstImg.value)
             router.push('/')
           else
             router.push(`/detail/${nuxtApp.$file.images.value![currentIndex.value - 1].pathname.split('.')[0]}`)
@@ -32,12 +32,11 @@ export function useImageGallery() {
     })
   }
 
-  const applyFilters = async (imageContainer: HTMLElement | null, poster: HTMLImageElement | null, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number, filter: boolean = false) => {
+  const applyFilters = async (poster: any, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number) => {
     const canvas: HTMLCanvasElement = document.createElement('canvas')
     const context: CanvasRenderingContext2D | null = canvas.getContext('2d')
 
     canvas.width = poster?.naturalWidth
-    // if filter panel we must restore orignal height
     canvas.height = poster?.naturalHeight
 
     context!.filter = `contrast(${contrast}%) blur(${blur}px) invert(${invert}%)
@@ -53,8 +52,8 @@ export function useImageGallery() {
     return imageToDownload
   }
 
-  const downloadImage = async (filename: string, imageContainer: HTMLElement | undefined, poster: CanvasImageSource, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number) => {
-    await applyFilters(imageContainer, poster, contrast, blur, invert, saturate, hueRotate, sepia)
+  const downloadImage = async (filename: string, poster: any, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number) => {
+    await applyFilters(poster, contrast, blur, invert, saturate, hueRotate, sepia)
 
     await useFetch(imageToDownload.value.src, {
       baseURL: `${config.public.imageApi}/ipx/_/tmdb/`,
@@ -119,7 +118,7 @@ export function useImageGallery() {
     magnifierImage,
     initSwipe,
     currentIndex,
-    isFirstMovie,
-    isLastMovie,
+    isFirstImg,
+    isLastImg,
   }
 }

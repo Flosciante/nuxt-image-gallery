@@ -2,19 +2,19 @@
 const thumbnails = ref<HTMLElement>()
 const x = ref(0)
 
-const { images } = useFile()
 const router = useRouter()
+const { images } = useFile()
 const { width } = useWindowSize()
 
-function moveThumbnail(slug: any) {
+async function moveThumbnail(slug: any) {
   // get width of current image
   const currentMovie = images.value!.filter((image: any) => image.pathname.split('.')[0] === slug)
   const index = images.value!.indexOf(currentMovie![0]) as number
-  const thumbnailToMove = ref<HTMLElement | undefined>(thumbnails.value?.children[index] as HTMLElement | undefined)
-  const imageWidth: number = thumbnailToMove.value!.offsetWidth
+  const imgToMove = ref<HTMLElement | undefined>(thumbnails.value?.children[index] as HTMLElement | undefined)
+  const imageWidth: number = imgToMove.value!.offsetWidth
 
   // calculate translate to do. (current translate + middle screen pos x - middle thumbnail to move pos x)
-  x.value = (x.value + ((width.value / 2) - (thumbnailToMove.value!.getBoundingClientRect().left + ((imageWidth / 2)))))
+  x.value = (x.value + ((width.value / 2) - (imgToMove.value!.getBoundingClientRect().left + ((imageWidth / 2)))))
 }
 
 // move thumbnail on mounted (if not gallery page)
@@ -35,15 +35,9 @@ router.afterEach(async (to, _) => {
 </script>
 
 <template>
-  <div class="bg-black/10 backdrop-blur-md top-0 h-[68px] absolute overflow-hidden w-full">
-    <ul v-if="images && images.length" ref="thumbnails" class="fixed top-2 left-48 right-0 whitespace-nowrap overflow-x-auto scroll">
+  <div class="bg-black/10 backdrop-blur-md top-0 h-[68px] absolute overflow-hidden w-screen">
+    <ul v-if="images && images.length" ref="thumbnails" class="fixed top-2 left-48 right-0 whitespace-nowrap overflow-x-scroll">
       <Thumbnail v-for="(thumbnail, index) in images" :key="index" class="transform-gpu transition-all duration-500 mx-4" :thumbnail="thumbnail" :style="`transform: translateX(${x}px) translateZ(0)`" />
     </ul>
   </div>
 </template>
-
-<style lang="postcss">
-.scroll {
-  direction: rtl;
-}
-</style>

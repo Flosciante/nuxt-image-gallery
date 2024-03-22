@@ -23,7 +23,7 @@ const { images, uploadImage } = useFile()
 const { loggedIn } = useUserSession()
 
 const isSmallScreen = useMediaQuery('(max-width: 1024px)')
-const { currentIndex, isFirstMovie, isLastMovie, downloadImage, applyFilters, initSwipe, convertBase64ToFile, magnifierImage } = useImageGallery()
+const { currentIndex, isFirstImg, isLastImg, downloadImage, applyFilters, initSwipe, convertBase64ToFile, magnifierImage } = useImageGallery()
 
 const active = useState()
 const route = useRoute()
@@ -38,14 +38,14 @@ onKeyStroke('Escape', () => {
 })
 
 onKeyStroke('ArrowLeft', () => {
-  if (isFirstMovie.value)
+  if (isFirstImg.value)
     router.push('/')
   else
     router.push(`/detail/${images.value![currentIndex.value - 1].pathname.split('.')[0]}`)
 })
 
 onKeyStroke('ArrowRight', () => {
-  if (isLastMovie.value)
+  if (isLastImg.value)
     router.push('/')
   else
     router.push(`/detail/${images.value![currentIndex.value + 1].pathname.split('.')[0]}`)
@@ -73,7 +73,7 @@ async function saveImage() {
   if (filterUpdated.value) {
     savingImg.value = true
 
-    const modifiedImage = await applyFilters(imageContainer.value, imageEl.value, contrast.value, blur.value, invert.value, saturate.value, hueRotate.value, sepia.value, true)
+    const modifiedImage = await applyFilters(imageEl.value, contrast.value, blur.value, invert.value, saturate.value, hueRotate.value, sepia.value)
 
     const imageToUpload = await convertBase64ToFile(modifiedImage, image)
 
@@ -142,7 +142,7 @@ onMounted(() => {
             <div class="bottom-menu-button">
               <div v-if="!filter" class="flex gap-x-2 items-center">
                 <!-- back to gallery (desktop & not the first or last image) -->
-                <UTooltip v-if="!(isFirstMovie || isLastMovie) || isSmallScreen" text="Back to gallery" :shortcuts="['Esc']">
+                <UTooltip v-if="!(isFirstImg || isLastImg) || isSmallScreen" text="Back to gallery" :shortcuts="['Esc']">
                   <UButton variant="ghost" color="gray" to="/" size="md" icon="i-heroicons-rectangle-group-20-solid" aria-label="Back to gallery" class="back flex transition-colors duration-200" />
                 </UTooltip>
                 <!-- open filters -->
@@ -168,7 +168,7 @@ onMounted(() => {
                     variant="ghost" color="gray"
                     icon="i-heroicons-arrow-down-tray-20-solid" size="md"
                     class="hidden md:flex"
-                    aria-label="Download original or modified image" @click="downloadImage(image.pathname, imageContainer, imageEl, contrast, blur, invert, saturate, hueRotate, sepia)"
+                    aria-label="Download original or modified image" @click="downloadImage(image.pathname, imageEl, contrast, blur, invert, saturate, hueRotate, sepia)"
                   />
                 </UTooltip>
               </div>
@@ -200,7 +200,7 @@ onMounted(() => {
         >
           <div class="flex items-center justify-center md:justify-between gap-x-4 w-full">
             <!-- previous image if not the first image -->
-            <UTooltip v-if="!isFirstMovie" text="Previous" :shortcuts="['←']">
+            <UTooltip v-if="!isFirstImg" text="Previous" :shortcuts="['←']">
               <UButton
                 variant="ghost" color="gray"
                 :to="`/detail/${images![currentIndex - 1].pathname.split('.')[0]}`"
@@ -238,7 +238,7 @@ onMounted(() => {
             </div>
 
             <!-- next image (if not the last image) -->
-            <UTooltip v-if="!isLastMovie" text="Next" :shortcuts="['→']">
+            <UTooltip v-if="!isLastImg" text="Next" :shortcuts="['→']">
               <UButton
                 variant="ghost" color="gray"
                 :to="`/detail/${images![currentIndex + 1].pathname.split('.')[0]}`"
@@ -294,15 +294,6 @@ onMounted(() => {
 @keyframes slide-to-left {
   to {
     transform: translateX(0px);
-  }
-}
-
-@keyframes grow {
-  from {
-    transform: scale(0.4);
-  },
-  to {
-    transform: scale(1);
   }
 }
 
