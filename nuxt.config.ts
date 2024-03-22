@@ -18,5 +18,10 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-auth-utils',
   ],
+
+  ui: {
+    icons: ['simple-icons'],
+  },
+
   devtools: { enabled: true },
 })

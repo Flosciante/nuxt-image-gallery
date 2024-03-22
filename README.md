@@ -1,83 +1,56 @@
-# NuxtHub Starter Template
+# NuxtHub Image Gallery Starter Template
 
-This starter lets you get started with [NuxtHub](https://hub.nuxt.com) in seconds.
+This starter lets you get started with [NuxtHub Blob](https://hub.nuxt.com/docs/storage/blob) in seconds.
 
-- [Documentation](https://hub.nuxt.com)
+- [NuxtHub Documentation](https://hub.nuxt.com)
 
 ## Features
 
-- Image upload with [`hubBlob()`](http://hub.nuxt.com/docs/storage/blob)
-- Save chat messages with [`hubDatababse()`](http://hub.nuxt.com/docs/storage/database)
-- Save server redirects with [`hubKV()`](http://hub.nuxt.com/docs/storage/kv)
+- 📷 Image upload and display with [`hubBlob()`](http://hub.nuxt.com/docs/storage/blob)
+- 🖼️ Image Filters: Apply a variety of filters to your images.
+- 💾 Saving: Save your images with applied filters.
+- 🌐 Cloud Storage: Blob powered by NuxtHub (cloudflare R2).
+- 🎠 Custom Carousel: Includes a custom carousel component that can be adapted for in-house use.
+- [View transition API](https://developer.chrome.com/docs/web-platform/view-transitions) The View Transitions API provides a mechanism for easily creating animated transitions between different DOM states while also updating the DOM contents in a single step.
+- [Nuxt Auth Utils](https://github.com/Atinux/nuxt-auth-utils) Minimalist Authentication module for Nuxt exposing Vue composables and server utils.
+
+## stack
+
+- [NuxtUI](https://ui.nuxt.com/getting-started) - A UI Library for Modern Web Apps
+- [Nuxt Fonts](https://github.com/nuxt/fonts) Plug-and-play custom web font optimization and configuration for Nuxt apps.
+- [VueUse](https://github.com/antfu/vueuse) - collection of useful composition APIs
+- [ESLint](https://eslint.org/) with [@antfu/eslint-config](https://github.com/antfu/eslint-config), single quotes, no semi
+- [TypeScript](https://www.typescriptlang.org/)
+- [bun](https://bun.sh/) - fast JavaScript package manager
 
 ## Setup
 
-Make sure to install the dependencies:
+1. Clone this repository to your local machine.
+2. Install dependencies using the command `bun install` or your favorite package manager.
+3. Run the application with the command `bun dev` or your favorite package manager.
+
+> If you don't have bun installed, run: curl -fsSL https://bun.sh/install | bash
+
+### Development
 
 ```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
+bun dev
 ```
 
-## Development Server
+> You can easily access your [remote storage](https://hub.nuxt.com/docs/getting-started/remote-storage) locally or from external Nuxt projects with our secured proxy.
 
-Start the development server on `http://localhost:3000`:
+## Template Starter
 
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
+This project is a template starter provided by NuxtHub. It's designed to help kickstart your NuxtHub files project.
 
 Check out the [deployment documentation](https://hub.nuxt.com/docs/getting-started/deploy) for more information.
+
+## Contribution
+
+Contributions are welcome! Feel free to open an issue to report a bug or submit a feature request via a pull request.
+
+## Credits
+
+[![Atinux]](https://github.com/Atinux)
+
+Thanks to @Atinux for the contributions and advice provided

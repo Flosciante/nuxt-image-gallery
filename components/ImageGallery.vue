@@ -64,9 +64,14 @@ async function clearSession() {
           <img src="/logo.svg" width="29" height="20">
         </template>
         <template #description>
-          <p class="bottom-menu-description">
-            Media Gallery template
-          </p>
+          <div class="flex gap-x-4 items-center">
+            <p class="bottom-menu-description">
+              Media Gallery template
+            </p>
+            <NuxtLink to="https://github.com/Flosciante/nuxt-image-gallery" target="blank" class="flex items-center">
+              <UIcon name="i-simple-icons-github" class="w-5 h-5" />
+            </NuxtLink>
+          </div>
         </template>
         <template #buttons>
           <div class="flex gap-x-2">
@@ -81,12 +86,12 @@ async function clearSession() {
           <input ref="fileInput" class="hidden" type="file" accept="image/*" @change="fileSelection">
           <UploadButton :uploading="uploadingImg" type="submit" class="mb-6" :is-over-drop-zone="isOverDropZone" @click="openFilePicker" />
         </div>
-        <div v-else class="text-2xl text-white flex flex-col gap-y-4 items-center justify-center h-full w-full">
+        <div v-else class="text-2xl text-white flex flex-col gap-y-4 items-center justify-center h-full w-full pb-8">
           <h1 class="font-medium text-5xl">
             Welcome to image gallery
           </h1>
           <p class="text-gray-400">
-            you must be logged in to start uploading images
+            You must be logged in to start uploading images
           </p>
         </div>
 
