@@ -97,7 +97,7 @@ async function clearSession() {
               :loading="deletingImg === image.pathname"
               color="white" icon="i-heroicons-trash-20-solid" class="absolute top-4 right-4 z-[9999] opacity-0 group-hover:opacity-100" @click="deleteFile(image.pathname)"
             />
-            <NuxtLink :to="{ path: '/detail-carousel', query: { image: image.pathname } }" @click="active = image.pathname.split('.')[0]">
+            <NuxtLink :to="`/detail/${image.pathname.split('.')[0]}`" @click="active = image.pathname.split('.')[0]">
               <img
                 v-if="image"
                 width="527"

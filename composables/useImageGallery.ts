@@ -74,7 +74,7 @@ export function useImageGallery() {
 
     const response = await fetch(url)
     const blob = await response.blob()
-    const convertedFile = new File([blob], originalImage.pathname.split('.')[1], { type: `image/${originalImage.pathname.split('.')[1]}` })
+    const convertedFile = new File([blob], originalImage.value.pathname.split('.')[1], { type: `image/${originalImage.value.pathname.split('.')[1]}` })
 
     return convertedFile
   }

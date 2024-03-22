@@ -1,9 +1,10 @@
 <script setup lang="ts">
+const thumbnails = ref<HTMLElement>()
+const x = ref(0)
+
 const { images } = useFile()
 const router = useRouter()
 const { width } = useWindowSize()
-const thumbnails = ref<HTMLElement>()
-const x = ref(0)
 
 function moveThumbnail(slug: any) {
   // get width of current image
@@ -34,9 +35,15 @@ router.afterEach(async (to, _) => {
 </script>
 
 <template>
-  <div class="bg-black/10 backdrop-blur-md w-screen top-0 h-[68px] absolute overflow-hidden">
-    <ul v-if="images && images.length" ref="thumbnails" class="fixed top-2 left-48 right-0 whitespace-nowrap">
+  <div class="bg-black/10 backdrop-blur-md top-0 h-[68px] absolute overflow-hidden w-full">
+    <ul v-if="images && images.length" ref="thumbnails" class="fixed top-2 left-48 right-0 whitespace-nowrap overflow-x-auto scroll">
       <Thumbnail v-for="(thumbnail, index) in images" :key="index" class="transform-gpu transition-all duration-500 mx-4" :thumbnail="thumbnail" :style="`transform: translateX(${x}px) translateZ(0)`" />
     </ul>
   </div>
 </template>
+
+<style lang="postcss">
+.scroll {
+  direction: rtl;
+}
+</style>
