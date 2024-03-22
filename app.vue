@@ -3,25 +3,24 @@ const { getImages } = useFile()
 
 useHead({
   link: [
-    { rel: 'icon', href: '/icon.png' },
-  ],
-  meta: [
-    { property: 'og:site_name', content: 'NuxtLabs' },
-    { property: 'og:type', content: 'website' },
-    { property: 'og:image', content: 'https://nuxtlabs.com/social.png' },
-    { property: 'og:image:alt', content: 'NuxtLabs' },
-    { property: 'description', content: 'description' },
-    { property: 'twitter:card', content: 'summary_large_image' },
-    { property: 'twitter:site', content: '@nuxtlabs' },
+    { rel: 'icon', href: '/favicon.ico' },
   ],
   htmlAttrs: {
     lang: 'en',
   },
 })
 
+const title = 'NuxtHub Image Gallery Starter'
+const description = 'A Nuxt template to build your full-stack image gallery application on the edge.'
+
 useSeoMeta({
-  title: 'NuxtHub Image Gallery Starter',
-  description: 'A Nuxt template to build your full-stack image gallery application on the edge.',
+  title,
+  ogTitle: title,
+  description,
+  ogDescription: description,
+  ogSiteName: 'NuxtHub image gallery template',
+  ogImage: 'https://image-gallery.nuxt.dev/social-card.png',
+  twitterCard: 'summary_large_image',
 })
 
 await getImages()
