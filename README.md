@@ -11,8 +11,8 @@ This starter lets you get started with [NuxtHub Blob](https://hub.nuxt.com/docs/
 - 💾 Saving: Save your images with applied filters.
 - 🌐 Cloud Storage: Blob powered by NuxtHub (cloudflare R2).
 - 🎠 Custom Carousel: Includes a custom carousel component that can be adapted for in-house use.
-- [View transition API](https://developer.chrome.com/docs/web-platform/view-transitions) The View Transitions API provides a mechanism for easily creating animated transitions between different DOM states while also updating the DOM contents in a single step.
-- [Nuxt Auth Utils](https://github.com/Atinux/nuxt-auth-utils) Minimalist Authentication module for Nuxt exposing Vue composables and server utils.
+- 🏃🏻 [View transition API](https://developer.chrome.com/docs/web-platform/view-transitions) The View Transitions API provides a mechanism for easily creating animated transitions between different DOM states while also updating the DOM contents in a single step.
+- 🔑 [Nuxt Auth Utils](https://github.com/Atinux/nuxt-auth-utils) Minimalist Authentication module for Nuxt exposing Vue composables and server utils.
 
 ## stack
 
