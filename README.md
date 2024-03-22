@@ -2,7 +2,7 @@
 
 This starter lets you get started with [NuxtHub Blob](https://hub.nuxt.com/docs/storage/blob) in seconds.
 
-- [NuxtHub Documentation](https://hub.nuxt.com)
+https://github.com/Flosciante/nuxt-image-gallery/assets/904724/6e2bafdf-f5a0-42cf-b1f8-1d11c6ec919f
 
 ## Features
 
@@ -14,8 +14,9 @@ This starter lets you get started with [NuxtHub Blob](https://hub.nuxt.com/docs/
 - 🏃🏻 [View transition API](https://developer.chrome.com/docs/web-platform/view-transitions) The View Transitions API provides a mechanism for easily creating animated transitions between different DOM states while also updating the DOM contents in a single step.
 - 🔑 [Nuxt Auth Utils](https://github.com/Atinux/nuxt-auth-utils) Minimalist Authentication module for Nuxt exposing Vue composables and server utils.
 
-## stack
+## Stack
 
+- [NuxtHub](https://hub.nuxt.com) - A Nuxt toolkit to build fullstack applications on the edge
 - [NuxtUI](https://ui.nuxt.com/getting-started) - A UI Library for Modern Web Apps
 - [Nuxt Fonts](https://github.com/nuxt/fonts) Plug-and-play custom web font optimization and configuration for Nuxt apps.
 - [VueUse](https://github.com/antfu/vueuse) - collection of useful composition APIs
@@ -51,4 +52,4 @@ Contributions are welcome! Feel free to open an issue to report a bug or submit 
 
 ## Credits
 
-Thanks to [Atinux](https://github.com/Atinux) for the contributions and advice provided
+Thanks to [Atinux](https://github.com/Atinux) for the contributions and advice provided.
