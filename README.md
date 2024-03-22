@@ -51,6 +51,4 @@ Contributions are welcome! Feel free to open an issue to report a bug or submit 
 
 ## Credits
 
-[Atinux](https://github.com/Atinux)
-
-Thanks to @Atinux for the contributions and advice provided
+Thanks to [Atinux](https://github.com/Atinux) for the contributions and advice provided
