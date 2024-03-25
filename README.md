@@ -32,13 +32,13 @@ https://github.com/Flosciante/nuxt-image-gallery/assets/904724/6e2bafdf-f5a0-42c
 
 > If you don't have bun installed, run: curl -fsSL https://bun.sh/install | bash
 
-### Development
+## Development
 
 ```bash
 bun dev
 ```
 
-## Remote Storage
+### Remote Storage
 
 Once you deployed your project, you can connect to your remote database locally running:
 
@@ -46,7 +46,7 @@ Once you deployed your project, you can connect to your remote database locally 
 bun dev --remote
 ```
 
-## Deploy
+### Deploy
 
 You can deploy this project on your Cloudflare account for free and with zero configuration using [NuxtHub](https://hub.nuxt.com).
 
