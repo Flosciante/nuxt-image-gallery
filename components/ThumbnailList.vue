@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const thumbnails = ref<HTMLElement>()
-const x = ref(0)
+const thumbnails = ref<HTMLUListElement>()
+const x = ref<number>(0)
 
 const router = useRouter()
 const { images } = useFile()
@@ -36,7 +36,7 @@ router.afterEach(async (to, _) => {
 
 <template>
   <div class="bg-black/10 backdrop-blur-md top-0 h-[68px] absolute overflow-hidden w-screen">
-    <ul v-if="images && images.length" ref="thumbnails" class="fixed top-2 left-48 right-0 whitespace-nowrap overflow-x-scroll">
+    <ul v-if="images && images.length" ref="thumbnails" class="fixed top-2 left-0 right-0 mr-8 whitespace-nowrap overflow-x-scroll">
       <Thumbnail v-for="(thumbnail, index) in images" :key="index" class="transform-gpu transition-all duration-500 mx-4" :thumbnail="thumbnail" :style="`transform: translateX(${x}px) translateZ(0)`" />
     </ul>
   </div>
