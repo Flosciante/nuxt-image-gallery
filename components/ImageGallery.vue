@@ -65,7 +65,7 @@ async function clearSession() {
         </template>
         <template #description>
           <div class="flex gap-x-4 items-center">
-            <p class="bottom-menu-description">
+            <p class="bottom-menu-description text-sm sm:text-base leading-tight sm:leading-normal">
               Media Gallery template
             </p>
             <NuxtLink to="https://github.com/Flosciante/nuxt-image-gallery" target="blank" class="flex items-center">
@@ -76,7 +76,7 @@ async function clearSession() {
         <template #buttons>
           <div class="flex gap-x-2">
             <UButton v-if="loggedIn" :loading="disconnect" icon="i-heroicons-power-20-solid" color="red" variant="ghost" @click="clearSession" />
-            <UButton v-else label="Sign in" color="green" variant="ghost" aria-label="Sign in" @click="isOpen = true" />
+            <UButton v-else label="Sign in" color="green" variant="ghost" aria-label="Sign in" class="mr-4 sm:mr-0" @click="isOpen = true" />
           </div>
         </template>
       </BottomMenu>
