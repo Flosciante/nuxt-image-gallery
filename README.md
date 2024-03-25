@@ -38,7 +38,25 @@ https://github.com/Flosciante/nuxt-image-gallery/assets/904724/6e2bafdf-f5a0-42c
 bun dev
 ```
 
-> You can easily access your [remote storage](https://hub.nuxt.com/docs/getting-started/remote-storage) locally or from external Nuxt projects with our secured proxy.
+## Remote Storage
+
+Once you deployed your project, you can connect to your remote database locally running:
+
+```bash
+bun dev --remote
+```
+
+## Deploy
+
+You can deploy this project on your Cloudflare account for free and with zero configuration using [NuxtHub](https://hub.nuxt.com).
+
+```bash
+npx nuxthub deploy
+```
+
+It's also possible to leverage Cloudflare Pages CI for deploying, learn more about the different options on https://hub.nuxt.com/docs/getting-started/deploy
+
+Learn more about remote storage on https://hub.nuxt.com/docs/getting-started/remote-storage
 
 ## Template Starter
 
