@@ -1,6 +1,6 @@
 <script setup lang="ts">
-const thumbnails = ref<HTMLElement>()
-const x = ref(0)
+const thumbnails = ref<HTMLUListElement>()
+const x = ref<number>(0)
 
 const router = useRouter()
 const { images } = useFile()
