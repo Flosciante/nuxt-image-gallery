@@ -1,18 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  extends: ['@nuxthub/core'],
-
-  $development: {
-    hub: {
-      remote: true,
-    },
-  },
-
-  experimental: {
-    viewTransition: true,
-  },
-
   modules: [
+    '@nuxthub/core',
     '@nuxt/fonts',
     '@nuxt/ui',
     '@vueuse/nuxt',
@@ -21,6 +10,10 @@ export default defineNuxtConfig({
 
   ui: {
     icons: ['simple-icons'],
+  },
+
+  experimental: {
+    viewTransition: true,
   },
 
   devtools: { enabled: true },

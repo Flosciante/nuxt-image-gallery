@@ -40,7 +40,7 @@ bun dev
 
 > [!IMPORTANT]
 > There is a limitation on local blobs freezing the server (https://github.com/nuxt-hub/core/issues/14) when having multiple ones.
-> We recommend you to [deploy the project](https://hub.nuxt.com/docs/getting-started/deploy) and use the remote storage as workaround.
+> We recommend you to [deploy the project](https://hub.nuxt.com/docs/getting-started/deploy) and use the remote storage as workaround (`npx nuxi dev --remote`)
 
 ### Remote Storage
 
