@@ -1,4 +1,5 @@
 export default eventHandler(async (event) => {
+  await requireUserSession(event)
   const form = await readFormData(event)
   const image = form.get('image') as File
 
