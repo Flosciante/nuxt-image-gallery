@@ -43,10 +43,6 @@ https://github.com/Flosciante/nuxt-image-gallery/assets/904724/6e2bafdf-f5a0-42c
 bun dev
 ```
 
-> [!IMPORTANT]
-> There is a limitation on local blobs freezing the server (https://github.com/nuxt-hub/core/issues/14) when having multiple ones.
-> We recommend you to [deploy the project](https://hub.nuxt.com/docs/getting-started/deploy) and use the remote storage as workaround (`npx nuxi dev --remote`)
-
 ### Remote Storage
 
 Once you deployed your project, you can connect to your remote database locally running:
