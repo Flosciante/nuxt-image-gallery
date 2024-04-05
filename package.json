@@ -16,21 +16,21 @@
   "dependencies": {
     "@nuxt/fonts": "^0.6.1",
     "@nuxt/ui": "^2.15.1",
-    "@nuxthub/core": "^0.4.0",
+    "@nuxthub/core": "^0.4.1",
     "@vueuse/core": "^10.9.0",
     "@vueuse/nuxt": "^10.9.0",
-    "nuxt": "^3.11.1",
+    "nuxt": "^3.11.2",
     "nuxt-auth-utils": "^0.0.22"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.12.1",
-    "@iconify-json/simple-icons": "^1.1.97",
+    "@iconify-json/simple-icons": "^1.1.98",
     "@nuxt/devtools": "^1.1.5",
     "eslint": "^8.57.0",
     "lint-staged": "^15.2.2",
     "simple-git-hooks": "^2.11.1",
-    "typescript": "^5.4.3",
-    "vue-tsc": "^2.0.7",
-    "wrangler": "^3.45.0"
+    "typescript": "^5.4.4",
+    "vue-tsc": "^2.0.10",
+    "wrangler": "^3.47.1"
   }
 }
