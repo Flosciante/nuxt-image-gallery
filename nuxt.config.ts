@@ -8,6 +8,10 @@ export default defineNuxtConfig({
     'nuxt-auth-utils',
   ],
 
+  hub: {
+    blob: true,
+  },
+
   ui: {
     icons: ['simple-icons'],
   },
