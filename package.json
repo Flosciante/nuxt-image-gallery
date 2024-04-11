@@ -16,7 +16,7 @@
   "dependencies": {
     "@nuxt/fonts": "^0.6.1",
     "@nuxt/ui": "^2.15.1",
-    "@nuxthub/core": "^0.5.3",
+    "@nuxthub/core": "^0.5.4",
     "@vueuse/core": "^10.9.0",
     "@vueuse/nuxt": "^10.9.0",
     "nuxt": "^3.11.2",
