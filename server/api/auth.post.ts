@@ -8,7 +8,7 @@ export default eventHandler(async (event) => {
 
   if (body.password === adminPassword) {
     await setUserSession(event, {
-      user: { role: 'admin' },
+      user: { role: 'admin' }
     })
 
     return { loggedIn: true }

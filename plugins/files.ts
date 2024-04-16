@@ -1,11 +1,12 @@
 export default defineNuxtPlugin(() => {
   const images = ref()
   const router = useRouter()
+  const toast = useToast()
 
   const getImages = async () => {
     const { data: files } = await useFetch('/api/images')
 
-    images.value = files.value as any
+    images.value = files.value
   }
 
   async function uploadImage(image: File, filter: boolean = false) {
@@ -14,8 +15,12 @@ export default defineNuxtPlugin(() => {
 
     await $fetch('/api/images/upload', {
       method: 'POST',
-      body: formData,
-    }).catch(err => alert(`Failed to upload image:\n${err.data?.message}`))
+      body: formData
+    }).catch(err => toast.add({
+      color: 'red',
+      title: 'Failed to upload image',
+      description: err.data?.message || err.message
+    }))
 
     getImages()
 
@@ -35,8 +40,8 @@ export default defineNuxtPlugin(() => {
         getImages,
         images,
         uploadImage,
-        deleteImage,
-      },
-    },
+        deleteImage
+      }
+    }
   }
 })

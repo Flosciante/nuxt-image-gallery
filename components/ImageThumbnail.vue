@@ -2,13 +2,17 @@
 defineProps({
   thumbnail: {
     type: Object,
-    default: null,
-  },
+    default: null
+  }
 })
 </script>
 
 <template>
-  <li v-if="$router.currentRoute.value.params.slug" class="text-black inline-block relative" :class="{ 'z-50': thumbnail.pathname.split('.')[0] === $router.currentRoute.value.params.slug[0] }">
+  <li
+    v-if="$router.currentRoute.value.params.slug"
+    class="text-black inline-block relative"
+    :class="{ 'z-50': thumbnail.pathname.split('.')[0] === $router.currentRoute.value.params.slug[0] }"
+  >
     <NuxtLink :to="`/detail/${thumbnail.pathname.split('.')[0]}`">
       <img
         v-if="thumbnail"
