@@ -3,11 +3,11 @@ import type { UseSwipeDirection } from '@vueuse/core'
 export function useImageGallery() {
   const nuxtApp = useNuxtApp()
   const config = useRuntimeConfig()
-  const imageToDownload = ref()
+  const imageToDownload = ref<HTMLImageElement>()
   const router = useRouter()
   const route = useRoute()
 
-  const currentIndex: ComputedRef<number> = computed(() => nuxtApp.$file.images.value!.findIndex((image: any) => image.pathname.split('.')[0] === route.params.slug[0]))
+  const currentIndex: ComputedRef<number> = computed(() => nuxtApp.$file.images.value!.findIndex((image: BlobObject) => image.pathname.split('.')[0] === route.params.slug[0]))
   const isFirstImg: ComputedRef<boolean> = computed(() => nuxtApp.$file.images.value![0].pathname.split('.')[0] === route.params.slug[0])
   const isLastImg: ComputedRef<boolean> = computed(() => nuxtApp.$file.images.value![nuxtApp.$file.images.value!.length - 1].pathname.split('.')[0] === route.params.slug[0])
 
@@ -28,11 +28,11 @@ export function useImageGallery() {
           else
             router.push(`/detail/${nuxtApp.$file.images.value![currentIndex.value - 1].pathname.split('.')[0]}`)
         }
-      },
+      }
     })
   }
 
-  const applyFilters = async (poster: any, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number) => {
+  const applyFilters = async (poster: HTMLImageElement, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number) => {
     const canvas: HTMLCanvasElement = document.createElement('canvas')
     const context: CanvasRenderingContext2D | null = canvas.getContext('2d')
 
@@ -52,13 +52,16 @@ export function useImageGallery() {
     return imageToDownload
   }
 
-  const downloadImage = async (filename: string, poster: any, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number) => {
+  const downloadImage = async (filename: string, poster: HTMLImageElement, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number) => {
+    if (!imageToDownload.value) {
+      return
+    }
     await applyFilters(poster, contrast, blur, invert, saturate, hueRotate, sepia)
 
     await useFetch(imageToDownload.value.src, {
-      baseURL: `${config.public.imageApi}/ipx/_/tmdb/`,
-    }).then((response: any) => {
-      const blob: any = response.data.value
+      baseURL: `${config.public.imageApi}/ipx/_/tmdb/`
+    }).then((response) => {
+      const blob = response.data.value as Blob
       const url: string = URL.createObjectURL(blob)
       const link: HTMLAnchorElement = document.createElement('a')
 
@@ -68,7 +71,7 @@ export function useImageGallery() {
     })
   }
 
-  const convertBase64ToFile = async (image: any, originalImage: any) => {
+  const convertBase64ToFile = async (image: Ref<HTMLImageElement>, originalImage: Ref<BlobObject>) => {
     const url = image.value.currentSrc
 
     const response = await fetch(url)
@@ -78,7 +81,7 @@ export function useImageGallery() {
     return convertedFile
   }
 
-  const magnifierImage = (e: any, containerEl: any, imageEl: HTMLElement, magnifierEl: HTMLElement, zoomFactor: number = 2) => {
+  const magnifierImage = (e: MouseEvent, containerEl: HTMLElement, imageEl: HTMLImageElement, magnifierEl: HTMLElement, zoomFactor: number = 2) => {
     if (magnifierEl.style.filter !== imageEl.style.filter)
       magnifierEl.style.filter = imageEl.style.filter
 
@@ -119,6 +122,6 @@ export function useImageGallery() {
     initSwipe,
     currentIndex,
     isFirstImg,
-    isLastImg,
+    isLastImg
   }
 }

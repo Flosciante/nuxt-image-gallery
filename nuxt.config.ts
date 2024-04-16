@@ -4,21 +4,31 @@ export default defineNuxtConfig({
     '@nuxthub/core',
     '@nuxt/fonts',
     '@nuxt/ui',
+    '@nuxt/eslint',
     '@vueuse/nuxt',
-    'nuxt-auth-utils',
+    'nuxt-auth-utils'
   ],
 
   hub: {
-    blob: true,
+    blob: true
   },
 
   ui: {
-    icons: ['simple-icons'],
+    icons: ['simple-icons']
   },
 
   experimental: {
-    viewTransition: true,
+    viewTransition: true
   },
 
   devtools: { enabled: true },
+
+  eslint: {
+    config: {
+      stylistic: {
+        quotes: 'single',
+        commaDangle: 'never'
+      }
+    }
+  }
 })
