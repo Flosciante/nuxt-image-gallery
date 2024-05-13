@@ -53,10 +53,11 @@ export function useImageGallery() {
   }
 
   const downloadImage = async (filename: string, poster: HTMLImageElement, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number) => {
+    await applyFilters(poster, contrast, blur, invert, saturate, hueRotate, sepia)
+
     if (!imageToDownload.value) {
       return
     }
-    await applyFilters(poster, contrast, blur, invert, saturate, hueRotate, sepia)
 
     await useFetch(imageToDownload.value.src, {
       baseURL: `${config.public.imageApi}/ipx/_/tmdb/`
@@ -76,7 +77,8 @@ export function useImageGallery() {
 
     const response = await fetch(url)
     const blob = await response.blob()
-    const convertedFile = new File([blob], originalImage.value.pathname.split('.')[1], { type: `image/${originalImage.value.pathname.split('.')[1]}` })
+
+    const convertedFile = new File([blob], `${Math.random().toString().split('.')[1]}.${originalImage.value.contentType.split('/').pop()}`, { type: originalImage.value.contentType })
 
     return convertedFile
   }
