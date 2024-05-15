@@ -17,7 +17,7 @@
     "@nuxt/eslint": "^0.3.12",
     "@nuxt/fonts": "^0.7.0",
     "@nuxt/ui": "^2.16.0",
-    "@nuxthub/core": "^0.5.16",
+    "@nuxthub/core": "^0.5.17",
     "@vueuse/core": "^10.9.0",
     "@vueuse/nuxt": "^10.9.0",
     "nuxt": "^3.11.2",
@@ -30,7 +30,7 @@
     "lint-staged": "^15.2.2",
     "simple-git-hooks": "^2.11.1",
     "typescript": "^5.4.5",
-    "vue-tsc": "^2.0.17",
-    "wrangler": "^3.55.0"
+    "vue-tsc": "^2.0.18",
+    "wrangler": "^3.56.0"
   }
 }
