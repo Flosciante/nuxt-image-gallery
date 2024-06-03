@@ -17,7 +17,7 @@
     "@nuxt/eslint": "^0.3.13",
     "@nuxt/fonts": "^0.7.0",
     "@nuxt/ui": "^2.16.0",
-    "@nuxthub/core": "^0.6.1",
+    "@nuxthub/core": "^0.6.2",
     "@vueuse/core": "^10.10.0",
     "@vueuse/nuxt": "^10.10.0",
     "nuxt": "^3.11.2",
