@@ -22,15 +22,14 @@ https://github.com/Flosciante/nuxt-image-gallery/assets/904724/6e2bafdf-f5a0-42c
 - [VueUse](https://github.com/antfu/vueuse) - Collection of useful composition APIs
 - [ESLint](https://eslint.org/) with [@nuxt/eslint-config](https://github.com/nuxt/eslint), single quotes, no semi
 - [TypeScript](https://www.typescriptlang.org/)
-- [bun](https://bun.sh/) - Fast JavaScript package manager
 
 ## Setup
 
 1. Clone this repository to your local machine.
-2. Install dependencies using the command `bun install` or your favorite package manager.
-3. Run the application with the command `bun dev` or your favorite package manager.
+2. Install dependencies using the command `pnpm install` or your favorite package manager.
+3. Run the application with the command `pnpm dev` or your favorite package manager.
 
-> If you don't have bun installed, run: curl -fsSL https://bun.sh/install | bash
+> If you don't have pnpm installed, run: `corepack enable pnpm`
 
 ## Environment Variables
 
@@ -40,7 +39,7 @@ https://github.com/Flosciante/nuxt-image-gallery/assets/904724/6e2bafdf-f5a0-42c
 ## Development
 
 ```bash
-bun dev
+pnpm dev
 ```
 
 ### Remote Storage
@@ -48,7 +47,7 @@ bun dev
 Once you deployed your project, you can connect to your remote database locally running:
 
 ```bash
-bun dev --remote
+pnpm dev --remote
 ```
 
 ### Deploy
