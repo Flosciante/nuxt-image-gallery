@@ -22,7 +22,11 @@ function openFilePicker() {
 
 async function fileSelection(event: Event) {
   const target = event.target as HTMLInputElement
-  target.files?.[0] && await uploadFile(target.files[0])
+  if (target.files) {
+    for (const file of target.files) {
+      await uploadFile(file)
+    }
+  }
 }
 
 async function onDrop(files: File[] | null) {
@@ -133,6 +137,7 @@ async function clearSession() {
             class="hidden"
             type="file"
             accept="image/*"
+            multiple
             @change="fileSelection"
           >
           <UploadButton
