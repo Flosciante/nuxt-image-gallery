@@ -1,7 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+  compatibilityDate: '2024-07-30',
   future: { compatibilityVersion: 4 },
-
   modules: [
     '@nuxthub/core',
     '@nuxt/fonts',
@@ -10,21 +10,13 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     'nuxt-auth-utils'
   ],
-
   hub: {
     blob: true
   },
-
-  ui: {
-    icons: ['simple-icons']
-  },
-
   experimental: {
     viewTransition: true
   },
-
   devtools: { enabled: true },
-
   eslint: {
     config: {
       stylistic: {
