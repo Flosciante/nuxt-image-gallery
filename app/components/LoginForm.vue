@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const emit = defineEmits(['closeLogin'])
+const emit = defineEmits(['close'])
 const { fetch: refreshSession } = useUserSession()
 const password = ref('')
 const loading = ref(false)
@@ -15,7 +15,7 @@ async function login() {
   })
     .then(async () => {
       await refreshSession()
-      emit('closeLogin')
+      emit('close')
     })
     .catch((err) => {
       toast.add({
@@ -53,6 +53,15 @@ async function login() {
       class="px-4"
       size="lg"
       :disabled="!password"
+    />
+
+    <UButton
+      icon="i-heroicons-x-mark"
+      color="gray"
+      variant="ghost"
+      size="xs"
+      class="absolute right-2 top-2"
+      @click="$emit('close')"
     />
   </form>
 </template>

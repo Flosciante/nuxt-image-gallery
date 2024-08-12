@@ -59,21 +59,16 @@ async function clearSession() {
       ref="dropZoneRef"
       class="relative h-screen gap-[22px] p-4"
     >
-      <USlideover
+      <UModal
         v-model="isOpen"
-        class="flex items-center justify-center"
+        class="flex items-center justify-center relative"
         side="left"
       >
         <LoginForm
           class="z-50 bg-gray-800 rounded-md"
-          @close-login="isOpen = false"
+          @close="isOpen = false"
         />
-        <UButton
-          icon="i-heroicons-x-mark"
-          class="absolute right-4 top-4"
-          @click="isOpen = false"
-        />
-      </USlideover>
+      </UModal>
 
       <BottomMenu class="bottom-menu">
         <template #logo>
