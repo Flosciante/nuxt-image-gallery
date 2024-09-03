@@ -1,4 +1,6 @@
 import type { UseSwipeDirection } from '@vueuse/core'
+import type { BlobObject } from '@nuxthub/core'
+import type { FilePlugin } from '../../types'
 
 export function useImageGallery() {
   const nuxtApp = useNuxtApp()
@@ -7,11 +9,13 @@ export function useImageGallery() {
   const router = useRouter()
   const route = useRoute()
 
-  const currentIndex: ComputedRef<number> = computed(() => nuxtApp.$file.images.value!.findIndex((image: BlobObject) => image.pathname.split('.')[0] === route.params.slug[0]))
-  const isFirstImg: ComputedRef<boolean> = computed(() => nuxtApp.$file.images.value![0].pathname.split('.')[0] === route.params.slug[0])
-  const isLastImg: ComputedRef<boolean> = computed(() => nuxtApp.$file.images.value![nuxtApp.$file.images.value!.length - 1].pathname.split('.')[0] === route.params.slug[0])
+  const file = nuxtApp.$file as FilePlugin
 
-  const initSwipe = (el: Ref<HTMLElement | null>) => {
+  const currentIndex: ComputedRef<number> = computed(() => file.images.value!.findIndex((image: BlobObject) => image.pathname.split('.')[0] === route.params.slug![0]))
+  const isFirstImg: ComputedRef<boolean> = computed(() => file.images.value?.[0]?.pathname.split('.')[0] === route.params.slug![0] || false)
+  const isLastImg: ComputedRef<boolean> = computed(() => file.images.value?.[file.images.value.length - 1]?.pathname.split('.')[0] === route.params.slug![0] || false)
+
+  const initSwipe = (el: Ref<HTMLImageElement | undefined>) => {
     useSwipe(el, {
       passive: false,
 
@@ -20,13 +24,13 @@ export function useImageGallery() {
           if (isLastImg.value)
             router.push('/')
           else
-            router.push(`/detail/${nuxtApp.$file.images.value![currentIndex.value + 1].pathname.split('.')[0]}`)
+            router.push(`/detail/${file.images.value![currentIndex.value + 1]?.pathname.split('.')[0]}`)
         }
         else {
           if (isFirstImg.value)
             router.push('/')
           else
-            router.push(`/detail/${nuxtApp.$file.images.value![currentIndex.value - 1].pathname.split('.')[0]}`)
+            router.push(`/detail/${file.images.value![currentIndex.value - 1]?.pathname.split('.')[0]}`)
         }
       }
     })
@@ -49,7 +53,7 @@ export function useImageGallery() {
     modifiedImage.src = canvas.toDataURL('image/png')
     imageToDownload.value = modifiedImage
 
-    return imageToDownload
+    return imageToDownload as Ref<HTMLImageElement>
   }
 
   const downloadImage = async (filename: string, poster: HTMLImageElement, contrast: number, blur: number, invert: number, saturate: number, hueRotate: number, sepia: number) => {
@@ -78,9 +82,9 @@ export function useImageGallery() {
     const response = await fetch(url)
     const blob = await response.blob()
 
-    const convertedFile = new File([blob], `${Math.random().toString().split('.')[1]}.${originalImage.value.contentType.split('/').pop()}`, { type: originalImage.value.contentType })
+    const convertedFile = new File([blob], `${Math.random().toString().split('.')[1]}.${originalImage.value?.contentType?.split('/').pop()}`, { type: originalImage.value.contentType })
 
-    return convertedFile
+    return convertedFile as File
   }
 
   const magnifierImage = (e: MouseEvent, containerEl: HTMLElement, imageEl: HTMLImageElement, magnifierEl: HTMLElement, zoomFactor: number = 2) => {

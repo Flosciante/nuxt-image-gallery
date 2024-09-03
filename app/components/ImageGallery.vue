@@ -22,11 +22,16 @@ function openFilePicker() {
 
 async function fileSelection(event: Event) {
   const target = event.target as HTMLInputElement
-  target.files?.[0] && await uploadFile(target.files[0])
+
+  if (target.files?.[0]) {
+    await uploadFile(target.files[0])
+  }
 }
 
 async function onDrop(files: File[] | null) {
-  files && await uploadFile(files[0])
+  if (files) {
+    await uploadFile(files[0] as File)
+  }
 }
 
 async function uploadFile(file: File) {

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { BlobObject } from '@nuxthub/core'
+
 const thumbnails = ref<HTMLUListElement>()
 const x = ref<number>(0)
 
@@ -9,7 +11,7 @@ const { width } = useWindowSize()
 async function moveThumbnail(slug: string) {
   // get width of current image
   const currentMovie = images.value!.filter((image: BlobObject) => image.pathname.split('.')[0] === slug)
-  const index = images.value!.indexOf(currentMovie![0]) as number
+  const index = images.value!.indexOf(currentMovie[0]!) as number
   const imgToMove = ref<HTMLElement | undefined>(thumbnails.value?.children[index] as HTMLElement | undefined)
   const imageWidth: number = imgToMove.value!.offsetWidth
 
@@ -22,7 +24,7 @@ onMounted(async () => {
   await nextTick()
 
   if (router.currentRoute.value.fullPath !== '/')
-    moveThumbnail(router.currentRoute.value.params.slug[0])
+    moveThumbnail(router.currentRoute.value.params.slug![0]!)
 })
 
 // move thumbnail after route changes
@@ -30,7 +32,7 @@ router.afterEach(async (to, _) => {
   await nextTick()
 
   if (router.currentRoute.value.fullPath !== '/')
-    moveThumbnail(to.params.slug[0])
+    moveThumbnail(to.params.slug![0]!)
 })
 </script>
 

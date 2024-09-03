@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { BlobObject } from '@nuxthub/core'
+
 const bottomMenu = ref()
 const imageEl = ref<HTMLImageElement>()
 const magnifierEl = ref<HTMLElement>()
@@ -29,8 +31,8 @@ const active = useState()
 const route = useRoute()
 const router = useRouter()
 
-const image = computed(() => {
-  return images.value!.filter((file: BlobObject) => file.pathname.split('.')[0] === route.params.slug[0])[0]
+const image: ComputedRef<BlobObject> = computed(() => {
+  return images.value!.filter((file: BlobObject) => file.pathname.split('.')[0] === route.params.slug![0])[0]!
 })
 
 onKeyStroke('Escape', () => {
@@ -41,14 +43,14 @@ onKeyStroke('ArrowLeft', () => {
   if (isFirstImg.value)
     router.push('/')
   else
-    router.push(`/detail/${images.value![currentIndex.value - 1].pathname.split('.')[0]}`)
+    router.push(`/detail/${images.value[currentIndex.value - 1]?.pathname.split('.')[0]}`)
 })
 
 onKeyStroke('ArrowRight', () => {
   if (isLastImg.value)
     router.push('/')
   else
-    router.push(`/detail/${images.value![currentIndex.value + 1].pathname.split('.')[0]}`)
+    router.push(`/detail/${images.value[currentIndex.value + 1]?.pathname.split('.')[0]}`)
 })
 
 function resetFilter() {

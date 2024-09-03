@@ -1,3 +1,5 @@
+import type { FilePlugin } from '../../types'
+
 export default defineNuxtPlugin(() => {
   const images = ref()
   const router = useRouter()
@@ -38,7 +40,7 @@ export default defineNuxtPlugin(() => {
         images,
         uploadImage,
         deleteImage
-      }
+      } as FilePlugin
     }
   }
 })
