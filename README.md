@@ -19,7 +19,7 @@ https://github.com/Flosciante/nuxt-image-gallery/assets/904724/6e2bafdf-f5a0-42c
 ## Stack
 
 - [NuxtHub](https://hub.nuxt.com) - A Nuxt toolkit to build fullstack applications on the edge
-- [NuxtUI](https://ui.nuxt.com/getting-started) - A UI Library for Modern Web Apps
+- [NuxtUI v3](https://ui.nuxt.com/getting-started) - A UI library for modern web applications using Radix Vue and Tailwind CSS v4 under the hood
 - [Nuxt Fonts](https://github.com/nuxt/fonts) - Plug-and-play custom web font optimization and configuration for Nuxt apps.
 - [VueUse](https://github.com/antfu/vueuse) - Collection of useful composition APIs
 - [ESLint](https://eslint.org/) with [@nuxt/eslint-config](https://github.com/nuxt/eslint), single quotes, no semi

@@ -64,17 +64,6 @@ async function clearSession() {
       ref="dropZoneRef"
       class="relative h-screen gap-[22px] p-4"
     >
-      <UModal
-        v-model="isOpen"
-        class="flex items-center justify-center relative"
-        side="left"
-      >
-        <LoginForm
-          class="z-50 bg-gray-800 rounded-md"
-          @close="isOpen = false"
-        />
-      </UModal>
-
       <BottomMenu class="bottom-menu">
         <template #logo>
           <img
@@ -110,15 +99,27 @@ async function clearSession() {
               variant="ghost"
               @click="clearSession"
             />
-            <UButton
-              v-else
-              label="Sign in"
-              color="green"
-              variant="ghost"
-              aria-label="Sign in"
-              class="mr-4 sm:mr-0"
-              @click="isOpen = true"
-            />
+            <UModal
+              v-model="isOpen"
+              title="Login to upload images"
+              :close="{
+                color: 'gray',
+                variant: 'outline',
+                class: 'rounded-full'
+              }"
+            >
+              <UButton
+                v-if="!loggedIn"
+                label="Sign in"
+                color="green"
+                variant="ghost"
+                aria-label="Sign in"
+                class="mr-4 sm:mr-0"
+              />
+              <template #body>
+                <LoginForm />
+              </template>
+            </UModal>
           </div>
         </template>
       </BottomMenu>
@@ -195,12 +196,12 @@ async function clearSession() {
       class="flex items-center space-x-4 z-10"
     >
       <USkeleton
-        class="h-12 w-12 bg-primary-500"
+        class="h-12 w-12 bg-white-500"
         :ui="{ rounded: 'rounded-full' }"
       />
       <div class="space-y-2">
-        <USkeleton class="h-4 w-[250px] bg-primary-500" />
-        <USkeleton class="h-4 w-[200px] bg-primary-500" />
+        <USkeleton class="h-4 w-[250px] bg-white-500" />
+        <USkeleton class="h-4 w-[200px] bg-white-500" />
       </div>
     </div>
   </div>

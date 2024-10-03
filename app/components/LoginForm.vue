@@ -33,9 +33,6 @@ async function login() {
     class="flex flex-col gap-y-4 p-4 items-center"
     @submit.prevent="login"
   >
-    <h1 class="text-lg text-gray-300">
-      Login to upload images
-    </h1>
     <UInput
       v-model="password"
       type="password"
@@ -53,15 +50,6 @@ async function login() {
       class="px-4"
       size="lg"
       :disabled="!password"
-    />
-
-    <UButton
-      icon="i-heroicons-x-mark"
-      color="gray"
-      variant="ghost"
-      size="xs"
-      class="absolute right-2 top-2"
-      @click="$emit('close')"
     />
   </form>
 </template>

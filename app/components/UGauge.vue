@@ -29,10 +29,12 @@ const value = useVModel(props, 'modelValue', emit)
       {{ title }}
     </span>
 
-    <URange
+    <USlider
       v-model="value"
       :min="min"
       :max="max"
+      color="gray"
+      size="sm"
     />
 
     <span class="text-center text-medium text-white w-16 px-2"> {{ Math.round(modelValue) }} </span>

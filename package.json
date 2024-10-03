@@ -16,7 +16,7 @@
   "dependencies": {
     "@nuxt/eslint": "^0.5.7",
     "@nuxt/fonts": "^0.9.2",
-    "@nuxt/ui": "^2.18.6",
+    "@nuxt/ui": "3.0.0-alpha.5",
     "@nuxthub/core": "^0.7.20",
     "@vueuse/core": "^11.1.0",
     "@vueuse/nuxt": "^11.1.0",
@@ -25,6 +25,7 @@
     "vue-advanced-cropper": "^2.8.9"
   },
   "devDependencies": {
+    "@iconify-json/heroicons": "^1.2.0",
     "@iconify-json/simple-icons": "^1.2.5",
     "@nuxt/devtools": "^1.5.1",
     "eslint": "^9.11.1",
