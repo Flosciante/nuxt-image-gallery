@@ -16,6 +16,11 @@ export default defineNuxtConfig({
   experimental: {
     viewTransition: true
   },
+  ui: {
+    theme: {
+      colors: ['gray', 'red']
+    }
+  },
   devtools: { enabled: true },
   eslint: {
     config: {

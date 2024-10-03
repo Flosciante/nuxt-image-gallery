@@ -120,7 +120,7 @@ onMounted(() => {
               <span class="text-white w-40">Fit</span>
               <USelectMenu
                 v-model="objectFitSelected"
-                :options="objectsFit"
+                :items="objectsFit"
                 class="!w-52 mr-4"
               />
             </div>
@@ -130,7 +130,7 @@ onMounted(() => {
                 v-model="magnifier"
                 name="magnifier"
                 label="Magnifier"
-                color="primary"
+                color="gray"
                 :ui="{ label: 'text-gray-300 dark:text-gray-300' }"
               />
               <UIcon
