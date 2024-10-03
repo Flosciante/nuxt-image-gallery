@@ -215,7 +215,6 @@ onMounted(() => {
                   />
                 </UTooltip>
                 <!-- open filters -->
-                <!-- v-if="loggedIn"  -->
                 <UTooltip text="Add filters">
                   <UButton
                     variant="ghost"
