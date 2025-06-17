@@ -1,5 +1,5 @@
 {
-  "name": "nuxthub-starter",
+  "name": "nuxt-image-gallery",
   "type": "module",
   "private": true,
   "scripts": {
@@ -10,8 +10,8 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "typecheck": "nuxt typecheck",
-    "logs": "wrangler pages deployment tail",
-    "logs:preview": "wrangler pages deployment tail --environment preview"
+    "logs": "nuxthub logs --production",
+    "logs:preview": "nuxthub logs --preview"
   },
   "dependencies": {
     "@nuxt/eslint": "^1.4.1",
