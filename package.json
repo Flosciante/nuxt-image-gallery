@@ -1,5 +1,5 @@
 {
-  "name": "nuxthub-starter",
+  "name": "nuxt-image-gallery",
   "type": "module",
   "private": true,
   "scripts": {
@@ -10,30 +10,37 @@
     "postinstall": "nuxt prepare",
     "lint": "eslint .",
     "typecheck": "nuxt typecheck",
-    "logs": "wrangler pages deployment tail",
-    "logs:preview": "wrangler pages deployment tail --environment preview"
+    "logs": "nuxthub logs --production",
+    "logs:preview": "nuxthub logs --preview"
   },
   "dependencies": {
-    "@nuxt/eslint": "^0.5.7",
-    "@nuxt/fonts": "^0.9.2",
-    "@nuxt/ui": "3.0.0-alpha.5",
-    "@nuxthub/core": "^0.7.20",
-    "@vueuse/core": "^11.1.0",
-    "@vueuse/nuxt": "^11.1.0",
-    "nuxt": "^3.13.2",
-    "nuxt-auth-utils": "^0.4.2",
+    "@nuxt/eslint": "^1.4.1",
+    "@nuxt/fonts": "^0.11.4",
+    "@nuxt/ui": "^2.22.0",
+    "@nuxthub/core": "^0.9.0",
+    "@vueuse/core": "^13.3.0",
+    "@vueuse/nuxt": "^13.3.0",
+    "nuxt": "^3.17.5",
+    "nuxt-auth-utils": "^0.5.20",
     "vue-advanced-cropper": "^2.8.9"
   },
   "devDependencies": {
     "@iconify-json/heroicons": "^1.2.0",
     "@iconify-json/simple-icons": "^1.2.5",
-    "@nuxt/devtools": "^1.5.1",
+    "@nuxt/devtools": "^2.5.0",
     "eslint": "^9.11.1",
-    "lint-staged": "^15.2.10",
-    "simple-git-hooks": "^2.11.1",
+    "lint-staged": "^16.1.2",
+    "simple-git-hooks": "^2.13.0",
     "typescript": "^5.6.2",
     "vue-tsc": "^2.1.6",
-    "wrangler": "^3.79.0"
+    "wrangler": "^4.20.1"
   },
-  "packageManager": "pnpm@9.8.0"
+  "packageManager": "pnpm@10.12.1",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "simple-git-hooks",
+      "workerd"
+    ]
+  }
 }
