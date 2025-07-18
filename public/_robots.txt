@@ -1,0 +1,17 @@
+# Robots.txt for Nuxt Image Gallery
+# https://image-gallery.nuxt.dev/
+
+User-agent: *
+Allow: /
+
+Disallow: /api/
+
+Disallow: /auth/
+
+# Allow important files for SEO
+Allow: /sitemap.xml
+Allow: /favicon.ico
+Allow: /logo.svg
+Allow: /social-card.png
+
+Sitemap: https://image-gallery.nuxt.dev/sitemap.xml

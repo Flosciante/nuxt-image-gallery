@@ -14,25 +14,31 @@
     "logs:preview": "nuxthub logs --preview"
   },
   "dependencies": {
-    "@nuxt/eslint": "^1.4.1",
+    "@nuxt/eslint": "^1.6.0",
     "@nuxt/fonts": "^0.11.4",
-    "@nuxt/ui": "^2.22.0",
+    "@nuxt/ui": "^3.2.0",
     "@nuxthub/core": "^0.9.0",
-    "@vueuse/core": "^13.3.0",
-    "@vueuse/nuxt": "^13.3.0",
-    "nuxt": "^3.17.5",
+    "@nuxtjs/seo": "3.1.0",
+    "@vueuse/core": "^13.5.0",
+    "@vueuse/nuxt": "^13.5.0",
+    "nuxt": "^4.0.0",
     "nuxt-auth-utils": "^0.5.20",
     "vue-advanced-cropper": "^2.8.9"
   },
   "devDependencies": {
-    "@iconify-json/simple-icons": "^1.2.5",
-    "@nuxt/devtools": "^2.5.0",
-    "eslint": "^9.11.1",
+    "@iconify-json/heroicons": "^1.2.2",
+    "@iconify-json/simple-icons": "^1.2.43",
+    "@nuxt/devtools": "^2.6.2",
+    "@vitest/ui": "^3.2.4",
+    "@vue/test-utils": "^2.4.6",
+    "eslint": "^9.31.0",
+    "jsdom": "^26.1.0",
     "lint-staged": "^16.1.2",
     "simple-git-hooks": "^2.13.0",
-    "typescript": "^5.6.2",
-    "vue-tsc": "^2.1.6",
-    "wrangler": "^4.20.1"
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4",
+    "vue-tsc": "^3.0.2",
+    "wrangler": "^4.25.0"
   },
   "packageManager": "pnpm@10.12.1",
   "pnpm": {

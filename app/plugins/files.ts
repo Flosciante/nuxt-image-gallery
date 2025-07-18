@@ -7,13 +7,13 @@ export default defineNuxtPlugin(() => {
   // https://hub.nuxt.com/docs/storage/blob#useupload
   const upload = useUpload('/api/images/upload', { multiple: false })
 
-  async function getImages() {
-    const { data: files } = await useFetch('/api/images')
+  async function getImages () {
+    const file = await $fetch('/api/images')
 
-    images.value = files.value
+    images.value = file
   }
 
-  async function uploadImage(image: File, filter: boolean = false) {
+  async function uploadImage (image: File, filter: boolean = false) {
     await upload(image).catch(err => toast.add({
       color: 'red',
       title: 'Failed to upload image',
@@ -27,7 +27,7 @@ export default defineNuxtPlugin(() => {
     }
   }
 
-  async function deleteImage(pathname: string) {
+  async function deleteImage (pathname: string) {
     await $fetch(`/api/images/${pathname}`, { method: 'DELETE' })
 
     getImages()
