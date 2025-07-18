@@ -1,8 +1,9 @@
 import type { UseSwipeDirection } from '@vueuse/core'
 import type { BlobObject } from '@nuxthub/core'
 import type { FilePlugin } from '../../types'
+import { encodeImageSlug, decodeImageSlug, isImageMatch } from '../utils/url.ts'
 
-export function useImageGallery() {
+export function useImageGallery () {
   const nuxtApp = useNuxtApp()
   const config = useRuntimeConfig()
   const imageToDownload = ref<HTMLImageElement>()
@@ -11,26 +12,65 @@ export function useImageGallery() {
 
   const file = nuxtApp.$file as FilePlugin
 
-  const currentIndex: ComputedRef<number> = computed(() => file.images.value!.findIndex((image: BlobObject) => image.pathname.split('.')[0] === route.params.slug![0]))
-  const isFirstImg: ComputedRef<boolean> = computed(() => file.images.value?.[0]?.pathname.split('.')[0] === route.params.slug![0] || false)
-  const isLastImg: ComputedRef<boolean> = computed(() => file.images.value?.[file.images.value.length - 1]?.pathname.split('.')[0] === route.params.slug![0] || false)
+  const currentIndex: ComputedRef<number> = computed(() => {
+    if (!route.params.slug || !route.params.slug[0] || !file.images.value) {
+      return -1
+    }
+
+    const decodedSlug = decodeImageSlug(route.params.slug[0])
+    return file.images.value.findIndex((image: BlobObject) => image.pathname.split('.')[0] === decodedSlug)
+  })
+
+  const isFirstImg: ComputedRef<boolean> = computed(() => {
+    if (!route.params.slug || !route.params.slug[0] || !file.images.value || file.images.value.length === 0) {
+      return false
+    }
+
+    return file.images.value[0] !== undefined
+      ? isImageMatch(file.images.value[0].pathname, route.params.slug[0])
+      : false
+  })
+
+  const isLastImg: ComputedRef<boolean> = computed(() => {
+    if (!route.params.slug || !route.params.slug[0] || !file.images.value || file.images.value.length === 0) {
+      return false
+    }
+
+    const lastImage = file.images.value[file.images.value.length - 1]
+    return lastImage ? isImageMatch(lastImage.pathname, route.params.slug[0]) : false
+  })
+
+  const navigateToImage = (index: number) => {
+    if (!file.images.value || index < 0 || index >= file.images.value.length || !file.images.value[index]) {
+      return
+    }
+
+    const encodedSlug = encodeImageSlug(file.images.value[index]!.pathname)
+    router.push(`/detail/${encodedSlug}`)
+  }
 
   const initSwipe = (el: Ref<HTMLImageElement | undefined>) => {
     useSwipe(el, {
       passive: false,
 
-      onSwipeEnd(e: TouchEvent, direction: UseSwipeDirection) {
+      onSwipeEnd (e: TouchEvent, direction: UseSwipeDirection) {
+        const current = currentIndex.value
+
         if (direction === 'left') {
-          if (isLastImg.value)
+          if (isLastImg.value) {
             router.push('/')
-          else
-            router.push(`/detail/${file.images.value![currentIndex.value + 1]?.pathname.split('.')[0]}`)
+          }
+          else {
+            navigateToImage(current + 1)
+          }
         }
         else {
-          if (isFirstImg.value)
+          if (isFirstImg.value) {
             router.push('/')
-          else
-            router.push(`/detail/${file.images.value![currentIndex.value - 1]?.pathname.split('.')[0]}`)
+          }
+          else {
+            navigateToImage(current - 1)
+          }
         }
       }
     })

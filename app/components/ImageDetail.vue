@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { BlobObject } from '@nuxthub/core'
+import { decodeImageSlug } from '../utils/url.ts'
 
-const bottomMenu = ref()
+const bottomMenu = ref<HTMLElement>()
 const imageEl = ref<HTMLImageElement>()
 const magnifierEl = ref<HTMLElement>()
 const imageContainer = ref<HTMLElement>()
@@ -32,7 +33,19 @@ const route = useRoute()
 const router = useRouter()
 
 const image: ComputedRef<BlobObject> = computed(() => {
-  return images.value!.filter((file: BlobObject) => file.pathname.split('.')[0] === route.params.slug![0])[0]!
+  if (!route.params.slug || !route.params.slug[0] || !images.value) {
+    return {} as BlobObject
+  }
+
+  const decodedSlug = decodeImageSlug(route.params.slug[0])
+  const foundImage = images.value.find((file: BlobObject) => file.pathname.split('.')[0] === decodedSlug)
+
+  if (!foundImage) {
+    console.warn(`Image not found for slug: ${decodedSlug}`)
+    return {} as BlobObject
+  }
+
+  return foundImage
 })
 
 onKeyStroke('Escape', () => {
@@ -247,7 +260,7 @@ onMounted(() => {
                     size="md"
                     class="hidden md:flex"
                     aria-label="Download original or modified image"
-                    @click="downloadImage(image.pathname, imageEl, contrast, blur, invert, saturate, hueRotate, sepia)"
+                    @click="downloadImage(image.pathname, imageEl!, contrast, blur, invert, saturate, hueRotate, sepia)"
                   />
                 </UTooltip>
               </div>
@@ -299,7 +312,7 @@ onMounted(() => {
               <UButton
                 variant="ghost"
                 color="gray"
-                :to="`/detail/${images![currentIndex - 1].pathname.split('.')[0]}`"
+                :to="images && images[currentIndex - 1] ? `/detail/${images[currentIndex - 1]?.pathname.split('.')[0]}` : '/'"
                 size="lg"
                 icon="i-heroicons-chevron-left"
                 class="hidden md:flex ml-4"
@@ -344,10 +357,10 @@ onMounted(() => {
                     :src="`/images/${image.pathname}`"
                     :alt="image.pathname"
                     class="rounded object-contain transition-all duration-200 block"
-                    :class="[{ imageEl: route.params.slug[0] === image.pathname.split('.')[0] }, filter ? 'w-[80%] ml-[12px]' : 'w-full']"
-                    :style="`filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%); object-fit:${objectFitSelected.toLowerCase()};`"
+                    :class="[{ imageEl: route.params.slug?.[0] === image.pathname.split('.')[0] }, filter ? 'w-[80%] ml-[12px]' : 'w-full']"
+                    :style="`filter: contrast(${contrast}%) blur(${blur}px) invert(${invert}%) saturate(${saturate}%) hue-rotate(${hueRotate}deg) sepia(${sepia}%); object-fit:${(objectFitSelected ?? 'Contain').toLowerCase()};`"
                     crossorigin="anonymous"
-                    @mousemove="magnifier ? magnifierImage($event, imageContainer, imageEl, magnifierEl!, zoomFactor) : () => {}"
+                    @mousemove="magnifier ? magnifierImage($event, imageContainer!, imageEl!, magnifierEl!, zoomFactor) : () => {}"
                   >
                   <div
                     v-if="magnifier"
@@ -368,11 +381,10 @@ onMounted(() => {
               <UButton
                 variant="ghost"
                 color="gray"
-                :to="`/detail/${images![currentIndex + 1].pathname.split('.')[0]}`"
+                :to="images && images[currentIndex + 1]?.pathname ? `/detail/${images[currentIndex + 1]?.pathname.split('.')[0]}` : '/'"
                 size="lg"
                 icon="i-heroicons-chevron-right"
-                :ui="{ rounded: 'rounded-full' }"
-                class="hidden md:flex mr-4"
+                class="hidden md:flex mr-4 rounded-full"
                 aria-label="Go to next image"
                 @click="active === image.pathname.split('.')[0]"
               />

@@ -1,18 +1,22 @@
 export default defineAppConfig({
   ui: {
     colors: {
-      gray: 'zinc'
+      neutral: 'zinc',
+      primary: 'green'
     },
     button: {
+      slots: {
+        base: 'cursor-pointer'
+      },
       compoundVariants: [{
         color: 'gray',
         variant: 'ghost',
         class: 'text-gray-400 bg-gray-900 ring-1 ring-gray-400 rounded-full hover:ring-gray-200 hover:text-gray-200 hover:bg-gray-900 transition-hover duration-200'
       },
       {
-        color: 'green',
+        color: 'primary',
         variant: 'ghost',
-        class: 'text-green-400 bg-gray-900 ring-1 ring-green-400 rounded-full hover:ring-green-300 hover:text-green-300 hover:bg-gray-900 transition-hover duration-200'
+        class: 'text-primary-400 bg-gray-900 ring-1 ring-primary-400 rounded-full hover:ring-primary-300 hover:text-primary-300 hover:bg-gray-900 transition-hover duration-200'
       },
       {
         color: 'red',
